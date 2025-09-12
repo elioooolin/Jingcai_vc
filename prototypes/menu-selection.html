@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点餐页面 - 爱睦轻予</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tdesign-vue-next@1.9.7/dist/tdesign.min.css" rel="stylesheet">
+    <style>
+        /* 爱睦轻予品牌色彩 */
+        .brand-gradient { background: linear-gradient(135deg, #d4a574 0%, #e8c4a0 100%); }
+        .brand-bg { background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%); }
+        .brand-text { color: #d4a574; }
+        
+        /* 菜品项目样式 */
+        .menu-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            border-color: #d4a574;
+            background: #faf8f5;
+        }
+        .menu-item.selected {
+            border-color: #d4a574;
+            background: #f5f1eb;
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.15);
+        }
+        
+        /* 餐次标题样式 */
+        .meal-title {
+            color: #d4a574;
+            font-weight: 500;
+        }
+        
+        /* 要求提示样式 */
+        .meal-requirement {
+            background: linear-gradient(135deg, #faf8f5 0%, #f5f1eb 100%);
+            border-left: 4px solid #d4a574;
+        }
+        
+        /* 订单摘要样式 */
+        .order-summary {
+            background: linear-gradient(135deg, #faf8f5 0%, #f5f1eb 100%);
+            border: 2px solid #e8c4a0;
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen">
+    <!-- 安全区域适配 - 为动态岛留出空间 -->
+    <div class="pt-16 pb-8 min-h-screen">
+        
+        <!-- Header -->
+        <div class="brand-gradient text-white py-4 px-6 -mt-16 mb-6 shadow-lg flex items-center" style="padding-top: 60px;">
+            <button onclick="goBack()" class="text-xl w-8 h-8 flex items-center justify-center">←</button>
+            <div class="flex-1 text-center mx-4">
+                <h1 class="text-lg font-medium">1月5日 点餐</h1>
+                <p class="text-sm opacity-95">请按照要求选择菜品</p>
+            </div>
+            <div class="w-8 h-8"></div> <!-- 占位元素，保持标题居中 -->
+        </div>
+
+        <div class="px-6 space-y-6">
+            
+            <!-- 早餐 -->
+            <div class="meal-section">
+                <h3 class="meal-title text-lg mb-3 flex items-center">
+                    <span class="mr-2">🌅</span> 早餐
+                </h3>
+                <div class="meal-requirement p-3 rounded-lg text-sm text-gray-700 mb-4">
+                    主菜二选一（必选）
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center text-white text-lg mr-3">粥</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">小米粥</h4>
+                            <p class="text-xs text-gray-500">温胃养身，易于消化</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-amber-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">粥</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">燕麦粥</h4>
+                            <p class="text-xs text-gray-500">营养丰富，促进消化</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-amber-300 rounded-lg flex items-center justify-center text-white text-lg mr-3">蛋</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">蒸蛋</h4>
+                            <p class="text-xs text-gray-500">嫩滑可口，蛋白质丰富</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-amber-300 rounded-lg flex items-center justify-center text-white text-lg mr-3">蛋</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">煮鸡蛋</h4>
+                            <p class="text-xs text-gray-500">营养全面，易于吸收</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 午餐 -->
+            <div class="meal-section">
+                <h3 class="meal-title text-lg mb-3 flex items-center">
+                    <span class="mr-2">🌞</span> 午餐
+                </h3>
+                <div class="meal-requirement p-3 rounded-lg text-sm text-gray-700 mb-4">
+                    主菜四选二（必选）、汤品二选一（必选）
+                </div>
+                
+                <h4 class="text-sm font-medium text-gray-600 mb-3">主菜</h4>
+                <div class="space-y-3 mb-4">
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">鸡</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">红烧鸡腿</h4>
+                            <p class="text-xs text-gray-500">蛋白质丰富，口感鲜美</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">鱼</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">清蒸鲈鱼</h4>
+                            <p class="text-xs text-gray-500">低脂高蛋白，营养丰富</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">蛋</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">蒸蛋羹</h4>
+                            <p class="text-xs text-gray-500">嫩滑营养，易于消化</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">肉</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">瘦肉粥</h4>
+                            <p class="text-xs text-gray-500">温补身体，营养均衡</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="text-sm font-medium text-gray-600 mb-3">汤品</h4>
+                <div class="space-y-3">
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">冬瓜汤</h4>
+                            <p class="text-xs text-gray-500">清热利水，去水肿</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">排骨汤</h4>
+                            <p class="text-xs text-gray-500">补钙养身，滋补营养</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 晚餐 -->
+            <div class="meal-section">
+                <h3 class="meal-title text-lg mb-3 flex items-center">
+                    <span class="mr-2">🌙</span> 晚餐
+                </h3>
+                <div class="meal-requirement p-3 rounded-lg text-sm text-gray-700 mb-4">
+                    主菜四选二（必选）、汤品二选一（必选）
+                </div>
+                
+                <h4 class="text-sm font-medium text-gray-600 mb-3">主菜</h4>
+                <div class="space-y-3 mb-4">
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">鱼</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">清蒸鲈鱼</h4>
+                            <p class="text-xs text-gray-500">低脂高蛋白，营养丰富</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">蔬</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">时令蔬菜</h4>
+                            <p class="text-xs text-gray-500">维生素丰富，清淡易消化</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">豆</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">豆腐汤</h4>
+                            <p class="text-xs text-gray-500">植物蛋白，营养丰富</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">粥</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">小米粥</h4>
+                            <p class="text-xs text-gray-500">温胃养身，易于消化</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="text-sm font-medium text-gray-600 mb-3">汤品</h4>
+                <div class="space-y-3">
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">紫菜蛋花汤</h4>
+                            <p class="text-xs text-gray-500">清淡营养，补充维生素</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">丝瓜汤</h4>
+                            <p class="text-xs text-gray-500">清热解毒，促进乳汁分泌</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高补餐 -->
+            <div class="meal-section">
+                <h3 class="meal-title text-lg mb-3 flex items-center">
+                    <span class="mr-2">🍎</span> 高补餐
+                </h3>
+                <div class="meal-requirement p-3 rounded-lg text-sm text-gray-700 mb-4">
+                    四选一（可选）
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">鸽子汤</h4>
+                            <p class="text-xs text-gray-500">滋补养身，促进恢复</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">乌鸡汤</h4>
+                            <p class="text-xs text-gray-500">补气养血，增强体质</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item selected bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">猪蹄汤</h4>
+                            <p class="text-xs text-gray-500">下奶催乳，补充胶原蛋白</p>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item bg-white p-3 border-2 border-gray-200 rounded-xl flex items-center">
+                        <div class="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center text-white text-lg mr-3">汤</div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">鲫鱼汤</h4>
+                            <p class="text-xs text-gray-500">催乳下奶，营养丰富</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 特殊需求 -->
+            <div class="bg-white rounded-xl p-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">特殊需求</label>
+                <textarea 
+                    rows="3" 
+                    placeholder="请填写特殊需求，如少盐、不吃蒜等"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                ></textarea>
+            </div>
+
+            <!-- 订单摘要 -->
+            <div class="order-summary rounded-xl p-4 shadow-lg">
+                <h3 class="font-medium text-gray-800 mb-4">订单确认</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                        <span class="text-sm text-gray-600">早餐</span>
+                        <span class="text-sm font-medium">小米粥 + 蒸蛋</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                        <span class="text-sm text-gray-600">午餐</span>
+                        <span class="text-sm font-medium">红烧鸡腿 + 蒸蛋羹 + 冬瓜汤</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                        <span class="text-sm text-gray-600">晚餐</span>
+                        <span class="text-sm font-medium">时令蔬菜 + 豆腐汤 + 紫菜蛋花汤</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                        <span class="text-sm text-gray-600">高补餐</span>
+                        <span class="text-sm font-medium">猪蹄汤</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提交按钮 -->
+            <button 
+                onclick="submitOrder()" 
+                class="w-full brand-gradient text-white py-4 rounded-xl font-medium shadow-lg transition-transform hover:scale-105"
+            >
+                提交订单
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 返回功能
+        function goBack() {
+            alert('返回客户主页');
+        }
+
+        // 菜品选择功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.closest('.meal-section');
+                    const sectionItems = section.querySelectorAll('.menu-item');
+                    
+                    // 获取当前餐次的选择规则
+                    const requirement = section.querySelector('.meal-requirement').textContent;
+                    let maxSelections = 1;
+                    
+                    if (requirement.includes('四选二')) {
+                        maxSelections = 2;
+                    } else if (requirement.includes('二选一')) {
+                        maxSelections = 1;
+                    }
+                    
+                    // 如果是子分类（主菜、汤品），只在该分类内操作
+                    let targetItems = sectionItems;
+                    const subCategory = this.closest('div').previousElementSibling;
+                    if (subCategory && subCategory.tagName === 'H4') {
+                        // 找到同一子分类下的所有菜品
+                        let currentElement = subCategory.nextElementSibling;
+                        targetItems = [];
+                        while (currentElement && currentElement.tagName !== 'H4') {
+                            if (currentElement.classList.contains('space-y-3')) {
+                                targetItems = currentElement.querySelectorAll('.menu-item');
+                                break;
+                            }
+                            currentElement = currentElement.nextElementSibling;
+                        }
+                    }
+                    
+                    const selectedItems = Array.from(targetItems).filter(item => 
+                        item.classList.contains('selected')
+                    );
+                    
+                    if (this.classList.contains('selected')) {
+                        // 取消选择
+                        this.classList.remove('selected');
+                    } else {
+                        // 选择菜品
+                        if (selectedItems.length >= maxSelections) {
+                            // 移除第一个选中的菜品
+                            selectedItems[0].classList.remove('selected');
+                        }
+                        this.classList.add('selected');
+                    }
+                    
+                    updateOrderSummary();
+                });
+            });
+        });
+
+        // 更新订单摘要
+        function updateOrderSummary() {
+            // 这里可以添加更新订单摘要的逻辑
+            console.log('订单摘要已更新');
+        }
+
+        // 提交订单
+        function submitOrder() {
+            alert('订单提交成功！等待管理员确认。');
+        }
+    </script>
+</body>
+</html>

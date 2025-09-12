@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜品详情 - 爱睦轻予</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tdesign-vue-next@1.9.7/dist/tdesign.min.css" rel="stylesheet">
+    <style>
+        /* 爱睦轻予品牌色彩 */
+        .brand-gradient { background: linear-gradient(135deg, #d4a574 0%, #e8c4a0 100%); }
+        .brand-bg { background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%); }
+        .brand-text { color: #d4a574; }
+        
+        /* 图片样式 */
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
+        }
+        
+        /* 营养信息卡片 */
+        .nutrition-card {
+            background: linear-gradient(135deg, #faf8f5 0%, #f5f1eb 100%);
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 4px solid #d4a574;
+        }
+        
+        /* 功效标签 */
+        .benefit-tag {
+            background: #e8c4a0;
+            color: #8b5a2b;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 2px;
+        }
+        
+        /* 评分星星 */
+        .star-rating {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+        
+        /* 推荐理由 */
+        .recommendation {
+            background: #e6f2ff;
+            border: 1px solid #9cc5f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen">
+    <!-- 安全区域适配 - 为动态岛留出空间 -->
+    <div class="pt-16 pb-8 min-h-screen">
+        
+        <!-- Header -->
+        <div class="brand-gradient text-white py-4 px-6 -mt-16 mb-6 shadow-lg flex items-center" style="padding-top: 60px;">
+            <button onclick="goBack()" class="text-xl w-8 h-8 flex items-center justify-center">←</button>
+            <div class="flex-1 text-center mx-4">
+                <h1 class="text-lg font-medium">菜品详情</h1>
+            </div>
+            <div class="w-8 h-8"></div> <!-- 占位元素，保持标题居中 -->
+        </div>
+
+        <div class="px-6 space-y-6">
+            
+            <!-- 菜品图片和基本信息 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="w-full h-48 brand-gradient rounded-2xl flex items-center justify-center text-white text-4xl mb-4 shadow-lg">
+                        粥
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">小米粥</h2>
+                    <p class="text-gray-600 mb-3">温胃养身，易于消化的营养粥品</p>
+                    
+                    <!-- 评分 -->
+                    <div class="flex items-center justify-center mb-2">
+                        <div class="star-rating mr-2">★★★★★</div>
+                        <span class="text-sm text-gray-600">(4.8分)</span>
+                    </div>
+                    
+                    <!-- 标签 -->
+                    <div class="flex flex-wrap justify-center">
+                        <span class="benefit-tag">易消化</span>
+                        <span class="benefit-tag">养胃</span>
+                        <span class="benefit-tag">补气血</span>
+                        <span class="benefit-tag">产后适宜</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 营养成分 -->
+            <div class="nutrition-card">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="mr-2">📊</span> 营养成分 (每100g)
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">120</div>
+                        <div class="text-xs text-gray-600">热量(千卡)</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">4.5g</div>
+                        <div class="text-xs text-gray-600">蛋白质</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">22g</div>
+                        <div class="text-xs text-gray-600">碳水化合物</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">1.2g</div>
+                        <div class="text-xs text-gray-600">脂肪</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">0.8mg</div>
+                        <div class="text-xs text-gray-600">铁</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold brand-text">2.1mg</div>
+                        <div class="text-xs text-gray-600">锌</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功效与作用 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="mr-2">💊</span> 功效与作用
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 brand-gradient rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-medium text-gray-800 mb-1">健脾养胃</h4>
+                            <p class="text-sm text-gray-600">小米性温，具有健脾和胃的功效，特别适合产后脾胃虚弱的产妇</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 brand-gradient rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-medium text-gray-800 mb-1">补充能量</h4>
+                            <p class="text-sm text-gray-600">富含碳水化合物，能够快速为产妇提供所需能量，促进身体恢复</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 brand-gradient rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-medium text-gray-800 mb-1">富含维生素B族</h4>
+                            <p class="text-sm text-gray-600">含有丰富的维生素B1、B2等，有助于神经系统健康和新陈代谢</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 brand-gradient rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-medium text-gray-800 mb-1">易于消化</h4>
+                            <p class="text-sm text-gray-600">质地柔软，容易消化吸收，减轻肠胃负担</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 推荐理由 -->
+            <div class="recommendation">
+                <h3 class="font-semibold text-blue-800 mb-3 flex items-center">
+                    <span class="mr-2">👩‍⚕️</span> 营养师推荐
+                </h3>
+                <p class="text-blue-700 text-sm leading-relaxed">
+                    小米粥是月子期间的经典选择，不仅营养丰富，而且温和易消化。对于产后身体虚弱、食欲不振的产妇来说，
+                    小米粥能够很好地滋养脾胃，补充所需的营养和能量。建议搭配蒸蛋或其他蛋白质食物，营养更加均衡。
+                </p>
+            </div>
+
+            <!-- 食用建议 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="mr-2">🍽️</span> 食用建议
+                </h3>
+                <div class="space-y-2">
+                    <div class="flex items-center text-sm">
+                        <span class="w-16 text-gray-600 flex-shrink-0">适宜时间</span>
+                        <span class="text-gray-800">早餐、晚餐</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <span class="w-16 text-gray-600 flex-shrink-0">建议份量</span>
+                        <span class="text-gray-800">150-200ml/次</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <span class="w-16 text-gray-600 flex-shrink-0">搭配建议</span>
+                        <span class="text-gray-800">蒸蛋、咸菜、坚果</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <span class="w-16 text-gray-600 flex-shrink-0">注意事项</span>
+                        <span class="text-gray-800">温热食用，避免过烫</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 相关推荐 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="mr-2">🔄</span> 相关推荐
+                </h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center">
+                        <div class="w-full aspect-square bg-amber-400 rounded-lg flex items-center justify-center text-white text-lg mb-2">粥</div>
+                        <p class="text-xs text-gray-600">燕麦粥</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full aspect-square bg-amber-300 rounded-lg flex items-center justify-center text-white text-lg mb-2">蛋</div>
+                        <p class="text-xs text-gray-600">蒸蛋</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full aspect-square bg-orange-400 rounded-lg flex items-center justify-center text-white text-lg mb-2">肉</div>
+                        <p class="text-xs text-gray-600">瘦肉粥</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex gap-3 pt-4">
+                <button 
+                    onclick="selectDish()" 
+                    class="flex-1 brand-gradient text-white py-3 rounded-xl font-medium shadow-lg transition-transform hover:scale-105"
+                >
+                    选择此菜品
+                </button>
+                <button 
+                    onclick="addToFavorites()" 
+                    class="px-6 border-2 border-amber-500 text-amber-600 py-3 rounded-xl font-medium transition-colors hover:bg-amber-50"
+                >
+                    ❤️
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 返回功能
+        function goBack() {
+            alert('返回点餐页面');
+        }
+
+        // 选择菜品
+        function selectDish() {
+            alert('已选择小米粥，返回点餐页面');
+        }
+
+        // 添加到收藏
+        function addToFavorites() {
+            const btn = event.target;
+            if (btn.textContent === '❤️') {
+                btn.textContent = '💖';
+                btn.style.backgroundColor = '#fef3c7';
+                alert('已添加到收藏');
+            } else {
+                btn.textContent = '❤️';
+                btn.style.backgroundColor = '';
+                alert('已取消收藏');
+            }
+        }
+
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.bg-white, .nutrition-card, .recommendation');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

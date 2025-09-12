@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加客户 - 爱睦轻予</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tdesign-vue-next@1.9.7/dist/tdesign.min.css" rel="stylesheet">
+    <style>
+        /* 爱睦轻予品牌色彩 */
+        .brand-gradient { background: linear-gradient(135deg, #d4a574 0%, #e8c4a0 100%); }
+        .admin-gradient { background: linear-gradient(135deg, #8b9dc3 0%, #a8b8d8 100%); }
+        .brand-bg { background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%); }
+        
+        /* TDesign风格表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8b9dc3;
+            box-shadow: 0 0 0 3px rgba(139, 157, 195, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* 必填标记 */
+        .required::after {
+            content: ' *';
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen">
+    <!-- 安全区域适配 - 为动态岛留出空间 -->
+    <div class="pt-16 pb-8 min-h-screen">
+        
+        <!-- Header -->
+        <div class="admin-gradient text-white py-4 px-6 -mt-16 mb-6 shadow-lg flex items-center" style="padding-top: 60px;">
+            <button onclick="goBack()" class="text-xl w-8 h-8 flex items-center justify-center">←</button>
+            <div class="flex-1 text-center mx-4">
+                <h1 class="text-lg font-medium">添加新客户</h1>
+                <p class="text-sm opacity-95">爱睦轻予 · 用心服务每一位客户</p>
+            </div>
+            <div class="w-8 h-8"></div> <!-- 占位元素，保持标题居中 -->
+        </div>
+
+        <div class="px-6">
+            <form class="space-y-6">
+                <!-- 基本信息 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-4 pb-2 border-b border-gray-100">基本信息</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">客户姓名</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="请输入客户姓名"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">手机号</label>
+                        <input 
+                            type="tel" 
+                            class="form-input" 
+                            placeholder="请输入手机号"
+                            pattern="[0-9]{11}"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">生日</label>
+                        <input 
+                            type="date" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- 入住信息 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-4 pb-2 border-b border-gray-100">入住信息</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">入住日期</label>
+                        <input 
+                            type="date" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">入住天数</label>
+                        <input 
+                            type="number" 
+                            class="form-input" 
+                            placeholder="请输入入住天数"
+                            min="1"
+                            max="100"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">入住门店</label>
+                        <select class="form-input" required>
+                            <option value="">请选择门店</option>
+                            <option value="store1">爱睦月子中心（朝阳店）</option>
+                            <option value="store2">爱睦月子中心（海淀店）</option>
+                            <option value="store3">爱睦月子中心（西城店）</option>
+                            <option value="store4">爱睦月子中心（丰台店）</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">房间号</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="请输入房间号，如：A201"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- 餐饮偏好 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-4 pb-2 border-b border-gray-100">餐饮偏好</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">饮食偏好</label>
+                        <textarea 
+                            class="form-input form-textarea" 
+                            placeholder="请描述客户的饮食偏好，如不吃辣、素食、过敏食物等"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">高补餐次数</label>
+                        <select class="form-input" required>
+                            <option value="">请选择</option>
+                            <option value="0">0次/天</option>
+                            <option value="1">1次/天</option>
+                            <option value="2">2次/天</option>
+                            <option value="3">3次/天</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 备注信息 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-4 pb-2 border-b border-gray-100">备注信息</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">特殊说明</label>
+                        <textarea 
+                            class="form-input form-textarea" 
+                            placeholder="其他需要特别注意的事项"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="space-y-3 pt-4">
+                    <button 
+                        type="button" 
+                        onclick="submitCustomer()" 
+                        class="w-full admin-gradient text-white py-4 rounded-xl font-medium shadow-lg transition-transform hover:scale-105"
+                    >
+                        添加客户
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="goBack()" 
+                        class="w-full border-2 border-gray-300 text-gray-600 py-3 rounded-xl font-medium transition-colors hover:bg-gray-50"
+                    >
+                        取消
+                    </button>
+                </div>
+
+                <!-- 提示信息 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                    <h4 class="text-blue-800 text-sm font-medium mb-2">💡 添加客户须知</h4>
+                    <div class="text-blue-700 text-xs leading-relaxed space-y-1">
+                        <p>• 手机号将作为客户登录的唯一标识</p>
+                        <p>• 请确保手机号填写正确，客户将通过此号码登录</p>
+                        <p>• 标有 * 的字段为必填项</p>
+                        <p>• 添加成功后，客户即可使用微信登录系统</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 返回功能
+        function goBack() {
+            alert('返回管理员后台');
+        }
+
+        // 提交客户信息
+        function submitCustomer() {
+            // 获取表单数据
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            
+            // 简单验证
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    field.focus();
+                } else {
+                    field.style.borderColor = '#e5e7eb';
+                }
+            });
+            
+            if (!isValid) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 模拟提交
+            const submitBtn = event.target;
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '添加中...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('客户添加成功！客户现在可以使用微信登录系统。');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                // 清空表单
+                form.reset();
+            }, 1500);
+        }
+
+        // 手机号格式验证
+        document.querySelector('input[type="tel"]').addEventListener('input', function(e) {
+            const value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+            
+            if (value.length === 11) {
+                e.target.style.borderColor = '#10b981';
+            } else if (value.length > 0) {
+                e.target.style.borderColor = '#f59e0b';
+            } else {
+                e.target.style.borderColor = '#e5e7eb';
+            }
+        });
+
+        // 房间号格式提示
+        document.querySelector('input[placeholder*="房间号"]').addEventListener('input', function(e) {
+            const value = e.target.value.toUpperCase();
+            e.target.value = value;
+        });
+
+        // 入住天数限制
+        document.querySelector('input[type="number"]').addEventListener('input', function(e) {
+            const value = parseInt(e.target.value);
+            if (value < 1) {
+                e.target.value = 1;
+            } else if (value > 100) {
+                e.target.value = 100;
+            }
+        });
+    </script>
+</body>
+</html>

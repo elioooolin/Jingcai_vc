@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 爱睦轻予</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tdesign-vue-next@1.9.7/dist/tdesign.min.css" rel="stylesheet">
+    <style>
+        /* 爱睦轻予品牌色彩 */
+        .brand-gradient { background: linear-gradient(135deg, #d4a574 0%, #e8c4a0 100%); }
+        .brand-bg { background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%); }
+        .brand-text { color: #d4a574; }
+        
+        /* 按钮悬停效果 */
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #d4a574;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen">
+    <!-- 安全区域适配 - 为动态岛留出空间 -->
+    <div class="pt-16 pb-8 px-6 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <div class="brand-gradient text-white text-center py-6 -mx-6 -mt-16 mb-8 rounded-b-3xl shadow-lg" style="padding-top: 60px;">
+            <h1 class="text-2xl font-light tracking-wide">爱睦轻予</h1>
+            <p class="text-sm opacity-95 mt-1 font-light tracking-wide">轻松呵护 · 用心滋养</p>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="flex-1 flex flex-col justify-center items-center fade-in">
+            
+            <!-- Logo区域 -->
+            <div class="mb-8">
+                <div class="w-32 h-32 brand-gradient rounded-3xl flex items-center justify-center shadow-xl">
+                    <div class="text-white text-3xl font-light tracking-widest">爱睦</div>
+                </div>
+            </div>
+
+            <!-- 品牌标语 -->
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-normal text-gray-800 mb-3 tracking-wide">爱睦轻予</h2>
+                <p class="text-gray-600 text-base tracking-wide">轻松呵护 · 用心滋养</p>
+            </div>
+
+            <!-- 登录按钮 -->
+            <div class="w-full max-w-xs">
+                <button 
+                    id="loginBtn" 
+                    onclick="handleWechatLogin()" 
+                    class="w-full brand-gradient text-white py-4 px-6 rounded-full text-lg font-medium shadow-lg btn-hover transition-all duration-300 flex items-center justify-center"
+                >
+                    <span id="loginIcon" class="mr-3 text-xl">🔐</span>
+                    <span id="loginText">微信一键登录</span>
+                </button>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="mt-6 p-4 bg-white bg-opacity-60 rounded-xl border-l-4 border-amber-500 max-w-xs">
+                <p class="text-gray-700 text-xs leading-relaxed">
+                    💡 <strong>温馨提示：</strong><br>
+                    • 客户账号需由工作人员预先创建<br>
+                    • 如提示"用户不存在"，请联系客服开通
+                </p>
+            </div>
+
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="text-center mt-8">
+            <p class="text-xs text-gray-500 mb-4">
+                登录即表示同意
+                <a href="#" class="brand-text underline">用户协议</a>
+                和
+                <a href="#" class="brand-text underline">隐私政策</a>
+            </p>
+            
+            <!-- 演示说明 -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                <h4 class="text-blue-800 text-xs font-semibold mb-1">🎭 原型演示说明</h4>
+                <div class="text-blue-700 text-xs leading-relaxed">
+                    <p class="mb-1"><strong>多次点击登录按钮可体验：</strong></p>
+                    <p>• 客户登录成功（张女士、李女士等）</p>
+                    <p>• 管理员验证（密码：admin123）</p>
+                    <p>• 用户不存在提示</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户不存在弹窗 -->
+    <div id="userNotFoundModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-2xl p-6 mx-6 max-w-sm w-full text-center shadow-2xl">
+            <div class="text-4xl mb-4">😔</div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">用户不存在</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                抱歉，您的账号尚未创建。<br>
+                请联系工作人员为您开通服务。
+            </p>
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded mb-6">
+                <p class="text-amber-800 text-xs">
+                    📞 客服电话：400-123-4567<br>
+                    🕒 服务时间：09:00-18:00
+                </p>
+            </div>
+            <button 
+                onclick="closeUserNotFoundModal()" 
+                class="w-full brand-gradient text-white py-3 rounded-full font-medium"
+            >
+                我知道了
+            </button>
+        </div>
+    </div>
+
+    <!-- 管理员验证弹窗 -->
+    <div id="adminVerifyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-2xl p-6 mx-6 max-w-sm w-full shadow-2xl">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">管理员身份验证</h3>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">管理员密码</label>
+                <input 
+                    type="password" 
+                    id="adminPassword" 
+                    placeholder="请输入管理员密码"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                >
+            </div>
+            <p class="text-gray-500 text-xs mb-6">
+                请输入管理员专用密码以访问后台管理系统
+            </p>
+            <div class="flex gap-3">
+                <button 
+                    onclick="closeAdminVerifyModal()" 
+                    class="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium"
+                >
+                    取消
+                </button>
+                <button 
+                    onclick="verifyAdminPassword()" 
+                    class="flex-1 brand-gradient text-white py-3 rounded-lg font-medium"
+                >
+                    验证并登录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟用户数据库
+        const mockUsers = {
+            customers: [
+                { phone: '13800138001', name: '张女士', isAdmin: false },
+                { phone: '13800138002', name: '李女士', isAdmin: false },
+                { phone: '13800138003', name: '王女士', isAdmin: false }
+            ],
+            admins: [
+                { phone: '13900139001', name: '管理员', isAdmin: true }
+            ]
+        };
+
+        // 处理微信登录
+        function handleWechatLogin() {
+            const btn = document.getElementById('loginBtn');
+            const icon = document.getElementById('loginIcon');
+            const text = document.getElementById('loginText');
+            
+            // 显示加载状态
+            btn.disabled = true;
+            icon.innerHTML = '<div class="loading-spinner"></div>';
+            text.textContent = '登录中...';
+            
+            // 模拟微信登录获取手机号
+            const mockPhones = ['13800138001', '13800138002', '13800138999', '13900139001'];
+            const randomPhone = mockPhones[Math.floor(Math.random() * mockPhones.length)];
+            
+            setTimeout(() => {
+                verifyUserIdentity(randomPhone);
+                // 恢复按钮状态
+                btn.disabled = false;
+                icon.innerHTML = '🔐';
+                text.textContent = '微信一键登录';
+            }, 1500);
+        }
+
+        // 验证用户身份
+        function verifyUserIdentity(phone) {
+            console.log('验证手机号:', phone);
+            
+            // 检查是否为客户
+            const customer = mockUsers.customers.find(user => user.phone === phone);
+            if (customer) {
+                alert(`客户登录成功！欢迎您，${customer.name}`);
+                // 在实际应用中，这里会跳转到客户主页
+                return;
+            }
+
+            // 检查是否为管理员
+            const admin = mockUsers.admins.find(user => user.phone === phone);
+            if (admin) {
+                showAdminVerifyModal();
+                return;
+            }
+
+            // 用户不存在
+            showUserNotFoundModal();
+        }
+
+        // 显示用户不存在弹窗
+        function showUserNotFoundModal() {
+            document.getElementById('userNotFoundModal').classList.remove('hidden');
+        }
+
+        // 关闭用户不存在弹窗
+        function closeUserNotFoundModal() {
+            document.getElementById('userNotFoundModal').classList.add('hidden');
+        }
+
+        // 显示管理员验证弹窗
+        function showAdminVerifyModal() {
+            document.getElementById('adminVerifyModal').classList.remove('hidden');
+            document.getElementById('adminPassword').focus();
+        }
+
+        // 关闭管理员验证弹窗
+        function closeAdminVerifyModal() {
+            document.getElementById('adminVerifyModal').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // 验证管理员密码
+        function verifyAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            const correctPassword = 'admin123';
+            
+            if (password === correctPassword) {
+                closeAdminVerifyModal();
+                alert('管理员登录成功！');
+                // 在实际应用中，这里会跳转到管理员后台
+            } else {
+                alert('密码错误，请重试');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+
+        // 回车键登录
+        document.getElementById('adminPassword')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyAdminPassword();
+            }
+        });
+    </script>
+</body>
+</html>

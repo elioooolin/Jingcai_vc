@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户主页 - 爱睦轻予</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tdesign-vue-next@1.9.7/dist/tdesign.min.css" rel="stylesheet">
+    <style>
+        /* 爱睦轻予品牌色彩 */
+        .brand-gradient { background: linear-gradient(135deg, #d4a574 0%, #e8c4a0 100%); }
+        .brand-bg { background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%); }
+        .brand-text { color: #d4a574; }
+        
+        /* TDesign风格适配 */
+        .card-shadow {
+            box-shadow: 0 1px 10px -2px rgba(0, 0, 0, 0.12), 0 1px 3px -2px rgba(0, 0, 0, 0.08);
+        }
+        
+        .tab-active {
+            background: white;
+            color: #d4a574;
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.15);
+        }
+        
+        /* 状态徽章 */
+        .status-pending { 
+            background: #fef4e8; 
+            color: #a67c52; 
+            border: 1px solid #e8c4a0; 
+        }
+        .status-confirmed { 
+            background: #e8f5e8; 
+            color: #2d5a2d; 
+            border: 1px solid #a5c9a5; 
+        }
+        .status-submitted { 
+            background: #e6f2ff; 
+            color: #1a5490; 
+            border: 1px solid #9cc5f0; 
+        }
+        
+        /* 日期选择器 */
+        .date-item {
+            transition: all 0.2s ease;
+        }
+        .date-item:hover {
+            background: #faf8f5;
+            border-color: #d4a574;
+        }
+        .date-item.selected {
+            background: #d4a574;
+            color: white;
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.25);
+        }
+        .date-item.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen">
+    <!-- 安全区域适配 - 为动态岛留出空间 -->
+    <div class="pt-16 pb-8 min-h-screen">
+        
+        <!-- Header -->
+        <div class="brand-gradient text-white text-center py-6 -mt-16 mb-6 shadow-lg" style="padding-top: 60px;">
+            <h1 class="text-xl font-medium">您好，张女士 ✨</h1>
+            <p class="text-sm opacity-95 mt-1">今天是入住第5天 · 爱睦轻予陪伴您</p>
+        </div>
+
+        <div class="px-6">
+            <!-- 导航标签 -->
+            <div class="flex bg-gray-100 rounded-xl p-1 mb-6">
+                <button 
+                    class="flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-all duration-200 tab-active" 
+                    onclick="switchTab('order', this)"
+                >
+                    今日点餐
+                </button>
+                <button 
+                    class="flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600" 
+                    onclick="switchTab('history', this)"
+                >
+                    订单历史
+                </button>
+                <button 
+                    class="flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600" 
+                    onclick="switchTab('profile', this)"
+                >
+                    个人中心
+                </button>
+            </div>
+
+            <!-- 今日点餐 -->
+            <div id="tab-order" class="tab-content">
+                <!-- 日期选择 -->
+                <div class="bg-white rounded-xl p-4 mb-6 card-shadow">
+                    <h3 class="font-medium text-gray-800 mb-4">选择日期</h3>
+                    <div class="grid grid-cols-7 gap-2">
+                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">1</div>
+                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">2</div>
+                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">3</div>
+                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">4</div>
+                        <div class="date-item selected w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">5</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">6</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">7</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">8</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">9</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">10</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">11</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">12</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">13</div>
+                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">14</div>
+                    </div>
+                </div>
+
+                <!-- 开始点餐按钮 -->
+                <button class="w-full brand-gradient text-white py-4 rounded-xl font-medium shadow-lg mb-6 transition-transform hover:scale-105">
+                    开始点餐
+                </button>
+
+                <!-- 今日已点菜单 -->
+                <div class="bg-white rounded-xl p-4 card-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-medium text-gray-800">今日已点菜单</h3>
+                        <span class="status-submitted px-3 py-1 rounded-full text-xs font-medium">待确认</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                            <span class="text-sm text-gray-600">早餐</span>
+                            <span class="text-sm font-medium">小米粥 + 蒸蛋</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                            <span class="text-sm text-gray-600">午餐</span>
+                            <span class="text-sm font-medium">红烧鸡腿 + 冬瓜汤</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                            <span class="text-sm text-gray-600">晚餐</span>
+                            <span class="text-sm font-medium">清蒸鲈鱼 + 紫菜蛋花汤</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 订单历史 -->
+            <div id="tab-history" class="tab-content hidden">
+                <div class="space-y-4">
+                    <div class="bg-white rounded-xl p-4 card-shadow">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-800">2024年1月4日</h4>
+                            <span class="status-confirmed px-3 py-1 rounded-full text-xs font-medium">已确认</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">早餐</span>
+                                <span>燕麦粥 + 煮鸡蛋</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">午餐</span>
+                                <span>蒸蛋羹 + 排骨汤</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 card-shadow">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-800">2024年1月3日</h4>
+                            <span class="status-confirmed px-3 py-1 rounded-full text-xs font-medium">已确认</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">早餐</span>
+                                <span>小米粥 + 蒸蛋</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">午餐</span>
+                                <span>红烧鸡腿 + 冬瓜汤</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人中心 -->
+            <div id="tab-profile" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl p-4 card-shadow">
+                        <h3 class="font-medium text-gray-800 mb-4">个人信息</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <span class="text-sm text-gray-600">姓名</span>
+                                <span class="text-sm font-medium">张女士</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <span class="text-sm text-gray-600">手机号</span>
+                                <span class="text-sm font-medium">138****5678</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <span class="text-sm text-gray-600">入住门店</span>
+                                <span class="text-sm font-medium">朝阳店</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <span class="text-sm text-gray-600">房间号</span>
+                                <span class="text-sm font-medium">A201</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                                <span class="text-sm text-gray-600">入住天数</span>
+                                <span class="text-sm font-medium">28天</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button class="w-full py-3 border-2 border-amber-500 text-amber-600 rounded-xl font-medium transition-colors hover:bg-amber-50">
+                            修改个人信息
+                        </button>
+                        <button class="w-full py-3 border border-gray-300 text-gray-600 rounded-xl font-medium transition-colors hover:bg-gray-50">
+                            退出登录
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab切换功能
+        function switchTab(tabName, element) {
+            // 移除所有标签的激活状态
+            document.querySelectorAll('.flex-1').forEach(tab => {
+                tab.classList.remove('tab-active');
+                tab.classList.add('text-gray-600');
+            });
+            
+            // 激活当前标签
+            element.classList.add('tab-active');
+            element.classList.remove('text-gray-600');
+            
+            // 隐藏所有内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // 显示对应内容
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+        }
+
+        // 日期选择功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateItems = document.querySelectorAll('.date-item:not(.disabled)');
+            dateItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除其他选中状态
+                    dateItems.forEach(d => d.classList.remove('selected'));
+                    // 添加选中状态
+                    this.classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
