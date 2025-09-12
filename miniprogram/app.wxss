@@ -4,6 +4,8 @@
 /* 爱睦轻予品牌色彩变量 */
 page {
   --brand-primary: #d4a574;
+  --brand-primary-light: #e6c49a;
+  --brand-primary-dark: #b8934f;
   --brand-secondary: #e8c4a0;
   --brand-bg-primary: #faf8f5;
   --brand-bg-secondary: #f5f2ed;

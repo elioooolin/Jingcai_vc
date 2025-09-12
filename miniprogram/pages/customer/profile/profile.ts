@@ -113,7 +113,7 @@ Page({
 
   // 编辑姓名
   editName() {
-    this.showEditDialog('name', '编辑姓名', this.data.userInfo.name || '');
+    this.showEditDialog('name', '编辑姓名', (this.data.userInfo as any)?.name || '');
   },
 
   // 编辑生日

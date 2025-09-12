@@ -78,6 +78,7 @@ Page({
   // 加载客户数据（编辑模式）
   loadCustomerData(customerId: string) {
     // 模拟API调用
+    console.log("loadCustomerData customerId:", customerId);
     setTimeout(() => {
       const mockCustomerData: FormData = {
         name: '张女士',

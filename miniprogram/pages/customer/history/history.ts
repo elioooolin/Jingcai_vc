@@ -11,6 +11,8 @@ interface OrderItem {
     names: string;
   }>;
   specialRequirements?: string;
+  customerName: string;
+  room: string;
 }
 
 Page({
@@ -245,18 +247,18 @@ Page({
   cancelOrder(e: any) {
     const orderId = e.currentTarget.dataset.id;
     
-    Dialog.confirm({
-      context: this,
-      selector: '#t-dialog',
+    wx.showModal({
       title: '确认取消',
       content: '确定要取消这个订单吗？取消后无法恢复。',
-      confirmBtn: '确认取消',
-      cancelBtn: '我再想想'
-    }).then(() => {
-      // 执行取消操作
-      this.performCancelOrder(orderId);
-    }).catch(() => {
-      // 用户取消操作
+      confirmText: '确认取消',
+      cancelText: '我再想想',
+      success: (res) => {
+        if (res.confirm) {
+          // 执行取消操作
+          this.performCancelOrder(orderId);
+        }
+        // 用户取消操作时不需要额外处理
+      }
     });
   },
 

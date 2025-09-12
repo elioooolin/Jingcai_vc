@@ -222,7 +222,7 @@ Page({
   // 选择菜品
   selectMenuItem(e: any) {
     const { meal, id, index } = e.currentTarget.dataset;
-    const menuKey = `${meal}Menu`;
+    const menuKey = `${meal}Menu` as keyof typeof this.data;
     const menu = this.data[menuKey] as MenuItem[];
     
     if (!menu) return;

@@ -70,6 +70,28 @@
   font-weight: 500;
   letter-spacing: 1rpx;
   box-shadow: 0 8rpx 25rpx rgba(212, 165, 116, 0.3);
+  
+  /* 覆盖 TDesign 默认的蓝色主题，使用爱睦轻予品牌色 */
+  --td-button-primary-bg-color: var(--brand-primary) !important;
+  --td-button-primary-border-color: var(--brand-primary) !important;
+  --td-button-primary-color: #ffffff !important;
+  --td-button-primary-active-bg-color: var(--brand-primary-dark) !important;
+  --td-button-primary-active-border-color: var(--brand-primary-dark) !important;
+  --td-button-primary-disabled-bg-color: var(--brand-primary-light) !important;
+  --td-button-primary-disabled-border-color: var(--brand-primary-light) !important;
+  
+  /* 添加渐变背景效果 */
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-light) 100%) !important;
+  border: none !important;
+  
+  /* 按下时的效果 */
+  transition: all 0.3s ease !important;
+}
+
+.login-button:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 15rpx rgba(212, 165, 116, 0.4);
+  background: linear-gradient(135deg, var(--brand-primary-dark) 0%, var(--brand-primary) 100%) !important;
 }
 
 .tip-section {
@@ -122,8 +144,8 @@
 }
 
 .demo-info {
-  background: #e6f2ff;
-  border: 2rpx solid #9cc5f0;
+  background: rgba(212, 165, 116, 0.1);
+  border: 2rpx solid var(--brand-primary-light);
   border-radius: 16rpx;
   padding: 24rpx;
   margin-top: 32rpx;
@@ -134,7 +156,7 @@
   display: block;
   font-size: 24rpx;
   font-weight: 600;
-  color: #1a5490;
+  color: var(--brand-primary);
   margin-bottom: 16rpx;
 }
 

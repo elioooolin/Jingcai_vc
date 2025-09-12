@@ -89,4 +89,4 @@
   </view>
 </t-dialog>
 
-<t-toast id="t-toast" />
+<!-- 使用原生 wx.showToast，不需要 t-toast 组件 -->

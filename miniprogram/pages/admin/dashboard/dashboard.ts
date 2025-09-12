@@ -126,7 +126,6 @@ Page({
 
   // 加载订单列表
   loadOrderList() {
-    const { selectedDate } = this.data;
     
     // 模拟API调用
     setTimeout(() => {
@@ -265,8 +264,7 @@ Page({
 
   // 编辑订单
   editOrder(e: any) {
-    const orderId = e.currentTarget.dataset.id;
-    
+    console.log("editOrder error:", e);
     wx.showToast({
       title: '订单编辑功能开发中',
       icon: 'none',

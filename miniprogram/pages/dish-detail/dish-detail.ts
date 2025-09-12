@@ -136,7 +136,7 @@ Page({
 
   // 切换收藏状态
   toggleFavorite() {
-    const { dishId, isFavorite, dishInfo } = this.data;
+    const { dishId, isFavorite } = this.data;
     const favorites = wx.getStorageSync('favorites') || [];
     
     let newFavorites;

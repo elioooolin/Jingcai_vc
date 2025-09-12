@@ -1,7 +1,8 @@
 <view class="page-container">
   <!-- 筛选区域 -->
   <view class="filter-section">
-    <t-card title="筛选条件">
+    <view class="filter-card">
+      <view class="filter-title">筛选条件</view>
       <view class="filter-row">
         <t-picker
           title="选择月份"
@@ -23,7 +24,7 @@
           <t-cell title="状态" note="{{selectedStatusText}}" arrow />
         </t-picker>
       </view>
-    </t-card>
+    </view>
   </view>
 
   <!-- 订单列表 -->
@@ -34,12 +35,12 @@
       <text class="empty-desc">您还没有提交过订单</text>
     </view>
 
-    <t-card 
+    <view 
       wx:for="{{orderList}}" 
       wx:key="id"
       class="order-card"
     >
-      <view slot="header" class="order-header">
+      <view class="order-header">
         <view class="order-date-info">
           <text class="order-date">{{item.date}}</text>
           <text class="order-time">提交时间：{{item.submitTime}}</text>
@@ -93,7 +94,7 @@
           </t-button>
         </view>
       </view>
-    </t-card>
+    </view>
   </view>
 
   <!-- 加载更多 -->
@@ -109,5 +110,4 @@
   </view>
 </view>
 
-<t-toast id="t-toast" />
-<t-dialog id="t-dialog" />
+<!-- 使用原生 API，不需要这些组件 -->
