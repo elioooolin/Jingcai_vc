@@ -1,5 +1,4 @@
 // pages/admin/dashboard/dashboard.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 interface OrderItem {
   id: string;
@@ -144,7 +143,8 @@ Page({
             { type: '午餐', names: '红烧鸡腿 + 蒸蛋羹 + 冬瓜汤' },
             { type: '晚餐', names: '清蒸鲈鱼 + 紫菜蛋花汤' }
           ],
-          specialRequirements: '少盐，不吃蒜'
+          specialRequirements: '少盐，不吃蒜',
+          date: ""
         },
         {
           id: 'order_002',
@@ -156,7 +156,8 @@ Page({
           dishes: [
             { type: '早餐', names: '燕麦粥 + 煮鸡蛋' },
             { type: '午餐', names: '清蒸鲈鱼 + 排骨汤' }
-          ]
+          ],
+          date: ""
         },
         {
           id: 'order_003',
@@ -170,7 +171,8 @@ Page({
             { type: '午餐', names: '瘦肉粥 + 冬瓜汤' },
             { type: '晚餐', names: '时令蔬菜 + 丝瓜汤' },
             { type: '高补餐', names: '猪蹄汤' }
-          ]
+          ],
+          date: ""
         }
       ];
       
@@ -250,12 +252,10 @@ Page({
       
       this.setData({ orderList });
       
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '订单确认成功',
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: '订单确认成功',
+        icon: 'success',
+        duration: 2000
       });
       
       // 更新统计数据
@@ -267,12 +267,10 @@ Page({
   editOrder(e: any) {
     const orderId = e.currentTarget.dataset.id;
     
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '订单编辑功能开发中',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '订单编辑功能开发中',
+      icon: 'none',
+      duration: 2000
     });
   },
 
@@ -354,12 +352,10 @@ Page({
     setTimeout(() => {
       this.setData({ exportingExcel: false });
       
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: 'Excel导出成功',
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: 'Excel导出成功',
+        icon: 'success',
+        duration: 2000
       });
       
       // 实际应用中这里会调用下载文件的API
@@ -374,12 +370,10 @@ Page({
     setTimeout(() => {
       this.setData({ exportingPDF: false });
       
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: 'PDF导出成功',
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: 'PDF导出成功',
+        icon: 'success',
+        duration: 2000
       });
       
       // 实际应用中这里会调用下载文件的API

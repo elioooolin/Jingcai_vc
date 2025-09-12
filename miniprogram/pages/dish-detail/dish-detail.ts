@@ -1,5 +1,4 @@
 // pages/dish-detail/dish-detail.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 interface DishInfo {
   id: string;
@@ -117,12 +116,10 @@ Page({
   selectDish() {
     const { dishInfo } = this.data;
     
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: `已选择${dishInfo.name}，返回点餐页面`,
-      theme: 'success',
-      direction: 'column',
+    wx.showToast({
+      title: `已选择${dishInfo.name}，返回点餐页面`,
+      icon: 'success',
+      duration: 2000
     });
 
     setTimeout(() => {
@@ -158,12 +155,10 @@ Page({
     wx.setStorageSync('favorites', newFavorites);
     this.setData({ isFavorite: !isFavorite });
     
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message,
-      theme: 'success',
-      direction: 'column',
+    wx.showToast({
+      title: message,
+      icon: 'success',
+      duration: 2000
     });
   },
 

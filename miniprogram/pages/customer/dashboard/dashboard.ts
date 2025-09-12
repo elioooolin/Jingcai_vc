@@ -1,5 +1,4 @@
 // pages/customer/dashboard/dashboard.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 Page({
   data: {
@@ -119,12 +118,10 @@ Page({
     
     // 检查是否为禁用日期
     if (dateList[index].disabled) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '无法选择过去的日期',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '无法选择过去的日期',
+        icon: 'none',
+        duration: 2000
       });
       return;
     }
@@ -146,12 +143,10 @@ Page({
     const { selectedDate } = this.data;
     
     if (!selectedDate) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请先选择日期',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '请先选择日期',
+        icon: 'none',
+        duration: 2000
       });
       return;
     }
@@ -169,12 +164,10 @@ Page({
 
   // 编辑个人信息
   editProfile() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '编辑个人信息功能开发中',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '编辑个人信息功能开发中',
+      icon: 'none',
+      duration: 2000
     });
   },
 

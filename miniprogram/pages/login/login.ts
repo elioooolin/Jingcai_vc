@@ -1,5 +1,4 @@
 // pages/login/login.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 // 模拟用户数据库
 const mockUsers = {
@@ -77,12 +76,10 @@ Page({
     // 保存用户信息
     wx.setStorageSync('userInfo', userInfo);
     
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: `欢迎您，${customer.name}！`,
-      theme: 'success',
-      direction: 'column',
+    wx.showToast({
+      title: `欢迎您，${customer.name}！`,
+      icon: 'success',
+      duration: 2000
     });
 
     setTimeout(() => {
@@ -142,24 +139,20 @@ Page({
       
       this.closeAdminVerifyDialog();
       
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '管理员登录成功！',
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: '管理员登录成功！',
+        icon: 'success',
+        duration: 2000
       });
 
       setTimeout(() => {
         this.redirectToHomePage(userInfo);
       }, 1000);
     } else {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '密码错误，请重试',
-        theme: 'error',
-        direction: 'column',
+      wx.showToast({
+        title: '密码错误，请重试',
+        icon: 'error',
+        duration: 2000
       });
       this.setData({ adminPassword: '' });
     }
@@ -180,23 +173,19 @@ Page({
 
   // 显示用户协议
   showUserAgreement() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '用户协议功能待开发',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '用户协议功能待开发',
+      icon: 'none',
+      duration: 2000
     });
   },
 
   // 显示隐私政策
   showPrivacyPolicy() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '隐私政策功能待开发',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '隐私政策功能待开发',
+      icon: 'none',
+      duration: 2000
     });
   }
 });

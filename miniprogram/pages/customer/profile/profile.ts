@@ -1,5 +1,4 @@
 // pages/customer/profile/profile.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 interface ProfileData {
   birthday?: string;
@@ -157,12 +156,10 @@ Page({
     const { editType, editValue } = this.data;
     
     if (!editValue.trim()) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请输入有效内容',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '请输入有效内容',
+        icon: 'none',
+        duration: 2000
       });
       return;
     }
@@ -181,12 +178,10 @@ Page({
 
     this.setData({ editDialogVisible: false });
     
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '修改成功',
-      theme: 'success',
-      direction: 'column',
+    wx.showToast({
+      title: '修改成功',
+      icon: 'success',
+      duration: 2000
     });
   },
 
@@ -197,23 +192,19 @@ Page({
 
   // 查看收藏
   viewFavorites() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '收藏功能开发中',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '收藏功能开发中',
+      icon: 'none',
+      duration: 2000
     });
   },
 
   // 意见反馈
   feedback() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '意见反馈功能开发中',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '意见反馈功能开发中',
+      icon: 'none',
+      duration: 2000
     });
   },
 
@@ -229,12 +220,10 @@ Page({
           wx.makePhoneCall({
             phoneNumber: '400-123-4567',
             fail: () => {
-              Toast({
-                context: this,
-                selector: '#t-toast',
-                message: '拨打失败，请手动拨打',
-                theme: 'error',
-                direction: 'column',
+              wx.showToast({
+                title: '拨打失败，请手动拨打',
+                icon: 'error',
+                duration: 2000
               });
             }
           });
@@ -255,12 +244,10 @@ Page({
 
   // 编辑个人资料
   editProfile() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '请使用上方各项进行编辑',
-      theme: 'warning',
-      direction: 'column',
+    wx.showToast({
+      title: '请使用上方各项进行编辑',
+      icon: 'none',
+      duration: 2000
     });
   },
 

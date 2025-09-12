@@ -1,5 +1,4 @@
 // pages/admin/customer-manage/customer-manage.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 interface FormData {
   name: string;
@@ -168,12 +167,10 @@ Page({
 
     for (const { field, name } of requiredFields) {
       if (!formData[field as keyof FormData]?.trim()) {
-        Toast({
-          context: this,
-          selector: '#t-toast',
-          message: `请填写${name}`,
-          theme: 'warning',
-          direction: 'column',
+        wx.showToast({
+          title: `请填写${name}`,
+          icon: 'none',
+          duration: 2000
         });
         return false;
       }
@@ -182,12 +179,10 @@ Page({
     // 验证手机号格式
     const phoneRegex = /^1[3-9]\d{9}$/;
     if (!phoneRegex.test(formData.phone)) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请输入正确的手机号',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '请输入正确的手机号',
+        icon: 'none',
+        duration: 2000
       });
       return false;
     }
@@ -195,12 +190,10 @@ Page({
     // 验证入住天数
     const totalDays = parseInt(formData.totalDays);
     if (isNaN(totalDays) || totalDays < 1 || totalDays > 100) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '入住天数应在1-100天之间',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '入住天数应在1-100天之间',
+        icon: 'none',
+        duration: 2000
       });
       return false;
     }
@@ -223,12 +216,10 @@ Page({
       const { isEdit } = this.data;
       const successMessage = isEdit ? '客户信息修改成功！' : '客户添加成功！客户现在可以使用微信登录系统。';
       
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: successMessage,
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: successMessage,
+        icon: 'success',
+        duration: 2000
       });
 
       setTimeout(() => {

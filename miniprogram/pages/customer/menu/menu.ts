@@ -1,5 +1,4 @@
 // pages/customer/menu/menu.ts
-import Toast from 'tdesign-miniprogram/toast/index';
 
 interface MenuItem {
   id: string;
@@ -345,12 +344,10 @@ Page({
   // 提交订单
   submitOrder() {
     if (!this.data.canSubmit) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请完成必选菜品的选择',
-        theme: 'warning',
-        direction: 'column',
+      wx.showToast({
+        title: '请完成必选菜品的选择',
+        icon: 'none',
+        duration: 2000
       });
       return;
     }
@@ -361,12 +358,10 @@ Page({
     setTimeout(() => {
       this.setData({ submitting: false });
       console.log("模拟提交订单")
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '订单提交成功！等待管理员确认',
-        theme: 'success',
-        direction: 'column',
+      wx.showToast({
+        title: '订单提交成功！等待管理员确认',
+        icon: 'success',
+        duration: 2000
       });
 
       setTimeout(() => {
