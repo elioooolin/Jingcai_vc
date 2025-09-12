@@ -1,0 +1,130 @@
+<view class="page-container">
+  <!-- 菜品图片和基本信息 -->
+  <view class="dish-header">
+    <view class="dish-image-container">
+      <view class="dish-image brand-gradient">
+        <text class="dish-icon">{{dishInfo.icon}}</text>
+      </view>
+    </view>
+    
+    <view class="dish-basic-info">
+      <text class="dish-name">{{dishInfo.name}}</text>
+      <text class="dish-description">{{dishInfo.description}}</text>
+      
+      <!-- 评分 -->
+      <view class="rating-section">
+        <view class="stars">
+          <text wx:for="{{5}}" wx:key="*this" class="star {{index < dishInfo.rating ? 'active' : ''}}">★</text>
+        </view>
+        <text class="rating-text">({{dishInfo.rating}}.0分)</text>
+      </view>
+      
+      <!-- 标签 -->
+      <view class="tags-section">
+        <t-tag 
+          wx:for="{{dishInfo.tags}}" 
+          wx:key="*this"
+          theme="light" 
+          variant="outline"
+          size="small"
+          class="dish-tag"
+        >
+          {{item}}
+        </t-tag>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营养成分 -->
+  <t-card title="营养成分 (每100g)" class="nutrition-card">
+    <view class="nutrition-grid">
+      <view 
+        wx:for="{{dishInfo.nutrition}}" 
+        wx:key="name"
+        class="nutrition-item"
+      >
+        <text class="nutrition-value">{{item.value}}</text>
+        <text class="nutrition-name">{{item.name}}</text>
+      </view>
+    </view>
+  </t-card>
+
+  <!-- 功效与作用 -->
+  <t-card title="功效与作用" class="benefits-card">
+    <view class="benefits-list">
+      <view 
+        wx:for="{{dishInfo.benefits}}" 
+        wx:key="title"
+        class="benefit-item"
+      >
+        <view class="benefit-dot brand-gradient"></view>
+        <view class="benefit-content">
+          <text class="benefit-title">{{item.title}}</text>
+          <text class="benefit-desc">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+  </t-card>
+
+  <!-- 营养师推荐 -->
+  <view class="recommendation-card">
+    <view class="recommendation-header">
+      <text class="recommendation-icon">👩‍⚕️</text>
+      <text class="recommendation-title">营养师推荐</text>
+    </view>
+    <text class="recommendation-content">{{dishInfo.recommendation}}</text>
+  </view>
+
+  <!-- 食用建议 -->
+  <t-card title="食用建议" class="suggestion-card">
+    <t-cell-group>
+      <t-cell 
+        wx:for="{{dishInfo.suggestions}}" 
+        wx:key="label"
+        title="{{item.label}}" 
+        note="{{item.value}}"
+      />
+    </t-cell-group>
+  </t-card>
+
+  <!-- 相关推荐 -->
+  <t-card title="相关推荐" class="related-card">
+    <view class="related-grid">
+      <view 
+        wx:for="{{dishInfo.related}}" 
+        wx:key="id"
+        class="related-item"
+        bind:tap="viewRelatedDish"
+        data-id="{{item.id}}"
+      >
+        <view class="related-image" style="background-color: {{item.color}};">
+          <text class="related-icon">{{item.icon}}</text>
+        </view>
+        <text class="related-name">{{item.name}}</text>
+      </view>
+    </view>
+  </t-card>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <t-button
+      theme="primary"
+      size="large"
+      bind:tap="selectDish"
+      class="select-button"
+    >
+      选择此菜品
+    </t-button>
+    
+    <t-button
+      theme="light"
+      size="large"
+      bind:tap="toggleFavorite"
+      class="favorite-button"
+    >
+      {{isFavorite ? '💖' : '❤️'}}
+    </t-button>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

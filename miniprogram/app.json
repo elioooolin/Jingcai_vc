@@ -1,12 +1,45 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/login/login",
+    "pages/customer/dashboard/dashboard",
+    "pages/customer/menu/menu",
+    "pages/customer/history/history",
+    "pages/customer/profile/profile",
+    "pages/admin/dashboard/dashboard",
+    "pages/admin/customer-manage/customer-manage",
+    "pages/dish-detail/dish-detail"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "爱睦轻予",
+    "navigationBarBackgroundColor": "#d4a574",
+    "backgroundColor": "#faf8f5"
+  },
+  "tabBar": {
+    "color": "#8a8a8a",
+    "selectedColor": "#d4a574",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/customer/dashboard/dashboard",
+        "text": "首页",
+        "iconPath": "assets/icons/veggie_basket_lm.png",
+        "selectedIconPath": "assets/icons/veggie_basket_lm.png"
+      },
+      {
+        "pagePath": "pages/customer/history/history",
+        "text": "订单",
+        "iconPath": "assets/icons/food.png",
+        "selectedIconPath": "assets/icons/food.png"
+      },
+      {
+        "pagePath": "pages/customer/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/mama.png",
+        "selectedIconPath": "assets/icons/mama.png"
+      }
+    ]
   },
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"

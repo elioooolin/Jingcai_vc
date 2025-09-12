@@ -1,0 +1,244 @@
+<view class="page-container">
+  <!-- 管理员欢迎区域 -->
+  <view class="admin-header">
+    <view class="admin-welcome admin-gradient">
+      <text class="welcome-title">爱睦轻予 · 管理后台</text>
+      <text class="welcome-subtitle">专业月子餐服务管理系统</text>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-section">
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-number">{{stats.todayOrders}}</text>
+        <text class="stat-label">今日订单</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-number">{{stats.pendingOrders}}</text>
+        <text class="stat-label">待确认</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-number">{{stats.totalCustomers}}</text>
+        <text class="stat-label">总客户数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-number">{{stats.confirmedOrders}}</text>
+        <text class="stat-label">已确认</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 导航标签 -->
+  <view class="tabs-section">
+    <t-tabs 
+      value="{{activeTab}}" 
+      bind:change="onTabChange"
+      theme="card"
+      space-evenly="{{false}}"
+    >
+      <t-tab-panel label="订单管理" value="orders">
+        <!-- 日期选择 -->
+        <t-card title="选择日期" class="date-card">
+          <t-date-time-picker
+            title="选择日期"
+            mode="date"
+            value="{{selectedDate}}"
+            bind:change="onDateChange"
+          >
+            <t-cell title="查看日期" note="{{selectedDate}}" arrow />
+          </t-date-time-picker>
+        </t-card>
+
+        <!-- 订单列表 -->
+        <view class="order-list">
+          <view wx:if="{{orderList.length === 0}}" class="empty-state">
+            <view class="empty-icon">📋</view>
+            <text class="empty-text">暂无订单</text>
+            <text class="empty-desc">该日期暂无客户订单</text>
+          </view>
+
+          <t-card 
+            wx:for="{{orderList}}" 
+            wx:key="id"
+            class="order-item-card"
+          >
+            <view slot="header" class="order-item-header">
+              <view class="customer-info">
+                <text class="customer-name">{{item.customerName}} - {{item.room}}</text>
+                <text class="submit-time">提交时间: {{item.submitTime}}</text>
+              </view>
+              <t-tag 
+                theme="{{item.status === 'submitted' ? 'primary' : 'success'}}"
+                variant="light"
+                size="small"
+              >
+                {{item.statusText}}
+              </t-tag>
+            </view>
+
+            <view class="order-content">
+              <view class="dishes-list">
+                <view 
+                  wx:for="{{item.dishes}}" 
+                  wx:key="type"
+                  wx:for-item="dish"
+                  class="dish-row"
+                >
+                  <text class="dish-type">{{dish.type}}</text>
+                  <text class="dish-names">{{dish.names}}</text>
+                </view>
+              </view>
+
+              <view wx:if="{{item.specialRequirements}}" class="special-note">
+                <text class="special-label">特殊需求：</text>
+                <text class="special-content">{{item.specialRequirements}}</text>
+              </view>
+
+              <view class="order-actions" wx:if="{{item.status === 'submitted'}}">
+                <t-button 
+                  theme="primary"
+                  size="small"
+                  bind:tap="confirmOrder"
+                  data-id="{{item.id}}"
+                  class="admin-button"
+                >
+                  确认订单
+                </t-button>
+                <t-button 
+                  theme="light"
+                  size="small"
+                  bind:tap="editOrder"
+                  data-id="{{item.id}}"
+                >
+                  修改订单
+                </t-button>
+              </view>
+            </view>
+          </t-card>
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="客户管理" value="customers">
+        <!-- 添加客户按钮 -->
+        <t-button
+          theme="primary"
+          size="large"
+          block
+          bind:tap="addCustomer"
+          class="add-customer-btn admin-button"
+        >
+          添加新客户
+        </t-button>
+
+        <!-- 客户列表 -->
+        <view class="customer-list">
+          <t-card 
+            wx:for="{{customerList}}" 
+            wx:key="id"
+            class="customer-item-card"
+          >
+            <view class="customer-item">
+              <view class="customer-main-info">
+                <text class="customer-name">{{item.name}}</text>
+                <text class="customer-details">{{item.phone}} | {{item.room}} | {{item.store}}</text>
+                <text class="customer-checkin">入住: {{item.checkInDate}} | {{item.totalDays}}</text>
+              </view>
+              <view class="customer-actions">
+                <t-button 
+                  theme="light"
+                  size="small"
+                  bind:tap="editCustomer"
+                  data-id="{{item.id}}"
+                >
+                  编辑
+                </t-button>
+              </view>
+            </view>
+          </t-card>
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="数据导出" value="export">
+        <!-- 导出设置 -->
+        <t-card title="导出设置" class="export-card">
+          <t-cell-group>
+            <t-date-time-picker
+              title="开始日期"
+              mode="date"
+              value="{{exportStartDate}}"
+              bind:change="onExportStartDateChange"
+            >
+              <t-cell title="开始日期" note="{{exportStartDate}}" arrow />
+            </t-date-time-picker>
+            
+            <t-date-time-picker
+              title="结束日期"
+              mode="date"
+              value="{{exportEndDate}}"
+              bind:change="onExportEndDateChange"
+            >
+              <t-cell title="结束日期" note="{{exportEndDate}}" arrow />
+            </t-date-time-picker>
+            
+            <t-picker
+              title="门店选择"
+              value="{{exportStore}}"
+              data-source="{{storeOptions}}"
+              bind:change="onExportStoreChange"
+            >
+              <t-cell title="门店选择" note="{{getStoreText(exportStore)}}" arrow />
+            </t-picker>
+          </t-cell-group>
+        </t-card>
+
+        <!-- 导出按钮 -->
+        <view class="export-actions">
+          <t-button
+            theme="primary"
+            size="large"
+            block
+            bind:tap="exportExcel"
+            loading="{{exportingExcel}}"
+            class="admin-button mb-24"
+          >
+            {{exportingExcel ? '导出中...' : '导出Excel'}}
+          </t-button>
+          <t-button
+            theme="light"
+            size="large"
+            block
+            bind:tap="exportPDF"
+            loading="{{exportingPDF}}"
+          >
+            {{exportingPDF ? '导出中...' : '导出PDF'}}
+          </t-button>
+        </view>
+
+        <!-- 导出预览 -->
+        <t-card title="导出预览" class="export-preview">
+          <view class="preview-info">
+            <text class="preview-item">时间范围: {{exportStartDate}} 至 {{exportEndDate}}</text>
+            <text class="preview-item">包含数据: {{exportPreview.orderCount}}条订单记录</text>
+            <text class="preview-item">涉及客户: {{exportPreview.customerCount}}位客户</text>
+            <text class="preview-item">文件大小: 约 {{exportPreview.fileSize}}</text>
+          </view>
+        </t-card>
+      </t-tab-panel>
+    </t-tabs>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section">
+    <t-button
+      theme="light"
+      size="large"
+      block
+      bind:tap="logout"
+    >
+      退出登录
+    </t-button>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

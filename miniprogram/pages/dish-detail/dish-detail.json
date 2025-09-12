@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "菜品详情",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#faf8f5",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog",
+    "t-toast": "tdesign-miniprogram/toast/toast"
+  }
+}

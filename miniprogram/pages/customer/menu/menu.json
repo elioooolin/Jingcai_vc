@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "点餐",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#faf8f5",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-tabs": "tdesign-miniprogram/tabs/tabs",
+    "t-tab-panel": "tdesign-miniprogram/tab-panel/tab-panel",
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-badge": "tdesign-miniprogram/badge/badge"
+  }
+}

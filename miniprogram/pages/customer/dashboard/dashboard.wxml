@@ -1,0 +1,127 @@
+<view class="page-container">
+  <!-- 欢迎区域 -->
+  <view class="welcome-section">
+    <view class="welcome-card brand-gradient">
+      <text class="welcome-title">您好，{{userInfo.name}} ✨</text>
+      <text class="welcome-subtitle">今天是入住第{{checkInDays}}天 · 爱睦轻予陪伴您</text>
+    </view>
+  </view>
+
+  <!-- 导航标签 -->
+  <view class="tabs-section">
+    <t-tabs 
+      value="{{activeTab}}" 
+      bind:change="onTabChange"
+      theme="card"
+      space-evenly="{{false}}"
+    >
+      <t-tab-panel label="今日点餐" value="order">
+        <!-- 日期选择 -->
+        <view class="card">
+          <view class="card-title">选择日期</view>
+          <view class="date-grid">
+            <view 
+              wx:for="{{dateList}}" 
+              wx:key="date"
+              class="date-item {{item.disabled ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}}"
+              bind:tap="selectDate"
+              data-date="{{item.date}}"
+              data-index="{{index}}"
+            >
+              {{item.day}}
+            </view>
+          </view>
+        </view>
+
+        <!-- 开始点餐按钮 -->
+        <t-button
+          theme="primary"
+          size="large"
+          block
+          bind:tap="startOrdering"
+          class="order-button"
+        >
+          开始点餐
+        </t-button>
+
+        <!-- 今日已点菜单 -->
+        <view class="card" wx:if="{{todayOrder}}">
+          <view class="flex-between mb-24">
+            <text class="card-title">今日已点菜单</text>
+            <t-tag 
+              theme="{{todayOrder.status === 'submitted' ? 'primary' : 'success'}}" 
+              variant="light"
+              size="small"
+            >
+              {{todayOrder.statusText}}
+            </t-tag>
+          </view>
+          <view class="order-items">
+            <view class="summary-item" wx:for="{{todayOrder.items}}" wx:key="type">
+              <text class="summary-label">{{item.type}}</text>
+              <text class="summary-value">{{item.dishes}}</text>
+            </view>
+          </view>
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="订单历史" value="history">
+        <view class="history-list">
+          <view class="card" wx:for="{{orderHistory}}" wx:key="id">
+            <view class="flex-between mb-16">
+              <text class="order-date">{{item.date}}</text>
+              <t-tag 
+                theme="success" 
+                variant="light"
+                size="small"
+              >
+                {{item.statusText}}
+              </t-tag>
+            </view>
+            <view class="order-items">
+              <view class="summary-item" wx:for="{{item.items}}" wx:key="type" wx:for-item="dish">
+                <text class="summary-label">{{dish.type}}</text>
+                <text class="summary-value">{{dish.dishes}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </t-tab-panel>
+
+      <t-tab-panel label="个人中心" value="profile">
+        <view class="card">
+          <view class="card-title">个人信息</view>
+          <t-cell-group>
+            <t-cell title="姓名" note="{{userInfo.name}}" />
+            <t-cell title="手机号" note="{{userInfo.phone}}" />
+            <t-cell title="入住门店" note="朝阳店" />
+            <t-cell title="房间号" note="A201" />
+            <t-cell title="入住天数" note="28天" />
+          </t-cell-group>
+        </view>
+
+        <view class="action-buttons">
+          <t-button
+            theme="light"
+            size="large"
+            block
+            bind:tap="editProfile"
+            class="mb-24"
+          >
+            修改个人信息
+          </t-button>
+          <t-button
+            theme="light"
+            size="large"
+            block
+            bind:tap="logout"
+          >
+            退出登录
+          </t-button>
+        </view>
+      </t-tab-panel>
+    </t-tabs>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

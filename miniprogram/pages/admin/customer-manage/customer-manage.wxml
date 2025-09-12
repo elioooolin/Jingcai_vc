@@ -1,0 +1,180 @@
+<view class="page-container">
+  <!-- 页面标题 -->
+  <view class="page-header admin-gradient">
+    <text class="page-title">{{isEdit ? '编辑客户' : '添加新客户'}}</text>
+    <text class="page-subtitle">爱睦轻予 · 用心服务每一位客户</text>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-container">
+    <!-- 基本信息 -->
+    <t-card title="基本信息" class="form-section">
+      <view class="form-group">
+        <t-input
+          label="客户姓名"
+          placeholder="请输入客户姓名"
+          value="{{formData.name}}"
+          bind:change="onFieldChange"
+          data-field="name"
+          required
+        />
+      </view>
+      
+      <view class="form-group">
+        <t-input
+          label="手机号"
+          type="number"
+          placeholder="请输入手机号"
+          value="{{formData.phone}}"
+          bind:change="onFieldChange"
+          data-field="phone"
+          maxlength="11"
+          required
+        />
+      </view>
+      
+      <view class="form-group">
+        <t-date-time-picker
+          title="选择生日"
+          mode="date"
+          value="{{formData.birthday}}"
+          bind:change="onFieldChange"
+          data-field="birthday"
+        >
+          <t-cell title="生日" note="{{formData.birthday || '请选择生日'}}" arrow required />
+        </t-date-time-picker>
+      </view>
+    </t-card>
+
+    <!-- 入住信息 -->
+    <t-card title="入住信息" class="form-section">
+      <view class="form-group">
+        <t-date-time-picker
+          title="选择入住日期"
+          mode="date"
+          value="{{formData.checkInDate}}"
+          bind:change="onFieldChange"
+          data-field="checkInDate"
+        >
+          <t-cell title="入住日期" note="{{formData.checkInDate || '请选择入住日期'}}" arrow required />
+        </t-date-time-picker>
+      </view>
+      
+      <view class="form-group">
+        <t-input
+          label="入住天数"
+          type="number"
+          placeholder="请输入入住天数"
+          value="{{formData.totalDays}}"
+          bind:change="onFieldChange"
+          data-field="totalDays"
+          required
+        />
+      </view>
+      
+      <view class="form-group">
+        <t-picker
+          title="选择门店"
+          value="{{formData.store}}"
+          data-source="{{storeOptions}}"
+          bind:change="onFieldChange"
+          data-field="store"
+        >
+          <t-cell title="入住门店" note="{{getStoreText(formData.store)}}" arrow required />
+        </t-picker>
+      </view>
+      
+      <view class="form-group">
+        <t-input
+          label="房间号"
+          placeholder="请输入房间号，如：A201"
+          value="{{formData.room}}"
+          bind:change="onFieldChange"
+          data-field="room"
+          required
+        />
+      </view>
+    </t-card>
+
+    <!-- 餐饮偏好 -->
+    <t-card title="餐饮偏好" class="form-section">
+      <view class="form-group">
+        <t-textarea
+          label="饮食偏好"
+          placeholder="请描述客户的饮食偏好，如不吃辣、素食、过敏食物等"
+          value="{{formData.dietPreference}}"
+          bind:change="onFieldChange"
+          data-field="dietPreference"
+          maxlength="200"
+          indicator
+        />
+      </view>
+      
+      <view class="form-group">
+        <t-picker
+          title="选择高补餐次数"
+          value="{{formData.supplementCount}}"
+          data-source="{{supplementOptions}}"
+          bind:change="onFieldChange"
+          data-field="supplementCount"
+        >
+          <t-cell title="高补餐次数" note="{{getSupplementText(formData.supplementCount)}}" arrow required />
+        </t-picker>
+      </view>
+    </t-card>
+
+    <!-- 备注信息 -->
+    <t-card title="备注信息" class="form-section">
+      <view class="form-group">
+        <t-textarea
+          label="特殊说明"
+          placeholder="其他需要特别注意的事项"
+          value="{{formData.specialNotes}}"
+          bind:change="onFieldChange"
+          data-field="specialNotes"
+          maxlength="200"
+          indicator
+        />
+      </view>
+    </t-card>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        loading="{{submitting}}"
+        bind:tap="submitForm"
+        class="admin-button"
+      >
+        {{submitting ? (isEdit ? '保存中...' : '添加中...') : (isEdit ? '保存修改' : '添加客户')}}
+      </t-button>
+      
+      <t-button
+        theme="light"
+        size="large"
+        block
+        bind:tap="goBack"
+        class="mt-24"
+      >
+        取消
+      </t-button>
+    </view>
+
+    <!-- 提示信息 -->
+    <view class="tip-section">
+      <view class="tip-card">
+        <text class="tip-title">💡 添加客户须知</text>
+        <view class="tip-content">
+          <text class="tip-item">• 手机号将作为客户登录的唯一标识</text>
+          <text class="tip-item">• 请确保手机号填写正确，客户将通过此号码登录</text>
+          <text class="tip-item">• 标有必填的字段必须填写</text>
+          <text class="tip-item">• 添加成功后，客户即可使用微信登录系统</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

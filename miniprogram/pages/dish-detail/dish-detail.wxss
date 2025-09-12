@@ -1,0 +1,351 @@
+/* 菜品头部 */
+.dish-header {
+  background: #ffffff;
+  padding: 48rpx 32rpx;
+  margin: -32rpx -32rpx 32rpx -32rpx;
+  border-radius: 0 0 32rpx 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.dish-image-container {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.dish-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 32rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 32rpx rgba(212, 165, 116, 0.25);
+}
+
+.dish-icon {
+  font-size: 80rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.dish-basic-info {
+  text-align: center;
+}
+
+.dish-name {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: 16rpx;
+}
+
+.dish-description {
+  display: block;
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+  margin-bottom: 32rpx;
+  line-height: 1.5;
+}
+
+/* 评分区域 */
+.rating-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.stars {
+  margin-right: 16rpx;
+}
+
+.star {
+  font-size: 36rpx;
+  color: #e0e0e0;
+  margin-right: 4rpx;
+}
+
+.star.active {
+  color: #fbbf24;
+}
+
+.rating-text {
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+}
+
+/* 标签区域 */
+.tags-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.dish-tag {
+  --td-tag-light-color: var(--brand-primary);
+  --td-tag-light-bg-color: rgba(212, 165, 116, 0.1);
+  --td-tag-light-border-color: var(--brand-primary);
+}
+
+/* 营养成分 */
+.nutrition-card {
+  margin-bottom: 32rpx;
+}
+
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32rpx;
+  padding: 32rpx 0;
+}
+
+.nutrition-item {
+  text-align: center;
+}
+
+.nutrition-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin-bottom: 8rpx;
+}
+
+.nutrition-name {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+}
+
+/* 功效与作用 */
+.benefits-card {
+  margin-bottom: 32rpx;
+}
+
+.benefits-list {
+  padding: 16rpx 0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 32rpx;
+}
+
+.benefit-item:last-child {
+  margin-bottom: 0;
+}
+
+.benefit-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  margin-top: 16rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.benefit-content {
+  flex: 1;
+}
+
+.benefit-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+  margin-bottom: 8rpx;
+}
+
+.benefit-desc {
+  display: block;
+  font-size: 26rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+/* 营养师推荐 */
+.recommendation-card {
+  background: #e6f2ff;
+  border: 2rpx solid #9cc5f0;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.recommendation-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.recommendation-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a5490;
+}
+
+.recommendation-content {
+  font-size: 28rpx;
+  color: #1a5490;
+  line-height: 1.6;
+}
+
+/* 食用建议 */
+.suggestion-card {
+  margin-bottom: 32rpx;
+}
+
+/* 相关推荐 */
+.related-card {
+  margin-bottom: 32rpx;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24rpx;
+  padding: 16rpx 0;
+}
+
+.related-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+.related-image {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.related-icon {
+  font-size: 36rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.related-name {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 48rpx;
+  margin-bottom: 32rpx;
+}
+
+.select-button {
+  flex: 1;
+  --td-button-default-height: 96rpx;
+  --td-button-large-font-size: 32rpx;
+  --td-button-border-radius: 24rpx;
+  font-weight: 500;
+  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
+}
+
+.favorite-button {
+  width: 96rpx;
+  --td-button-default-height: 96rpx;
+  --td-button-border-radius: 24rpx;
+  font-size: 32rpx;
+}
+
+/* TDesign 组件样式覆盖 */
+.t-card {
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 20rpx -4rpx rgba(0, 0, 0, 0.12);
+}
+
+.t-card__header {
+  padding: 32rpx 32rpx 16rpx 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.t-card__body {
+  padding: 16rpx 32rpx 32rpx 32rpx;
+}
+
+.t-card__title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+  display: flex;
+  align-items: center;
+}
+
+.t-card__title::before {
+  content: '📊';
+  margin-right: 12rpx;
+  font-size: 28rpx;
+}
+
+.benefits-card .t-card__title::before {
+  content: '💊';
+}
+
+.suggestion-card .t-card__title::before {
+  content: '🍽️';
+}
+
+.related-card .t-card__title::before {
+  content: '🔄';
+}
+
+.t-cell-group {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.t-cell {
+  background: #ffffff;
+  padding: 24rpx 0;
+}
+
+.t-cell__title {
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+  flex-shrink: 0;
+  width: 160rpx;
+}
+
+.t-cell__note {
+  font-size: 28rpx;
+  color: var(--brand-text);
+  font-weight: 500;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .dish-name {
+    font-size: 42rpx;
+  }
+  
+  .nutrition-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24rpx;
+  }
+  
+  .related-grid {
+    gap: 16rpx;
+  }
+  
+  .action-buttons {
+    gap: 16rpx;
+  }
+}

@@ -1,0 +1,166 @@
+/* 用户头部 */
+.profile-header {
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+  padding: 48rpx 32rpx;
+  margin: -32rpx -32rpx 32rpx -32rpx;
+  color: #ffffff;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  margin-right: 32rpx;
+}
+
+.avatar-text {
+  font-size: 48rpx;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.user-desc {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 信息卡片 */
+.info-card,
+.preference-card,
+.stats-card,
+.function-card {
+  margin-bottom: 32rpx;
+}
+
+/* 统计网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32rpx;
+  padding: 32rpx 0;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+}
+
+/* 操作按钮 */
+.action-buttons {
+  margin-top: 48rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 编辑弹窗 */
+.edit-content {
+  padding: 32rpx 0;
+}
+
+/* TDesign 组件样式覆盖 */
+.t-card {
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 20rpx -4rpx rgba(0, 0, 0, 0.12);
+  margin-bottom: 24rpx;
+}
+
+.t-card__header {
+  padding: 32rpx 32rpx 16rpx 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.t-card__body {
+  padding: 16rpx 32rpx 32rpx 32rpx;
+}
+
+.t-card__title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+
+.t-cell-group {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.t-cell {
+  background: #ffffff;
+  padding: 24rpx 0;
+}
+
+.t-cell__title {
+  font-size: 28rpx;
+  color: var(--brand-text);
+}
+
+.t-cell__note {
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+}
+
+.t-cell--clickable:active {
+  background-color: #f5f5f5;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .avatar {
+    width: 100rpx;
+    height: 100rpx;
+    margin-right: 24rpx;
+  }
+  
+  .avatar-text {
+    font-size: 40rpx;
+  }
+  
+  .user-name {
+    font-size: 36rpx;
+  }
+  
+  .user-desc {
+    font-size: 26rpx;
+  }
+  
+  .stats-grid {
+    gap: 24rpx;
+  }
+  
+  .stat-number {
+    font-size: 40rpx;
+  }
+}

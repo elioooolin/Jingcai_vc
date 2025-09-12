@@ -1,0 +1,169 @@
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--brand-bg-primary) 0%, var(--brand-bg-secondary) 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 64rpx 64rpx 32rpx 64rpx;
+}
+
+/* Logo区域 */
+.logo-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 96rpx;
+}
+
+.logo-wrapper {
+  margin-bottom: 64rpx;
+}
+
+.logo {
+  width: 256rpx;
+  height: 256rpx;
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16rpx 50rpx rgba(212, 165, 116, 0.25);
+}
+
+.logo-text {
+  color: #ffffff;
+  font-size: 72rpx;
+  font-weight: 300;
+  letter-spacing: 6rpx;
+}
+
+.brand-info {
+  text-align: center;
+}
+
+.brand-title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 400;
+  color: var(--brand-text);
+  margin-bottom: 16rpx;
+  letter-spacing: 2rpx;
+}
+
+.brand-slogan {
+  display: block;
+  font-size: 32rpx;
+  color: var(--brand-text-secondary);
+  letter-spacing: 1rpx;
+}
+
+/* 登录区域 */
+.login-section {
+  margin-bottom: 64rpx;
+}
+
+.login-button {
+  margin-bottom: 48rpx;
+  --td-button-default-height: 96rpx;
+  --td-button-large-font-size: 36rpx;
+  --td-button-border-radius: 48rpx;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+  box-shadow: 0 8rpx 25rpx rgba(212, 165, 116, 0.3);
+}
+
+.tip-section {
+  display: flex;
+  justify-content: center;
+}
+
+.tip-card {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  border-left: 8rpx solid #fbbf24;
+  max-width: 600rpx;
+}
+
+.tip-title {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: 16rpx;
+}
+
+.tip-content {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text);
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+}
+
+.tip-content:last-child {
+  margin-bottom: 0;
+}
+
+/* 底部区域 */
+.footer-section {
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+.link-text {
+  color: var(--brand-primary);
+  text-decoration: underline;
+}
+
+.demo-info {
+  background: #e6f2ff;
+  border: 2rpx solid #9cc5f0;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 32rpx;
+  text-align: left;
+}
+
+.demo-title {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1a5490;
+  margin-bottom: 16rpx;
+}
+
+.demo-content {
+  display: block;
+  font-size: 24rpx;
+  color: #1a5490;
+  margin-bottom: 8rpx;
+}
+
+.demo-item {
+  display: block;
+  font-size: 24rpx;
+  color: #1a5490;
+  line-height: 1.5;
+  margin-bottom: 4rpx;
+}
+
+/* 弹窗内容 */
+.admin-verify-content {
+  padding: 32rpx 0;
+}
+
+.admin-password-input {
+  margin-bottom: 24rpx;
+}
+
+.admin-verify-tip {
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}

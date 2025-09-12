@@ -1,0 +1,243 @@
+<view class="page-container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">{{selectedDate}} 点餐</text>
+    <text class="page-subtitle">请按照要求选择菜品</text>
+  </view>
+
+  <!-- 早餐 -->
+  <view class="meal-section">
+    <view class="meal-title">
+      <text class="meal-title-icon">🌅</text>
+      <text>早餐</text>
+    </view>
+    <view class="meal-requirement">
+      主菜二选一（必选）
+    </view>
+    
+    <view class="menu-grid">
+      <view 
+        wx:for="{{breakfastMenu}}" 
+        wx:key="id"
+        class="menu-item {{item.selected ? 'selected' : ''}}"
+        bind:tap="selectMenuItem"
+        data-meal="breakfast"
+        data-id="{{item.id}}"
+        data-index="{{index}}"
+      >
+        <view class="menu-item-icon" style="background-color: {{item.color}};">
+          {{item.icon}}
+        </view>
+        <view class="menu-item-info">
+          <text class="menu-item-name">{{item.name}}</text>
+          <text class="menu-item-desc">{{item.description}}</text>
+        </view>
+        <view class="menu-item-action" wx:if="{{item.selected}}">
+          <text class="check-icon">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 午餐 -->
+  <view class="meal-section">
+    <view class="meal-title">
+      <text class="meal-title-icon">🌞</text>
+      <text>午餐</text>
+    </view>
+    <view class="meal-requirement">
+      主菜四选二（必选）、汤品二选一（必选）
+    </view>
+    
+    <!-- 主菜 -->
+    <view class="sub-category">
+      <text class="sub-category-title">主菜</text>
+      <view class="menu-grid">
+        <view 
+          wx:for="{{lunchMainMenu}}" 
+          wx:key="id"
+          class="menu-item {{item.selected ? 'selected' : ''}}"
+          bind:tap="selectMenuItem"
+          data-meal="lunchMain"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+        >
+          <view class="menu-item-icon" style="background-color: {{item.color}};">
+            {{item.icon}}
+          </view>
+          <view class="menu-item-info">
+            <text class="menu-item-name">{{item.name}}</text>
+            <text class="menu-item-desc">{{item.description}}</text>
+          </view>
+          <view class="menu-item-action" wx:if="{{item.selected}}">
+            <text class="check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 汤品 -->
+    <view class="sub-category">
+      <text class="sub-category-title">汤品</text>
+      <view class="menu-grid">
+        <view 
+          wx:for="{{lunchSoupMenu}}" 
+          wx:key="id"
+          class="menu-item {{item.selected ? 'selected' : ''}}"
+          bind:tap="selectMenuItem"
+          data-meal="lunchSoup"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+        >
+          <view class="menu-item-icon" style="background-color: {{item.color}};">
+            {{item.icon}}
+          </view>
+          <view class="menu-item-info">
+            <text class="menu-item-name">{{item.name}}</text>
+            <text class="menu-item-desc">{{item.description}}</text>
+          </view>
+          <view class="menu-item-action" wx:if="{{item.selected}}">
+            <text class="check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 晚餐 -->
+  <view class="meal-section">
+    <view class="meal-title">
+      <text class="meal-title-icon">🌙</text>
+      <text>晚餐</text>
+    </view>
+    <view class="meal-requirement">
+      主菜四选二（必选）、汤品二选一（必选）
+    </view>
+    
+    <!-- 主菜 -->
+    <view class="sub-category">
+      <text class="sub-category-title">主菜</text>
+      <view class="menu-grid">
+        <view 
+          wx:for="{{dinnerMainMenu}}" 
+          wx:key="id"
+          class="menu-item {{item.selected ? 'selected' : ''}}"
+          bind:tap="selectMenuItem"
+          data-meal="dinnerMain"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+        >
+          <view class="menu-item-icon" style="background-color: {{item.color}};">
+            {{item.icon}}
+          </view>
+          <view class="menu-item-info">
+            <text class="menu-item-name">{{item.name}}</text>
+            <text class="menu-item-desc">{{item.description}}</text>
+          </view>
+          <view class="menu-item-action" wx:if="{{item.selected}}">
+            <text class="check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 汤品 -->
+    <view class="sub-category">
+      <text class="sub-category-title">汤品</text>
+      <view class="menu-grid">
+        <view 
+          wx:for="{{dinnerSoupMenu}}" 
+          wx:key="id"
+          class="menu-item {{item.selected ? 'selected' : ''}}"
+          bind:tap="selectMenuItem"
+          data-meal="dinnerSoup"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+        >
+          <view class="menu-item-icon" style="background-color: {{item.color}};">
+            {{item.icon}}
+          </view>
+          <view class="menu-item-info">
+            <text class="menu-item-name">{{item.name}}</text>
+            <text class="menu-item-desc">{{item.description}}</text>
+          </view>
+          <view class="menu-item-action" wx:if="{{item.selected}}">
+            <text class="check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 高补餐 -->
+  <view class="meal-section">
+    <view class="meal-title">
+      <text class="meal-title-icon">🍎</text>
+      <text>高补餐</text>
+    </view>
+    <view class="meal-requirement">
+      四选一（可选）
+    </view>
+    
+    <view class="menu-grid">
+      <view 
+        wx:for="{{supplementMenu}}" 
+        wx:key="id"
+        class="menu-item {{item.selected ? 'selected' : ''}}"
+        bind:tap="selectMenuItem"
+        data-meal="supplement"
+        data-id="{{item.id}}"
+        data-index="{{index}}"
+      >
+        <view class="menu-item-icon brand-gradient">
+          {{item.icon}}
+        </view>
+        <view class="menu-item-info">
+          <text class="menu-item-name">{{item.name}}</text>
+          <text class="menu-item-desc">{{item.description}}</text>
+        </view>
+        <view class="menu-item-action" wx:if="{{item.selected}}">
+          <text class="check-icon">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 特殊需求 -->
+  <view class="card">
+    <t-textarea
+      label="特殊需求"
+      placeholder="请填写特殊需求，如少盐、不吃蒜等"
+      value="{{specialRequirements}}"
+      bind:change="onSpecialRequirementsChange"
+      maxlength="200"
+      indicator
+    />
+  </view>
+
+  <!-- 订单摘要 -->
+  <view class="order-summary" wx:if="{{hasSelectedItems}}">
+    <view class="order-summary-title">订单确认</view>
+    <view class="summary-item" wx:for="{{orderSummary}}" wx:key="type">
+      <text class="summary-label">{{item.type}}</text>
+      <text class="summary-value">{{item.dishes}}</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <t-button
+      theme="primary"
+      size="large"
+      block
+      loading="{{submitting}}"
+      bind:tap="submitOrder"
+      disabled="{{!canSubmit}}"
+      class="submit-button"
+    >
+      {{submitting ? '提交中...' : '提交订单'}}
+    </t-button>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

@@ -1,0 +1,164 @@
+/* 欢迎区域 */
+.welcome-section {
+  margin-bottom: 32rpx;
+}
+
+.welcome-card {
+  padding: 48rpx 32rpx;
+  border-radius: 32rpx;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 8rpx 32rpx rgba(212, 165, 116, 0.25);
+}
+
+.welcome-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1);
+}
+
+.welcome-subtitle {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.95;
+  font-weight: 300;
+  letter-spacing: 1rpx;
+}
+
+/* 标签页区域 */
+.tabs-section {
+  margin-bottom: 32rpx;
+}
+
+/* 日期选择器 */
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.date-item {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.date-item:hover {
+  background: var(--brand-bg-primary);
+  border-color: var(--brand-primary);
+}
+
+.date-item.selected {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-color: var(--brand-primary);
+  box-shadow: 0 4rpx 16rpx rgba(212, 165, 116, 0.25);
+}
+
+.date-item.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 开始点餐按钮 */
+.order-button {
+  margin: 48rpx 0;
+  --td-button-default-height: 96rpx;
+  --td-button-large-font-size: 32rpx;
+  --td-button-border-radius: 24rpx;
+  font-weight: 500;
+  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
+}
+
+/* 订单项目 */
+.order-items {
+  margin-top: 24rpx;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.summary-label {
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+}
+
+.summary-value {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+
+/* 历史订单 */
+.history-list {
+  margin-top: 24rpx;
+}
+
+.order-date {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+}
+
+/* 个人中心 */
+.action-buttons {
+  margin-top: 48rpx;
+}
+
+/* TDesign 组件样式覆盖 */
+.t-tabs--card .t-tabs__track {
+  background: #f5f5f5;
+  border-radius: 24rpx;
+  padding: 4rpx;
+}
+
+.t-tabs--card .t-tab-nav__item {
+  border-radius: 20rpx;
+  font-weight: 500;
+}
+
+.t-tabs--card .t-tab-nav__item.t-is-active {
+  background: #ffffff;
+  color: var(--brand-primary);
+  box-shadow: 0 4rpx 16rpx rgba(212, 165, 116, 0.15);
+}
+
+.t-cell-group {
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.t-cell {
+  background: #ffffff;
+}
+
+.t-tag--primary.t-tag--variant-light {
+  background-color: #e6f2ff;
+  color: #1a5490;
+  border-color: #9cc5f0;
+}
+
+.t-tag--success.t-tag--variant-light {
+  background-color: #e8f5e8;
+  color: #2d5a2d;
+  border-color: #a5c9a5;
+}

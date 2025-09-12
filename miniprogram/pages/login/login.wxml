@@ -1,0 +1,92 @@
+<view class="login-container">
+  <!-- 品牌Logo区域 -->
+  <view class="logo-section">
+    <view class="logo-wrapper">
+      <view class="logo brand-gradient">
+        <text class="logo-text">爱睦</text>
+      </view>
+    </view>
+    
+    <view class="brand-info">
+      <text class="brand-title">爱睦轻予</text>
+      <text class="brand-slogan">轻松呵护 · 用心滋养</text>
+    </view>
+  </view>
+
+  <!-- 登录按钮 -->
+  <view class="login-section">
+    <t-button
+      theme="primary"
+      size="large"
+      block
+      loading="{{loginLoading}}"
+      bind:tap="handleWechatLogin"
+      class="login-button"
+    >
+      <text wx:if="{{!loginLoading}}">🔐 微信一键登录</text>
+      <text wx:else>登录中...</text>
+    </t-button>
+    
+    <!-- 温馨提示 -->
+    <view class="tip-section">
+      <view class="tip-card">
+        <text class="tip-title">💡 温馨提示：</text>
+        <text class="tip-content">• 客户账号需由工作人员预先创建</text>
+        <text class="tip-content">• 如提示"用户不存在"，请联系客服开通</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer-section">
+    <text class="footer-text">
+      登录即表示同意
+      <text class="link-text" bind:tap="showUserAgreement">用户协议</text>
+      和
+      <text class="link-text" bind:tap="showPrivacyPolicy">隐私政策</text>
+    </text>
+    
+    <!-- 演示说明 -->
+    <view class="demo-info">
+      <text class="demo-title">🎭 原型演示说明</text>
+      <text class="demo-content">多次点击登录按钮可体验：</text>
+      <text class="demo-item">• 客户登录成功（张女士、李女士等）</text>
+      <text class="demo-item">• 管理员验证（密码：admin123）</text>
+      <text class="demo-item">• 用户不存在提示</text>
+    </view>
+  </view>
+</view>
+
+<!-- 用户不存在弹窗 -->
+<t-dialog
+  visible="{{userNotFoundVisible}}"
+  title="用户不存在"
+  content="{{userNotFoundContent}}"
+  confirm-btn="我知道了"
+  bind:confirm="closeUserNotFoundDialog"
+  bind:close="closeUserNotFoundDialog"
+/>
+
+<!-- 管理员验证弹窗 -->
+<t-dialog
+  visible="{{adminVerifyVisible}}"
+  title="管理员身份验证"
+  confirm-btn="验证并登录"
+  cancel-btn="取消"
+  bind:confirm="verifyAdminPassword"
+  bind:cancel="closeAdminVerifyDialog"
+>
+  <view class="admin-verify-content">
+    <t-input
+      label="管理员密码"
+      type="password"
+      placeholder="请输入管理员密码"
+      value="{{adminPassword}}"
+      bind:change="onAdminPasswordChange"
+      class="admin-password-input"
+    />
+    <text class="admin-verify-tip">请输入管理员专用密码以访问后台管理系统</text>
+  </view>
+</t-dialog>
+
+<t-toast id="t-toast" />
