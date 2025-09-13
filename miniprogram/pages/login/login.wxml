@@ -57,16 +57,16 @@
   bind:confirm="verifyAdminPassword"
   bind:cancel="closeAdminVerifyDialog"
 >
-  <view class="admin-verify-content">
-    <t-input
-      label="管理员密码"
-      type="password"
-      placeholder="请输入管理员密码"
-      value="{{adminPassword}}"
-      bind:change="onAdminPasswordChange"
-      class="admin-password-input"
-    />
-    <text class="admin-verify-tip">请输入管理员专用密码以访问后台管理系统</text>
+  <view slot="content" class="admin-verify-content">
+    <view class="admin-input-wrapper">
+      <input
+        type="password"
+        placeholder="请输入管理员密码"
+        value="{{adminPassword}}"
+        bindinput="onAdminPasswordChange"
+        class="admin-password-input"
+      />
+    </view>
   </view>
 </t-dialog>
 

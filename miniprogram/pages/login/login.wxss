@@ -184,16 +184,44 @@
 /* 弹窗内容 */
 .admin-verify-content {
   padding: 32rpx 0;
+  min-height: 120rpx;
+}
+
+.admin-input-wrapper {
+  margin-bottom: 24rpx;
+  width: 100%;
+  display: block;
+}
+
+.input-label {
+  font-size: 28rpx;
+  color: var(--brand-text);
+  margin-bottom: 16rpx;
+  font-weight: 500;
 }
 
 .admin-password-input {
-  margin-bottom: 24rpx;
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.admin-password-input:focus {
+  border-color: var(--brand-primary);
+  outline: none;
 }
 
 .admin-verify-tip {
   font-size: 24rpx;
   color: var(--brand-text-secondary);
   line-height: 1.5;
+  display: block;
+  text-align: center;
 }
 
 /* 响应式设计 - 针对不同屏幕尺寸 */
