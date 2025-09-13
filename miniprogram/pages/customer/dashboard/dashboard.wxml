@@ -3,7 +3,7 @@
   <view class="welcome-section">
     <view class="welcome-card brand-gradient">
       <text class="welcome-title">您好，{{userInfo.name}} ✨</text>
-      <text class="welcome-subtitle">今天是入住第{{checkInDays}}天 · 爱睦轻予陪伴您</text>
+      <text class="welcome-subtitle">今天是入住第{{checkInDays}}天 · 爱睦陪伴您</text>
     </view>
   </view>
 

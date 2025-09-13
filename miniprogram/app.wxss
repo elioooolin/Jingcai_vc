@@ -1,7 +1,7 @@
 /* 全局样式 */
 @import "./miniprogram_npm/tdesign-miniprogram/common/style/index.wxss";
 
-/* 爱睦轻予品牌色彩变量 */
+/* 爱睦品牌色彩变量 */
 page {
   --brand-primary: #d4a574;
   --brand-primary-light: #e6c49a;

@@ -23,3 +23,5 @@ miniprogram_npm
 .env.test.local
 .env.production.local
 package-lock.json
+docs
+prototypes

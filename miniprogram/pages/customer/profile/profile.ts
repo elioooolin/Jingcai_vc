@@ -235,8 +235,8 @@ Page({
   // 关于我们
   aboutUs() {
     wx.showModal({
-      title: '关于爱睦轻予',
-      content: '爱睦轻予专注于提供专业的月子餐服务，致力于为每一位产妇提供营养均衡、口感美味的月子餐。\n\n版本号：v1.0.0',
+      title: '关于爱睦',
+      content: '爱睦专注于提供专业的月子餐服务，致力于为每一位产妇提供营养均衡、口感美味的月子餐。\n\n版本号：v1.0.0',
       showCancel: false,
       confirmText: '知道了'
     });

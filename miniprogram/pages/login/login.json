@@ -1,10 +1,9 @@
 {
-  "navigationBarTitleText": "登录 - 爱睦轻予",
+  "navigationBarTitleText": "登录 - 爱睦月子餐",
   "navigationStyle": "default",
   "usingComponents": {
     "t-button": "tdesign-miniprogram/button/button",
     "t-input": "tdesign-miniprogram/input/input",
-    "t-loading": "tdesign-miniprogram/loading/loading",
-    "t-toast": "tdesign-miniprogram/toast/toast"
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
   }
 }

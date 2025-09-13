@@ -18,7 +18,50 @@ Page({
     userNotFoundVisible: false,
     userNotFoundContent: '',
     adminVerifyVisible: false,
-    adminPassword: ''
+    adminPassword: '',
+    userAgreementVisible: false,
+    userAgreementContent: `欢迎使用爱睦月子餐点餐小程序（以下简称"本小程序"）。使用本小程序前，请您仔细阅读本用户协议（以下简称"本协议"）。一旦您使用本小程序，即表示您已同意本协议的所有条款。
+
+1. 服务内容
+本小程序提供爱睦月子中心在住客户的月子餐点的选择及下单服务。
+
+2. 用户账户
+用户需注册账户并妥善保管账户信息，因账户信息泄露造成的损失由用户自行承担。
+
+3. 用户义务
+用户承诺在使用本小程序时遵守相关法律法规，不得发布违法信息。
+
+4. 知识产权
+本小程序及其内容的知识产权归开发者所有，未经授权不得使用。
+
+5. 责任限制
+对于因不可抗力导致的服务中断，开发者不承担责任。
+
+6. 协议修改
+开发者有权随时修改本协议，修改后的协议将在本小程序上公布。
+
+7. 法律适用
+本协议适用中华人民共和国法律，任何争议应提交至开发者所在地法院解决。`,
+    privacyPolicyVisible: false,
+    privacyPolicyContent: `我们非常重视您的隐私保护。请您仔细阅读本隐私政策，以了解我们如何收集、使用和保护您的个人信息。
+
+1. 信息收集
+我们会收集您的姓名、联系方式及订单信息，以便为您提供服务。
+
+2. 信息使用
+收集的信息将用于处理您的订单、提供客户服务及改进我们的服务。
+
+3. 信息共享
+我们不会将您的个人信息出售给第三方，但可能会在法律要求或保护我们权利的情况下共享信息。
+
+4. 信息安全
+我们采取合理的技术和管理措施保护您的个人信息安全。
+
+5. 用户权利
+您有权访问、修改和删除您的个人信息，具体操作请联系我们。
+
+6. 政策变更
+我们可能会不定期更新本隐私政策，更新后将在本小程序上公布。`
   },
 
   onLoad() {
@@ -173,19 +216,21 @@ Page({
 
   // 显示用户协议
   showUserAgreement() {
-    wx.showToast({
-      title: '用户协议功能待开发',
-      icon: 'none',
-      duration: 2000
-    });
+    this.setData({ userAgreementVisible: true });
+  },
+
+  // 关闭用户协议弹窗
+  closeUserAgreementDialog() {
+    this.setData({ userAgreementVisible: false });
   },
 
   // 显示隐私政策
   showPrivacyPolicy() {
-    wx.showToast({
-      title: '隐私政策功能待开发',
-      icon: 'none',
-      duration: 2000
-    });
+    this.setData({ privacyPolicyVisible: true });
+  },
+
+  // 关闭隐私政策弹窗
+  closePrivacyPolicyDialog() {
+    this.setData({ privacyPolicyVisible: false });
   }
 });
