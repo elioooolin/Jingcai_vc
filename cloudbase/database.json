@@ -87,6 +87,36 @@
           "description": "预计出院日期（客户专用）"
         },
         {
+          "name": "birthday",
+          "type": "date",
+          "description": "用户生日"
+        },
+        {
+          "name": "totalDays",
+          "type": "number",
+          "description": "入住天数"
+        },
+        {
+          "name": "store",
+          "type": "string",
+          "description": "入住门店（meixihu/desiqin）"
+        },
+        {
+          "name": "dietPreference",
+          "type": "string",
+          "description": "饮食偏好"
+        },
+        {
+          "name": "supplementCount",
+          "type": "number",
+          "description": "高补餐次数"
+        },
+        {
+          "name": "specialNotes",
+          "type": "string",
+          "description": "特殊说明和备注"
+        },
+        {
           "name": "createdBy",
           "type": "string",
           "description": "创建者（管理员ID）"

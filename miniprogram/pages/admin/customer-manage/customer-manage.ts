@@ -10,7 +10,6 @@ interface FormData {
   room: string;
   dietPreference: string;
   supplementCount: string;
-  specialNotes: string;
 }
 
 Page({
@@ -18,6 +17,14 @@ Page({
     isEdit: false,
     customerId: '',
     submitting: false,
+    
+    // 控制选择器显示状态
+    birthdayVisible: false,
+    checkInDateVisible: false,
+    storeVisible: false,
+    birthdayStart: '',
+    birthdayEnd:'',
+    storeText: '请选择门店',
     
     formData: {
       name: '',
@@ -28,27 +35,28 @@ Page({
       store: '',
       room: '',
       dietPreference: '',
-      supplementCount: '1',
-      specialNotes: ''
+      supplementCount: '0'
     } as FormData,
     
-    storeOptions: [
-      { label: '爱睦月子中心（朝阳店）', value: 'store1' },
-      { label: '爱睦月子中心（海淀店）', value: 'store2' },
-      { label: '爱睦月子中心（西城店）', value: 'store3' },
-      { label: '爱睦月子中心（丰台店）', value: 'store4' }
-    ],
     
-    supplementOptions: [
-      { label: '0次/天', value: '0' },
-      { label: '1次/天', value: '1' },
-      { label: '2次/天', value: '2' },
-      { label: '3次/天', value: '3' }
+    storeOptions: [
+      { label: '爱睦·梅溪湖店', value: 'meixihu' },
+      { label: '爱睦轻予·德思勤店', value: 'desiqin' }
     ]
   },
 
   onLoad(options: any) {
     this.checkAdminAuth();
+    
+    // 设置当前日期
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    this.setData({
+      birthdayStart: `${year - 50}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+      birthdayEnd: `${year - 16}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    });
     
     if (options.action === 'edit' && options.id) {
       this.setData({
@@ -89,8 +97,7 @@ Page({
         store: 'store1',
         room: 'A201',
         dietPreference: '清淡少盐，不吃辣',
-        supplementCount: '1',
-        specialNotes: '产后恢复期，需要特别关注营养搭配'
+        supplementCount: '1'
       };
       
       this.setData({ formData: mockCustomerData });
@@ -117,6 +124,90 @@ Page({
     }
   },
 
+  // 显示日期选择器
+  showDatePicker(e: any) {
+    const field = e.currentTarget.dataset.field;
+    console.log('显示日期选择器:', field);
+    
+    if (field === 'birthday') {
+      this.setData({ birthdayVisible: true });
+    } else if (field === 'checkInDate') {
+      this.setData({ checkInDateVisible: true });
+    }
+  },
+
+  // 隐藏日期选择器
+  hideDatePicker(e: any) {
+    this.setData({
+      birthdayVisible: false,
+      checkInDateVisible: false
+    });
+  },
+
+  // 生日选择确认
+  onBirthdayConfirm(e: any) {
+    console.log('生日选择确认:', e.detail);
+    this.setData({
+      'formData.birthday': String(e.detail.value).substring(0,10),
+      birthdayVisible: false
+    });
+  },
+
+  // 生日选择过程中
+  onBirthdayPick(e: any) {
+    console.log('生日选择中:', e.detail);
+  },
+
+  // 入住日期选择确认
+  onCheckInDateConfirm(e: any) {
+    console.log('入住日期选择确认:', e.detail);
+    this.setData({
+      'formData.checkInDate': String(e.detail.value).substring(0,10),
+      checkInDateVisible: false
+    });
+  },
+
+  // 入住日期选择过程中
+  onCheckInDatePick(e: any) {
+    console.log('入住日期选择中:', e.detail);
+  },
+
+  // 显示选择器
+  showPicker(e: any) {
+    const field = e.currentTarget.dataset.field;
+    console.log('显示选择器:', field);
+    
+    if (field === 'store') {
+      this.setData({ storeVisible: true });
+    }
+  },
+
+  // 隐藏选择器
+  hidePicker(e: any) {
+    this.setData({
+      storeVisible: false
+    });
+  },
+
+  // 门店选择确认
+  onStoreConfirm(e: any) {
+    console.log('门店选择确认:', e.detail.value);
+    // t-picker-item返回的是数组格式，取第一个元素
+    const selectedValue = Array.isArray(e.detail.value) ? e.detail.value[0] : e.detail.value;
+    console.log('selectedValue:', selectedValue);
+    this.setData({
+      'formData.store': selectedValue,
+      storeVisible: false,
+      storeText: this.getStoreText(selectedValue)
+    });
+  },
+
+  // 门店选择过程中
+  onStorePick(e: any) {
+    console.log('门店选择中:', e.detail);
+  },
+
+
   // 验证手机号
   validatePhone(phone: string) {
     const cleanPhone = phone.replace(/\D/g, '');
@@ -141,28 +232,28 @@ Page({
   },
 
   // 获取门店文本
-  getStoreText(value: string): string {
-    const option = this.data.storeOptions.find(opt => opt.value === value);
+  getStoreText(value: string | string[]): string {
+    // 处理数组格式的值
+    const actualValue = Array.isArray(value) ? value[0] : value;
+    if (!actualValue) return '请选择门店';
+    
+    const option = this.data.storeOptions.find(opt => opt.value === actualValue);
+    console.log("getStoreText:", option?.label || '请选择门店')
     return option?.label || '请选择门店';
   },
 
-  // 获取高补餐文本
-  getSupplementText(value: string): string {
-    const option = this.data.supplementOptions.find(opt => opt.value === value);
-    return option?.label || '请选择';
-  },
 
   // 验证表单
   validateForm(): boolean {
     const { formData } = this.data;
     const requiredFields = [
       { field: 'name', name: '客户姓名' },
-      { field: 'phone', name: '手机号' },
+      { field: 'phone', name: '手机号码' },
       { field: 'birthday', name: '生日' },
       { field: 'checkInDate', name: '入住日期' },
       { field: 'totalDays', name: '入住天数' },
       { field: 'store', name: '入住门店' },
-      { field: 'room', name: '房间号' },
+      { field: 'room', name: '房间号码' },
       { field: 'supplementCount', name: '高补餐次数' }
     ];
 
@@ -199,6 +290,17 @@ Page({
       return false;
     }
 
+    // 验证高补餐次数
+    const supplementCount = parseInt(formData.supplementCount);
+    if (isNaN(supplementCount) || supplementCount < 0 || supplementCount > 20) {
+      wx.showToast({
+        title: '高补餐次数应在0-20之间',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    }
+
     return true;
   },
 
@@ -210,23 +312,84 @@ Page({
 
     this.setData({ submitting: true });
 
-    // 模拟API调用
-    setTimeout(() => {
-      this.setData({ submitting: false });
-      
-      const { isEdit } = this.data;
-      const successMessage = isEdit ? '客户信息修改成功！' : '客户添加成功！客户现在可以使用微信登录系统。';
-      
-      wx.showToast({
-        title: successMessage,
-        icon: 'success',
-        duration: 2000
-      });
+    console.log("submiteForm", this.data);
+    // 调用云函数保存客户信息
+    wx.cloud.callFunction({
+      name: 'saveCustomer',
+      data: {
+        customerData: this.data.formData,
+        isEdit: this.data.isEdit,
+        customerId: this.data.customerId
+      },
+      success: (res: any) => {
+        console.log('保存客户信息结果:', res.result);
+        
+        if (res.result.success) {
+          this.handleSaveSuccess(res.result);
+        } else {
+          this.handleSaveError(res.result);
+        }
+      },
+      fail: (err: any) => {
+        console.error('调用保存客户云函数失败:', err);
+        this.setData({ submitting: false });
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'error',
+          duration: 2000
+        });
+      }
+    });
+  },
 
-      setTimeout(() => {
-        this.goBack();
-      }, 1500);
-    }, 2000);
+  // 处理保存成功
+  handleSaveSuccess(result: any) {
+    this.setData({ submitting: false });
+    
+    const { isEdit } = this.data;
+    const successMessage = isEdit ? '客户信息修改成功！' : '客户添加成功！客户现在可以使用微信登录系统。';
+    
+    wx.showToast({
+      title: successMessage,
+      icon: 'success',
+      duration: 2000
+    });
+
+    setTimeout(() => {
+      this.goBack();
+    }, 1500);
+  },
+
+  // 处理保存错误
+  handleSaveError(result: any) {
+    this.setData({ submitting: false });
+    
+    let errorMessage = '保存失败，请重试';
+    
+    switch (result.error) {
+      case 'PHONE_EXISTS':
+        errorMessage = '该手机号已被其他客户使用';
+        break;
+      case 'INVALID_PHONE':
+        errorMessage = '手机号格式不正确';
+        break;
+      case 'MISSING_REQUIRED_FIELD':
+        errorMessage = '请填写所有必填字段';
+        break;
+      case 'UNAUTHORIZED':
+      case 'ADMIN_REQUIRED':
+        errorMessage = '没有权限进行此操作';
+        break;
+      default:
+        errorMessage = result.message || '保存失败，请重试';
+        break;
+    }
+    
+    wx.showToast({
+      title: errorMessage,
+      icon: 'error',
+      duration: 2000
+    });
   },
 
   // 返回

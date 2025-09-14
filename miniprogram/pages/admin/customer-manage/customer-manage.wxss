@@ -25,7 +25,20 @@
 }
 
 .form-section {
+  margin-bottom: 48rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
   margin-bottom: 32rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
 }
 
 .form-group {
@@ -39,6 +52,10 @@
 /* 操作按钮 */
 .action-buttons {
   margin: 64rpx 0 48rpx 0;
+}
+
+.cancel-button {
+  margin-top: 24rpx;
 }
 
 /* 管理员按钮样式 */

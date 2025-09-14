@@ -8,7 +8,9 @@
   <!-- 表单内容 -->
   <view class="form-container">
     <!-- 基本信息 -->
-    <t-card title="基本信息" class="form-section">
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
       <view class="form-group">
         <t-input
           label="客户姓名"
@@ -22,7 +24,7 @@
       
       <view class="form-group">
         <t-input
-          label="手机号"
+          label="手机号码"
           type="number"
           placeholder="请输入手机号"
           value="{{formData.phone}}"
@@ -34,30 +36,52 @@
       </view>
       
       <view class="form-group">
+        <t-cell 
+          title="生日" 
+          note="{{formData.birthday || '请选择生日'}}" 
+          arrow 
+          required 
+          data-field="birthday"
+          bind:click="showDatePicker"
+        />
         <t-date-time-picker
           title="选择生日"
+          visible="{{birthdayVisible}}"
           mode="date"
           value="{{formData.birthday}}"
-          bind:change="onFieldChange"
-          data-field="birthday"
-        >
-          <t-cell title="生日" note="{{formData.birthday || '请选择生日'}}" arrow required />
-        </t-date-time-picker>
+          bind:change="onBirthdayConfirm"
+          bind:pick="onBirthdayPick"
+          bind:cancel="hideDatePicker"
+          start="{{birthdayStart}}"
+          end="{{birthdayEnd}}"
+        />
       </view>
-    </t-card>
+    </view>
 
     <!-- 入住信息 -->
-    <t-card title="入住信息" class="form-section">
+    <view class="form-section">
+      <view class="section-title">入住信息</view>
+      
       <view class="form-group">
+        <t-cell 
+          title="入住日期" 
+          note="{{formData.checkInDate || '请选择入住日期'}}" 
+          arrow 
+          required 
+          data-field="checkInDate"
+          bind:click="showDatePicker"
+        />
         <t-date-time-picker
           title="选择入住日期"
+          visible="{{checkInDateVisible}}"
           mode="date"
           value="{{formData.checkInDate}}"
-          bind:change="onFieldChange"
-          data-field="checkInDate"
-        >
-          <t-cell title="入住日期" note="{{formData.checkInDate || '请选择入住日期'}}" arrow required />
-        </t-date-time-picker>
+          bind:change="onCheckInDateConfirm"
+          bind:pick="onCheckInDatePick"
+          bind:cancel="hideDatePicker"
+          start="2025-09-01"
+          end="2030-12-31"
+        />
       </view>
       
       <view class="form-group">
@@ -73,35 +97,48 @@
       </view>
       
       <view class="form-group">
+        <t-cell 
+          title="入住门店" 
+          note="{{storeText}}" 
+          arrow 
+          required 
+          data-field="store"
+          bind:click="showPicker"
+        />
         <t-picker
           title="选择门店"
-          value="{{formData.store}}"
-          data-source="{{storeOptions}}"
-          bind:change="onFieldChange"
-          data-field="store"
+          visible="{{storeVisible}}"
+          value="{{[formData.store]}}"
+          cancelBtn="取消"
+          confirmBtn="确认"
+          bind:change="onStoreConfirm"
+          bind:pick="onStorePick"
+          bind:cancel="hidePicker"
         >
-          <t-cell title="入住门店" note="{{getStoreText(formData.store)}}" arrow required />
+          <t-picker-item options="{{storeOptions}}" />
         </t-picker>
       </view>
       
       <view class="form-group">
         <t-input
-          label="房间号"
-          placeholder="请输入房间号，如：A201"
+          label="房间号码"
+          placeholder="请输入房间号，如：201"
           value="{{formData.room}}"
           bind:change="onFieldChange"
           data-field="room"
           required
         />
       </view>
-    </t-card>
+    </view>
 
-    <!-- 餐饮偏好 -->
-    <t-card title="餐饮偏好" class="form-section">
+    <!-- 餐食信息 -->
+    <view class="form-section">
+      <view class="section-title">餐食信息</view>
+      
       <view class="form-group">
         <t-textarea
           label="饮食偏好"
-          placeholder="请描述客户的饮食偏好，如不吃辣、素食、过敏食物等"
+          placeholder="请描述客户的饮食偏好，如不吃辣、素食、过敏食物等（选填）"
           value="{{formData.dietPreference}}"
           bind:change="onFieldChange"
           data-field="dietPreference"
@@ -111,32 +148,18 @@
       </view>
       
       <view class="form-group">
-        <t-picker
-          title="选择高补餐次数"
+        <t-input
+          label="高补餐次数"
+          type="number"
+          placeholder="请输入高补餐次数（0-20）"
           value="{{formData.supplementCount}}"
-          data-source="{{supplementOptions}}"
           bind:change="onFieldChange"
           data-field="supplementCount"
-        >
-          <t-cell title="高补餐次数" note="{{getSupplementText(formData.supplementCount)}}" arrow required />
-        </t-picker>
-      </view>
-    </t-card>
-
-    <!-- 备注信息 -->
-    <t-card title="备注信息" class="form-section">
-      <view class="form-group">
-        <t-textarea
-          label="特殊说明"
-          placeholder="其他需要特别注意的事项"
-          value="{{formData.specialNotes}}"
-          bind:change="onFieldChange"
-          data-field="specialNotes"
-          maxlength="200"
-          indicator
+          required
         />
       </view>
-    </t-card>
+    </view>
+
 
     <!-- 操作按钮 -->
     <view class="action-buttons">
@@ -156,7 +179,7 @@
         size="large"
         block
         bind:tap="goBack"
-        class="mt-24"
+        class="cancel-button"
       >
         取消
       </t-button>
