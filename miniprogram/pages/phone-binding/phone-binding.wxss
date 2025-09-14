@@ -1,0 +1,197 @@
+/* pages/phone-binding/phone-binding.wxss */
+
+.phone-binding-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f5f0 0%, #f0ede7 100%);
+  padding: 80rpx 60rpx 40rpx;
+  box-sizing: border-box;
+}
+
+/* 头部区域 */
+.header-section {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.logo-wrapper {
+  margin-bottom: 32rpx;
+}
+
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(135deg, var(--brand-primary-light, #e6c49a) 0%, var(--brand-primary-dark, #b8934f) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
+}
+
+.logo-text {
+  color: #ffffff;
+  font-size: 48rpx;
+  font-weight: 300;
+  letter-spacing: 4rpx;
+}
+
+.brand-info {
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.brand-title {
+  display: block;
+  color: #8b6914;
+  font-size: 48rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  letter-spacing: 2rpx;
+}
+
+.brand-slogan {
+  display: block;
+  color: #a67c00;
+  font-size: 28rpx;
+  font-weight: 300;
+  letter-spacing: 1rpx;
+}
+
+.binding-info {
+  text-align: center;
+}
+
+.binding-title {
+  display: block;
+  color: #5d4e37;
+  font-size: 36rpx;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.binding-desc {
+  display: block;
+  color: #8b7355;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+/* 输入区域 */
+.input-section {
+  margin-bottom: 60rpx;
+}
+
+.input-wrapper {
+  margin-bottom: 40rpx;
+}
+
+.phone-input {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  font-size: 32rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.phone-input:focus {
+  border-color: var(--brand-primary, #d4a574);
+  background: #ffffff;
+}
+
+.bind-button {
+  border-radius: 16rpx;
+  height: 88rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  background: linear-gradient(135deg, var(--brand-primary, #d4a574) 0%, var(--brand-primary-dark, #b8934f) 100%);
+  border: none;
+  box-shadow: 0 8rpx 20rpx rgba(212, 165, 116, 0.3);
+  transition: all 0.3s ease;
+}
+
+.bind-button:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(212, 165, 116, 0.4);
+}
+
+.bind-button[disabled] {
+  background: #cccccc;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 提示区域 */
+.tip-section {
+  margin-top: 40rpx;
+}
+
+.tip-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 16rpx;
+  padding: 32rpx;
+  border-left: 6rpx solid var(--brand-primary, #d4a574);
+}
+
+.tip-title {
+  display: block;
+  color: #5d4e37;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.tip-content {
+  display: block;
+  color: #8b7355;
+  font-size: 24rpx;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+/* 响应式设计 */
+@media (max-height: 667px) {
+  .phone-binding-container {
+    padding: 60rpx 60rpx 40rpx;
+  }
+  
+  .header-section {
+    margin-bottom: 60rpx;
+  }
+  
+  .logo {
+    width: 140rpx;
+    height: 140rpx;
+  }
+  
+  .logo-text {
+    font-size: 42rpx;
+  }
+  
+  .brand-title {
+    font-size: 42rpx;
+  }
+  
+  .binding-title {
+    font-size: 32rpx;
+  }
+}
+
+@media (max-height: 568px) {
+  .phone-binding-container {
+    padding: 40rpx 60rpx 40rpx;
+  }
+  
+  .header-section {
+    margin-bottom: 40rpx;
+  }
+  
+  .brand-info {
+    margin-bottom: 40rpx;
+  }
+  
+  .input-section {
+    margin-bottom: 40rpx;
+  }
+}

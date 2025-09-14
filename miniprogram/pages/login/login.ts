@@ -1,16 +1,7 @@
 // pages/login/login.ts
 
-// 模拟用户数据库
-const mockUsers = {
-  customers: [
-    { phone: '13800138001', name: '张女士', isAdmin: false },
-    { phone: '13800138002', name: '李女士', isAdmin: false },
-    { phone: '13800138003', name: '王女士', isAdmin: false }
-  ],
-  admins: [
-    { phone: '13900139001', name: '管理员', isAdmin: true }
-  ]
-};
+// 管理员密码（实际项目中应该从云端验证）
+const ADMIN_PASSWORD = 'admin123';
 
 Page({
   data: {
@@ -19,6 +10,7 @@ Page({
     userNotFoundContent: '',
     adminVerifyVisible: false,
     adminPassword: '',
+    currentUser: null as any,
     userAgreementVisible: false,
     userAgreementContent: `欢迎使用爱睦月子餐点餐小程序（以下简称"本小程序"）。使用本小程序前，请您仔细阅读本用户协议（以下简称"本协议"）。一旦您使用本小程序，即表示您已同意本协议的所有条款。
 
@@ -67,68 +59,108 @@ Page({
   onLoad() {
     // 检查是否已登录
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.redirectToHomePage(userInfo);
+    if (userInfo && userInfo._id) {
+      // 验证用户信息是否有效
+      this.validateUserInfo(userInfo);
     }
+  },
+
+  // 验证用户信息有效性
+  validateUserInfo(userInfo: any) {
+    wx.cloud.callFunction({
+      name: 'getUserProfile',
+      success: (res: any) => {
+        if (res.result.success) {
+          console.log('用户信息有效:', res.result.user);
+          // 更新本地存储的用户信息
+          wx.setStorageSync('userInfo', res.result.user);
+          this.redirectToHomePage(res.result.user);
+        } else {
+          // 用户信息已失效，清除本地存储
+          wx.removeStorageSync('userInfo');
+          console.log('用户信息已失效，已清除');
+        }
+      },
+      fail: (err: any) => {
+        console.error('验证用户信息失败:', err);
+        wx.removeStorageSync('userInfo');
+      }
+    });
   },
 
   // 处理微信登录
   handleWechatLogin() {
     this.setData({ loginLoading: true });
 
-    // 模拟微信登录获取手机号
-    const mockPhones = ['13800138001', '13800138002', '13800138999', '13900139001'];
-    const randomPhone = mockPhones[Math.floor(Math.random() * mockPhones.length)];
-    
-    // 模拟网络延迟
-    setTimeout(() => {
-      this.verifyUserIdentity(randomPhone);
-      this.setData({ loginLoading: false });
-    }, 1500);
+    // 调用微信登录云函数
+    wx.cloud.callFunction({
+      name: 'wechatLogin',
+      success: (res: any) => {
+        console.log('微信登录结果:', res.result);
+        
+        if (res.result.success) {
+          if (res.result.isRegistered) {
+            // 用户已注册，检查是否需要管理员验证
+            if (res.result.user.isAdmin) {
+              this.setData({ 
+                currentUser: res.result.user,
+                loginLoading: false 
+              });
+              this.showAdminVerifyDialog();
+            } else {
+              // 普通用户直接登录
+              this.handleLoginSuccess(res.result.user);
+            }
+          } else {
+            // 用户未注册，跳转到手机号绑定页面
+            this.setData({ loginLoading: false });
+            wx.navigateTo({
+              url: '/pages/phone-binding/phone-binding'
+            });
+          }
+        } else {
+          this.handleLoginError(res.result);
+        }
+      },
+      fail: (err: any) => {
+        console.error('微信登录云函数调用失败:', err);
+        this.setData({ loginLoading: false });
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'error'
+        });
+      }
+    });
   },
 
-  // 验证用户身份
-  verifyUserIdentity(phone: string) {
-    console.log('验证手机号:', phone);
+  // 处理登录成功
+  handleLoginSuccess(user: any) {
+    // 保存用户信息到本地存储
+    wx.setStorageSync('userInfo', user);
     
-    // 检查是否为客户
-    const customer = mockUsers.customers.find(user => user.phone === phone);
-    if (customer) {
-      this.handleCustomerLogin(customer);
-      return;
-    }
-
-    // 检查是否为管理员
-    const admin = mockUsers.admins.find(user => user.phone === phone);
-    if (admin) {
-      this.showAdminVerifyDialog();
-      return;
-    }
-
-    // 用户不存在
-    this.showUserNotFoundDialog();
-  },
-
-  // 客户登录成功
-  handleCustomerLogin(customer: any) {
-    const userInfo = {
-      ...customer,
-      userType: 'customer'
-    };
-    
-    // 保存用户信息
-    wx.setStorageSync('userInfo', userInfo);
+    this.setData({ loginLoading: false });
     
     wx.showToast({
-      title: `欢迎您，${customer.name}！`,
+      title: `欢迎您，${user.name}！`,
       icon: 'success',
       duration: 2000
     });
 
     setTimeout(() => {
-      this.redirectToHomePage(userInfo);
+      this.redirectToHomePage(user);
     }, 1000);
   },
+
+  // 处理登录错误
+  handleLoginError(result: any) {
+    this.setData({ loginLoading: false });
+    
+    wx.showToast({
+      title: result.message || '登录失败，请重试',
+      icon: 'error'
+    });
+  },
+
 
   // 显示用户不存在弹窗
   showUserNotFoundDialog() {
@@ -166,31 +198,12 @@ Page({
 
   // 验证管理员密码
   verifyAdminPassword() {
-    const { adminPassword } = this.data;
-    const correctPassword = 'admin123';
+    const { adminPassword, currentUser } = this.data;
     
-    if (adminPassword === correctPassword) {
-      const userInfo = {
-        phone: '13900139001',
-        name: '管理员',
-        isAdmin: true,
-        userType: 'admin'
-      };
-      
-      // 保存用户信息
-      wx.setStorageSync('userInfo', userInfo);
-      
+    if (adminPassword === ADMIN_PASSWORD) {
+      // 管理员验证成功
       this.closeAdminVerifyDialog();
-      
-      wx.showToast({
-        title: '管理员登录成功！',
-        icon: 'success',
-        duration: 2000
-      });
-
-      setTimeout(() => {
-        this.redirectToHomePage(userInfo);
-      }, 1000);
+      this.handleLoginSuccess(currentUser);
     } else {
       wx.showToast({
         title: '密码错误，请重试',

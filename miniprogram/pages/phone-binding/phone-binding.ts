@@ -1,0 +1,157 @@
+// pages/phone-binding/phone-binding.ts
+
+Page({
+  data: {
+    phone: '',
+    isPhoneValid: false,
+    bindingLoading: false,
+    errorDialogVisible: false,
+    errorDialogTitle: '',
+    errorDialogContent: '',
+    contactDialogVisible: false
+  },
+
+  onLoad(options: any) {
+    console.log('手机号绑定页面加载', options)
+    
+    // 检查用户是否已经登录过微信
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo && userInfo._id) {
+      // 用户已经完成绑定，跳转到主页
+      this.redirectToHomePage(userInfo)
+    }
+  },
+
+  // 手机号输入变化
+  onPhoneChange(e: any) {
+    const phone = e.detail.value
+    const isValid = this.validatePhone(phone)
+    
+    this.setData({
+      phone: phone,
+      isPhoneValid: isValid
+    })
+  },
+
+  // 验证手机号格式
+  validatePhone(phone: string): boolean {
+    const phoneRegex = /^1[3-9]\d{9}$/
+    return phoneRegex.test(phone)
+  },
+
+  // 处理绑定手机号
+  handleBindPhone() {
+    const { phone } = this.data
+    
+    if (!this.validatePhone(phone)) {
+      this.showErrorDialog('手机号格式错误', '请输入正确的手机号码')
+      return
+    }
+
+    this.setData({ bindingLoading: true })
+
+    // 调用云函数绑定手机号
+    wx.cloud.callFunction({
+      name: 'bindPhone',
+      data: {
+        phone: phone
+      },
+      success: (res: any) => {
+        console.log('绑定手机号结果:', res.result)
+        
+        if (res.result.success) {
+          // 绑定成功
+          this.handleBindingSuccess(res.result.user)
+        } else {
+          // 绑定失败
+          this.handleBindingError(res.result)
+        }
+      },
+      fail: (err: any) => {
+        console.error('调用绑定手机号云函数失败:', err)
+        this.setData({ bindingLoading: false })
+        this.showErrorDialog('网络错误', '网络连接失败，请检查网络后重试')
+      }
+    })
+  },
+
+  // 处理绑定成功
+  handleBindingSuccess(user: any) {
+    // 保存用户信息到本地存储
+    wx.setStorageSync('userInfo', user)
+    
+    this.setData({ bindingLoading: false })
+    
+    wx.showToast({
+      title: `欢迎您，${user.name}！`,
+      icon: 'success',
+      duration: 2000
+    })
+
+    setTimeout(() => {
+      this.redirectToHomePage(user)
+    }, 1500)
+  },
+
+  // 处理绑定错误
+  handleBindingError(result: any) {
+    this.setData({ bindingLoading: false })
+    
+    switch (result.error) {
+      case 'PHONE_ALREADY_BOUND':
+        this.showErrorDialog('手机号已被绑定', '该手机号已被其他微信账号绑定，请联系客服处理')
+        break
+      case 'USER_NOT_FOUND':
+        this.setData({ contactDialogVisible: true })
+        break
+      case 'USER_INACTIVE':
+        this.showErrorDialog('账号状态异常', '您的账号状态异常，请联系管理员处理')
+        break
+      case 'OPENID_ALREADY_BOUND':
+        this.showErrorDialog('微信账号已绑定', '您的微信账号已绑定其他手机号，无法重复绑定')
+        break
+      case 'INVALID_PHONE':
+        this.showErrorDialog('手机号格式错误', '请输入正确的手机号码')
+        break
+      default:
+        this.showErrorDialog('绑定失败', result.message || '绑定失败，请稍后重试')
+        break
+    }
+  },
+
+  // 显示错误弹窗
+  showErrorDialog(title: string, content: string) {
+    this.setData({
+      errorDialogVisible: true,
+      errorDialogTitle: title,
+      errorDialogContent: content
+    })
+  },
+
+  // 关闭错误弹窗
+  closeErrorDialog() {
+    this.setData({
+      errorDialogVisible: false,
+      errorDialogTitle: '',
+      errorDialogContent: ''
+    })
+  },
+
+  // 关闭联系客服弹窗
+  closeContactDialog() {
+    this.setData({ contactDialogVisible: false })
+  },
+
+  // 跳转到主页
+  redirectToHomePage(user: any) {
+    if (user.isAdmin) {
+      wx.reLaunch({
+        url: '/pages/admin/dashboard/dashboard'
+      })
+    } else {
+      wx.reLaunch({
+        url: '/pages/customer/dashboard/dashboard'
+      })
+    }
+  }
+})

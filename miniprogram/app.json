@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/login/login",
+    "pages/phone-binding/phone-binding",
     "pages/customer/dashboard/dashboard",
     "pages/customer/menu/menu",
     "pages/customer/history/history",
