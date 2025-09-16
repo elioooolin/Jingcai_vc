@@ -43,19 +43,110 @@
         /* 日期选择器 */
         .date-item {
             transition: all 0.2s ease;
+            position: relative;
+            min-height: 60px;
         }
-        .date-item:hover {
+        .date-item:hover:not(.disabled) {
             background: #faf8f5;
             border-color: #d4a574;
+            transform: translateY(-1px);
         }
         .date-item.selected {
             background: #d4a574;
             color: white;
-            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.25);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+            transform: translateY(-2px);
         }
-        .date-item.disabled {
-            opacity: 0.3;
+        .date-item.disabled,
+        .date-item.too-early,
+        .date-item.expired {
+            opacity: 0.4;
             cursor: not-allowed;
+            background: #f5f5f5;
+            color: #999;
+            border-color: #e0e0e0;
+        }
+        .date-item.today:not(.selected):not(.disabled):not(.too-early):not(.expired) {
+            border: 2px solid #d4a574;
+            border-width: 2px;
+        }
+        
+        .date-month {
+            font-size: 10px;
+            color: #d4a574;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .date-day {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+        .date-info {
+            font-size: 9px;
+            color: #666;
+            font-weight: 400;
+            display: none; /* 隐藏日期信息文字 */
+        }
+        
+        .today-badge {
+            font-size: 8px;
+            color: #d4a574;
+            font-weight: 500;
+            margin-top: 2px;
+            background: rgba(212, 165, 116, 0.1);
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+        .date-item.selected .today-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        /* 日期图例 */
+        .date-legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 16px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid;
+        }
+        .legend-dot.available {
+            background: #d4a574;
+            border-color: #d4a574;
+        }
+        .legend-dot.disabled {
+            background: #f8f8f8;
+            border-color: #e5e5e5;
+        }
+        .legend-dot.today {
+            background: transparent;
+            border: 2px solid #d4a574;
+        }
+        .legend-dot.too-early {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+        .legend-dot.expired {
+            background: #fefbf2;
+            border-color: #fbbf24;
+        }
+        .legend-text {
+            font-size: 11px;
+            color: #666;
         }
     </style>
 </head>
@@ -97,28 +188,84 @@
                 <!-- 日期选择 -->
                 <div class="bg-white rounded-xl p-4 mb-6 card-shadow">
                     <h3 class="font-medium text-gray-800 mb-4">选择日期</h3>
-                    <div class="grid grid-cols-7 gap-2">
-                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">1</div>
-                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">2</div>
-                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">3</div>
-                        <div class="date-item disabled w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">4</div>
-                        <div class="date-item selected w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">5</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">6</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">7</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">8</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">9</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">10</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">11</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">12</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">13</div>
-                        <div class="date-item w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-sm cursor-pointer">14</div>
+                    <div class="text-xs text-gray-500 mb-3">
+                        入住：2024年12月1日 (28天) | 可点餐：12月8日-12月28日 | 需提前3天预订
+                    </div>
+                    <div id="date-container" class="grid grid-cols-7 gap-2">
+                        <!-- 从今天开始显示 -->
+                        <div class="date-item expired today w-10 flex flex-col items-center justify-center border rounded-lg text-xs cursor-pointer">
+                            <div class="date-month">12月</div>
+                            <div class="date-day">12</div>
+                            <div class="today-badge">今天</div>
+                        </div>
+                        <div class="date-item expired w-10 flex flex-col items-center justify-center border rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">13</div>
+                        </div>
+                        <div class="date-item expired w-10 flex flex-col items-center justify-center border rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">14</div>
+                        </div>
+                        
+                        <!-- 可正常点餐的日期 -->
+                        <div class="date-item selected w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">15</div>
+                        </div>
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">16</div>
+                        </div>
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">17</div>
+                        </div>
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">18</div>
+                        </div>
+                        
+                        <!-- 继续显示更多日期... -->
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">19</div>
+                        </div>
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">20</div>
+                        </div>
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">21</div>
+                        </div>
+                        
+                        <!-- 跨月示例 - 1月份 -->
+                        <div class="date-item w-10 flex flex-col items-center justify-center border border-gray-200 rounded-lg text-xs cursor-pointer">
+                            <div class="date-month">1月</div>
+                            <div class="date-day">1</div>
+                        </div>
+                        <div class="date-item disabled w-10 flex flex-col items-center justify-center border rounded-lg text-xs cursor-pointer">
+                            <div class="date-day">2</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 日期图例 -->
+                    <div class="date-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot available"></div>
+                            <span class="legend-text">可点餐</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot disabled"></div>
+                            <span class="legend-text">不可点餐</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot today"></div>
+                            <span class="legend-text">今天</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 开始点餐按钮 -->
-                <button class="w-full brand-gradient text-white py-4 rounded-xl font-medium shadow-lg mb-6 transition-transform hover:scale-105">
-                    开始点餐
-                </button>
+                <!-- 功能按钮 -->
+                <div class="flex gap-3 mb-6">
+                    <button class="flex-1 brand-gradient text-white py-4 rounded-xl font-medium shadow-lg transition-transform hover:scale-105">
+                        开始点餐
+                    </button>
+                    <button onclick="generateDateList('2024-12-01', 28, '2024-12-12')" class="px-4 py-4 border-2 border-amber-500 text-amber-600 rounded-xl font-medium transition-colors hover:bg-amber-50 text-sm">
+                        刷新日期
+                    </button>
+                </div>
 
                 <!-- 今日已点菜单 -->
                 <div class="bg-white rounded-xl p-4 card-shadow">
@@ -248,16 +395,152 @@
 
         // 日期选择功能
         document.addEventListener('DOMContentLoaded', function() {
-            const dateItems = document.querySelectorAll('.date-item:not(.disabled)');
+            const dateItems = document.querySelectorAll('.date-item');
+            
             dateItems.forEach(item => {
                 item.addEventListener('click', function() {
+                    // 检查日期状态
+                    if (this.classList.contains('disabled') || 
+                        this.classList.contains('too-early') || 
+                        this.classList.contains('expired')) {
+                        showToast('该日期不可点餐', 'warning');
+                        return;
+                    }
+                    
                     // 移除其他选中状态
                     dateItems.forEach(d => d.classList.remove('selected'));
                     // 添加选中状态
                     this.classList.add('selected');
+                    
+                    // 获取选中日期信息
+                    const day = this.querySelector('.date-day').textContent;
+                    const monthEl = this.querySelector('.date-month');
+                    const month = monthEl ? monthEl.textContent : '';
+                    
+                    showToast(`已选择 ${month}${day}日`, 'success');
                 });
             });
         });
+
+        // 消息提示功能
+        function showToast(message, type = 'info') {
+            // 移除现有的toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = `toast fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg text-sm font-medium z-50 transition-all duration-300`;
+            
+            // 根据类型设置样式
+            switch (type) {
+                case 'success':
+                    toast.className += ' bg-green-500 text-white';
+                    break;
+                case 'warning':
+                    toast.className += ' bg-yellow-500 text-white';
+                    break;
+                case 'error':
+                    toast.className += ' bg-red-500 text-white';
+                    break;
+                default:
+                    toast.className += ' bg-gray-800 text-white';
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // 显示动画
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translate(-50%, 0)';
+            }, 10);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 2500);
+        }
+
+        // 动态生成日期列表的函数 (实际应用中会根据客户数据生成)
+        function generateDateList(checkInDate, totalDays, currentDate) {
+            // 这个函数展示了如何动态生成日期列表
+            // 在实际应用中，会根据客户的入住信息计算可点餐日期范围
+            
+            const checkIn = new Date(checkInDate);
+            const today = new Date(currentDate);
+            const dateContainer = document.getElementById('date-container');
+            
+            // 计算关键日期
+            const orderStartDate = new Date(checkIn);
+            orderStartDate.setDate(checkIn.getDate() + 7); // 入住第8天
+            
+            const checkOutDate = new Date(checkIn);
+            checkOutDate.setDate(checkIn.getDate() + totalDays - 1);
+            
+            const orderDeadline = new Date(today); // 提前3天的截止日期
+            orderDeadline.setDate(today.getDate() + 3);
+            
+            // 清空现有内容
+            dateContainer.innerHTML = '';
+            
+            // 从今天开始生成14天的日期范围
+            for (let i = 0; i < 14; i++) {
+                const currentDate = new Date(today);
+                currentDate.setDate(today.getDate() + i);
+                
+                const daysSinceCheckIn = Math.floor((currentDate - checkIn) / (1000 * 60 * 60 * 24)) + 1;
+                
+                const dateItem = document.createElement('div');
+                dateItem.className = 'date-item w-10 flex flex-col items-center justify-center border rounded-lg text-xs cursor-pointer';
+                
+                // 判断日期状态
+                if (currentDate < orderStartDate) {
+                    dateItem.classList.add('too-early');
+                } else if (currentDate > checkOutDate) {
+                    dateItem.classList.add('disabled');
+                } else if (currentDate < orderDeadline) {
+                    dateItem.classList.add('expired');
+                } else {
+                    dateItem.classList.add('border-gray-200');
+                }
+                
+                // 月份标记 (每月1号或第一个日期显示)
+                if (currentDate.getDate() === 1 || i === 0) {
+                    const monthEl = document.createElement('div');
+                    monthEl.className = 'date-month';
+                    monthEl.textContent = `${currentDate.getMonth() + 1}月`;
+                    dateItem.appendChild(monthEl);
+                }
+                
+                // 日期
+                const dayEl = document.createElement('div');
+                dayEl.className = 'date-day';
+                dayEl.textContent = currentDate.getDate();
+                dateItem.appendChild(dayEl);
+                
+                // 今天标记（放在日期下方）
+                if (currentDate.toDateString() === today.toDateString()) {
+                    dateItem.classList.add('today');
+                    const todayBadge = document.createElement('div');
+                    todayBadge.className = 'today-badge';
+                    todayBadge.textContent = '今天';
+                    dateItem.appendChild(todayBadge);
+                }
+                
+                // 不再添加状态信息文字
+                
+                dateContainer.appendChild(dateItem);
+            }
+        }
     </script>
 </body>
 </html>

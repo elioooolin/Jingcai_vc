@@ -52,6 +52,37 @@ page {
   min-height: 100vh;
 }
 
+/* 小屏幕设备优化 */
+@media (max-width: 400px) {
+  .page-container {
+    padding: 0 20rpx;
+  }
+  
+  .container {
+    padding: 20rpx;
+  }
+  
+  .card {
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+  }
+}
+
+@media (max-width: 350px) {
+  .page-container {
+    padding: 0 16rpx;
+  }
+  
+  .container {
+    padding: 16rpx;
+  }
+  
+  .card {
+    padding: 20rpx;
+    margin-bottom: 16rpx;
+  }
+}
+
 /* 卡片样式 */
 .card {
   background: #ffffff;

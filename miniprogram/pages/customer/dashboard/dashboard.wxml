@@ -2,8 +2,8 @@
   <!-- 欢迎区域 -->
   <view class="welcome-section">
     <view class="welcome-card brand-gradient">
-      <text class="welcome-title">您好，{{userInfo.name}} ✨</text>
-      <text class="welcome-subtitle">今天是入住第{{checkInDays}}天 · 爱睦陪伴您</text>
+      <text class="welcome-title">您好，{{userInfo.name || '亲爱的客户'}} ✨</text>
+      <text class="welcome-subtitle">{{checkInDays > 0 ? '今天是入住第' + checkInDays + '天' : '欢迎入住'}} · 爱睦陪伴您</text>
     </view>
   </view>
 
@@ -19,16 +19,37 @@
         <!-- 日期选择 -->
         <view class="card">
           <view class="card-title">选择日期</view>
-          <view class="date-grid">
-            <view 
-              wx:for="{{dateList}}" 
-              wx:key="date"
-              class="date-item {{item.disabled ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}}"
-              bind:tap="selectDate"
-              data-date="{{item.date}}"
-              data-index="{{index}}"
-            >
-              {{item.day}}
+          <view class="date-info">
+            入住：{{userInfo.checkInDate || '2024-12-01'}} ({{userInfo.totalDays || 28}}天) | 可点餐：{{orderDateRange || '入住第8天到出所当日'}} | 需提前至少3天点餐
+          </view>
+          <view class="date-container">
+            <view class="date-grid">
+              <view 
+                wx:for="{{dateList}}" 
+                wx:key="date"
+                class="date-item {{item.disabled || item.tooEarly || item.expired ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}}"
+                bind:tap="selectDate"
+                data-date="{{item.date}}"
+                data-index="{{index}}"
+              >
+                <view class="date-month" wx:if="{{item.showMonth}}">{{item.monthName}}</view>
+                <view class="date-day">{{item.day}}</view>
+                <view class="today-badge" wx:if="{{item.isToday}}">今天</view>
+              </view>
+            </view>
+            <view class="date-legend">
+              <view class="legend-item">
+                <view class="legend-dot available"></view>
+                <text class="legend-text">可点餐</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot disabled"></view>
+                <text class="legend-text">不可点餐</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot today"></view>
+                <text class="legend-text">今天</text>
+              </view>
             </view>
           </view>
         </view>
@@ -92,11 +113,12 @@
         <view class="card">
           <view class="card-title">个人信息</view>
           <t-cell-group>
-            <t-cell title="姓名" note="{{userInfo.name}}" />
-            <t-cell title="手机号" note="{{userInfo.phone}}" />
-            <t-cell title="入住门店" note="朝阳店" />
-            <t-cell title="房间号" note="A201" />
-            <t-cell title="入住天数" note="28天" />
+            <t-cell title="姓名" note="{{userInfo.name || '未设置'}}" />
+            <t-cell title="手机号" note="{{userInfo.phone || '未设置'}}" />
+            <t-cell title="入住门店" note="{{userInfo.store || '未设置'}}" />
+            <t-cell title="房间号" note="{{userInfo.room || '未设置'}}" />
+            <t-cell title="入住天数" note="{{userInfo.totalDays ? userInfo.totalDays + '天' : '未设置'}}" />
+            <t-cell title="已入住" note="{{checkInDays > 0 ? checkInDays + '天' : '未开始'}}" />
           </t-cell-group>
         </view>
 

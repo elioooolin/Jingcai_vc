@@ -72,8 +72,13 @@ exports.main = async (event, context) => {
         userType: user.userType,
         isAdmin: user.isAdmin,
         room: user.room,
+        store: user.store,
         checkInDate: user.checkInDate,
         expectedCheckOutDate: user.expectedCheckOutDate,
+        totalDays: user.totalDays,
+        birthday: user.birthday,
+        dietPreference: user.dietPreference,
+        supplementCount: user.supplementCount,
         status: user.status
       }
     }
