@@ -341,14 +341,6 @@ Page({
       dateList: newDateList,
       selectedDate: date
     });
-    
-    // 显示选择成功提示
-    const monthText = item.showMonth ? item.monthName : '';
-    wx.showToast({
-      title: `已选择 ${monthText}${item.day}日`,
-      icon: 'success',
-      duration: 1500
-    });
   },
 
   // 开始点餐

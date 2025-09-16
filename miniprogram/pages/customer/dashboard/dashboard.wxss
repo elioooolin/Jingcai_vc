@@ -89,7 +89,7 @@
 }
 
 .date-item:hover:not(.disabled) {
-  background: var(--brand-bg-primary);
+  background: var(--brand-primary-dark);
   border-color: var(--brand-primary);
   transform: translateY(-2rpx);
 }
