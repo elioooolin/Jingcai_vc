@@ -362,6 +362,26 @@
   line-height: 1.4;
 }
 
+/* 特殊需求项的特殊样式 */
+.summary-item.special-requirements {
+  background: rgba(255, 243, 224, 0.8);
+  border-radius: 12rpx;
+  padding: 20rpx 16rpx;
+  margin: 8rpx 0;
+  border: 2rpx solid #f0d0a0;
+}
+
+.summary-item.special-requirements .summary-label {
+  color: #d4a574;
+  font-weight: 600;
+}
+
+.summary-item.special-requirements .summary-value {
+  color: #8b6914;
+  font-style: italic;
+  text-align: left;
+}
+
 /* 提交区域 */
 .submit-section {
   margin-top: 64rpx;

@@ -63,6 +63,10 @@ Page({
     dinnerSoupMenu: [] as MenuItem[],
     supplementMenu: [] as MenuItem[],
     
+    // 高补餐显示控制
+    showSupplementSection: false,
+    userSupplementCount: 0,
+    
     // 选择规则
     breakfastRule: '',
     lunchMainRule: '',
@@ -80,7 +84,7 @@ Page({
     supplementRequired: 0
   },
 
-  onLoad(options: any) {
+  async onLoad(options: any) {
     if (options.date) {
       this.setData({ selectedDate: options.date });
     }
@@ -90,8 +94,11 @@ Page({
       title: `${options.date || ''} 点餐`
     });
     
-    // 加载菜单数据
-    this.loadMenuData();
+    // 并行执行权限检查和菜单数据加载
+    await Promise.all([
+      this.checkSupplementPermission(),
+      this.loadMenuData()
+    ]);
   },
 
   // 从数据库加载菜单数据
@@ -464,6 +471,14 @@ Page({
       });
     }
     
+    // 特殊需求
+    if (this.data.specialRequirements && this.data.specialRequirements.trim()) {
+      summary.push({
+        type: '特殊需求',
+        dishes: this.data.specialRequirements.trim()
+      });
+    }
+    
     this.setData({
       orderSummary: summary,
       hasSelectedItems: summary.length > 0
@@ -493,10 +508,12 @@ Page({
   // 特殊需求输入
   onSpecialRequirementsChange(e: any) {
     this.setData({ specialRequirements: e.detail.value });
+    // 更新订单摘要以包含特殊需求
+    this.updateOrderSummary();
   },
 
   // 提交订单
-  submitOrder() {
+  async submitOrder() {
     if (!this.data.canSubmit) {
       wx.showToast({
         title: '请完成必选菜品的选择',
@@ -506,55 +523,125 @@ Page({
       return;
     }
 
-    this.setData({ submitting: true });
-
-    // 收集订单数据
-    const orderData = {
-      date: this.data.selectedDate,
-      menuDay: this.data.menuDay,
-      breakfast: this.data.breakfastMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      lunchMain: this.data.lunchMainMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      lunchSoup: this.data.lunchSoupMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      dinnerMain: this.data.dinnerMainMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      dinnerSoup: this.data.dinnerSoupMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      supplement: this.data.supplementMenu.filter(item => item.selected).map(item => ({
-        id: item.id,
-        name: item.name
-      })),
-      specialRequirements: this.data.specialRequirements
-    };
-
-    console.log('提交订单数据:', orderData);
-
-    // TODO: 调用云函数提交订单
-    // 现在先模拟提交
-    setTimeout(() => {
-      this.setData({ submitting: false });
+    // 获取用户信息
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo._id) {
       wx.showToast({
-        title: '订单提交成功！',
-        icon: 'success',
+        title: '用户信息错误，请重新登录',
+        icon: 'error',
         duration: 2000
       });
+      return;
+    }
 
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
-    }, 2000);
+    this.setData({ submitting: true });
+
+    try {
+      // 收集订单数据
+      const orderData = {
+        userId: userInfo._id,
+        orderDate: this.data.selectedDate,
+        menuDay: this.data.menuDay,
+        breakfast: this.data.breakfastMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        lunchMain: this.data.lunchMainMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        lunchSoup: this.data.lunchSoupMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        dinnerMain: this.data.dinnerMainMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        dinnerSoup: this.data.dinnerSoupMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        supplement: this.data.supplementMenu.filter(item => item.selected).map(item => ({
+          id: item.id || item._id,
+          name: item.name
+        })),
+        specialRequirements: this.data.specialRequirements
+      };
+
+      console.log('提交订单数据:', orderData);
+
+      // 调用云函数提交订单
+      const result = await wx.cloud.callFunction({
+        name: 'submitOrder',
+        data: {
+          orderData: orderData
+        }
+      });
+
+      console.log('云函数调用结果:', result.result);
+
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        // 提交成功
+        this.setData({ submitting: false });
+        
+        wx.showToast({
+          title: '订单提交成功！',
+          icon: 'success',
+          duration: 2000
+        });
+
+        // 延迟返回上一页
+        setTimeout(() => {
+          wx.navigateBack({
+            success: () => {
+              console.log('返回上一页成功');
+            },
+            fail: (error) => {
+              console.error('返回上一页失败:', error);
+              // 如果返回失败，跳转到首页
+              wx.reLaunch({
+                url: '/pages/customer/dashboard/dashboard'
+              });
+            }
+          });
+        }, 1500);
+        
+      } else {
+        // 提交失败
+        const errorMessage = (result.result && typeof result.result === 'object' && 'message' in result.result) 
+          ? (result.result as any).message 
+          : '订单提交失败';
+        
+        this.setData({ submitting: false });
+        
+        wx.showModal({
+          title: '提交失败',
+          content: errorMessage,
+          showCancel: false,
+          confirmText: '确定'
+        });
+      }
+      
+    } catch (error) {
+      console.error('提交订单时发生错误:', error);
+      
+      this.setData({ submitting: false });
+      
+      wx.showModal({
+        title: '提交失败',
+        content: '网络错误，请检查网络连接后重试',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '重试',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户选择重试
+            this.submitOrder();
+          }
+        }
+      });
+    }
   },
 
   // 查看菜品详情
@@ -639,6 +726,170 @@ Page({
     console.log(`✅ 图片加载成功: ${name}`);
     console.log(`   URL: ${url}`);
     console.log(`   图片尺寸:`, e.detail);
+  },
+
+  // 检查用户高补餐权限（从云数据库实时获取）
+  async checkSupplementPermission() {
+    console.log('从云数据库检查用户高补餐权限...');
+    
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo._id) {
+      console.log('用户信息不存在或缺少ID，不显示高补餐');
+      this.setData({ 
+        showSupplementSection: false,
+        userSupplementCount: 0 
+      });
+      return;
+    }
+    
+    try {
+      // 从云数据库实时获取用户的 supplementCount
+      console.log('正在从数据库获取用户最新的 supplementCount...');
+      
+      const result = await wx.cloud.callFunction({
+        name: 'getUserSupplementCount',
+        data: {
+          userId: userInfo._id
+        }
+      });
+      
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const supplementCount = (result.result as any).supplementCount || 0;
+        console.log('从数据库获取的用户高补餐次数:', supplementCount);
+        
+        if (supplementCount > 0) {
+          console.log('用户有高补餐权限，加载高补餐数据');
+          this.setData({ 
+            showSupplementSection: true,
+            userSupplementCount: supplementCount 
+          });
+          this.loadSupplementData();
+        } else {
+          console.log('用户无高补餐权限，隐藏高补餐区域');
+          this.setData({ 
+            showSupplementSection: false,
+            userSupplementCount: 0,
+            supplementMenu: []
+          });
+        }
+      } else {
+        const errorMessage = (result.result && typeof result.result === 'object' && 'message' in result.result) 
+          ? (result.result as any).message 
+          : '未知错误';
+        console.error('获取用户 supplementCount 失败:', errorMessage);
+        // 失败时默认不显示高补餐
+        this.setData({ 
+          showSupplementSection: false,
+          userSupplementCount: 0,
+          supplementMenu: []
+        });
+      }
+      
+    } catch (error) {
+      console.error('调用 getUserSupplementCount 云函数失败:', error);
+      // 失败时默认不显示高补餐
+      this.setData({ 
+        showSupplementSection: false,
+        userSupplementCount: 0,
+        supplementMenu: []
+      });
+    }
+  },
+
+  // 加载高补餐数据
+  loadSupplementData() {
+    console.log('开始加载高补餐数据...');
+    
+    // 先尝试从本地存储获取
+    const cachedData = wx.getStorageSync('supplementDishes');
+    
+    if (cachedData && cachedData.data && Array.isArray(cachedData.data)) {
+      // 检查数据是否过期
+      const now = Date.now();
+      const isExpired = cachedData.timestamp && (now - cachedData.timestamp > cachedData.expiry);
+      
+      if (!isExpired) {
+        console.log('使用缓存的高补餐数据');
+        this.setSupplementMenuData(cachedData.data);
+        return;
+      } else {
+        console.log('缓存的高补餐数据已过期，重新获取');
+        wx.removeStorageSync('supplementDishes');
+      }
+    }
+    
+    // 从云函数获取数据
+    console.log('从云函数获取高补餐数据...');
+    wx.cloud.callFunction({
+      name: 'getSupplementDishes',
+      data: {},
+      success: (res: any) => {
+        if (res.result && res.result.success && res.result.dishes) {
+          console.log('云函数获取高补餐数据成功:', res.result.dishes);
+          
+          // 缓存数据
+          wx.setStorageSync('supplementDishes', {
+            data: res.result.dishes,
+            timestamp: Date.now(),
+            expiry: 24 * 60 * 60 * 1000 // 24小时过期
+          });
+          
+          this.setSupplementMenuData(res.result.dishes);
+        } else {
+          console.error('获取高补餐数据失败:', res.result?.message || '未知错误');
+          this.setData({ 
+            supplementMenu: [],
+            supplementRule: '暂无高补餐数据'
+          });
+        }
+      },
+      fail: (error: any) => {
+        console.error('调用getSupplementDishes云函数失败:', error);
+        this.setData({ 
+          supplementMenu: [],
+          supplementRule: '高补餐数据加载失败'
+        });
+      }
+    });
+  },
+
+  // 设置高补餐菜单数据
+  setSupplementMenuData(dishes: any[]) {
+    console.log('设置高补餐菜单数据:', dishes);
+    
+    if (!dishes || dishes.length === 0) {
+      this.setData({ 
+        supplementMenu: [],
+        supplementRule: '暂无高补餐'
+      });
+      return;
+    }
+    
+    // 转换数据格式
+    const supplementMenu = dishes.map(dish => ({
+      id: dish.id || dish._id,
+      _id: dish._id,
+      name: dish.name,
+      description: dish.description,
+      category: dish.category,
+      meal_type: dish.meal_type || 'supplement',
+      ingredients: dish.ingredients,
+      keywords: dish.keywords,
+      chefRecommend: dish.chefRecommend,
+      nutritional_info: dish.nutritional_info,
+      imageUrl: dish.imageUrl,
+      selected: false,
+      icon: dish.icon || '🍲',
+      color: dish.color || '#FF6B6B'
+    }));
+    
+    this.setData({ 
+      supplementMenu: supplementMenu,
+      supplementRule: '最多可选1项',
+      supplementRequired: 0 // 高补餐是可选的
+    });
+    
+    console.log('高补餐菜单设置完成，共', supplementMenu.length, '项');
   },
 
   // 图片加载失败

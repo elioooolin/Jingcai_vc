@@ -1,0 +1,9 @@
+{
+  "name": "submitOrder",
+  "version": "1.0.0",
+  "description": "提交订单到数据库",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

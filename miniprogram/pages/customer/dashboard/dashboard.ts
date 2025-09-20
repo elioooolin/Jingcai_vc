@@ -46,6 +46,7 @@ Page({
   onLoad() {
     this.checkLoginStatus();
     // checkLoginStatus 中已经包含了用户信息初始化和日期列表初始化
+    this.loadSupplementData();
   },
 
   onShow() {
@@ -401,6 +402,35 @@ Page({
     });
   },
 
+  // 加载高补品数据
+  loadSupplementData() {
+    console.log('开始加载高补品数据...');
+    
+    wx.cloud.callFunction({
+      name: 'getSupplementDishes',
+      data: {},
+      success: (res: any) => {
+        if (res.result && res.result.success) {
+          console.log('高补品数据加载成功:', res.result.dishes);
+          
+          // 存储到本地，供点餐页面使用
+          wx.setStorageSync('supplementDishes', {
+            data: res.result.dishes,
+            timestamp: Date.now(),
+            expiry: 24 * 60 * 60 * 1000 // 24小时过期
+          });
+          
+          console.log('高补品数据已存储到本地');
+        } else {
+          console.error('获取高补品数据失败:', res.result?.message || '未知错误');
+        }
+      },
+      fail: (error: any) => {
+        console.error('调用getSupplementDishes云函数失败:', error);
+      }
+    });
+  },
+
   // 退出登录
   logout() {
     wx.showModal({
@@ -411,6 +441,7 @@ Page({
       success: (res) => {
         if (res.confirm) {
           wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('supplementDishes'); // 清理高补品数据
           wx.reLaunch({
             url: '/pages/login/login'
           });

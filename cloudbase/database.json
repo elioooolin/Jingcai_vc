@@ -164,14 +164,8 @@
           "description": "订单日期"
         },
         {
-          "name": "mealType",
-          "type": "string",
-          "description": "餐型：breakfast/lunch/dinner/snack"
-        },
-        {
-          "name": "dishes",
-          "type": "array",
-          "description": "菜品列表"
+          "name": "order_details",
+          "type": "object"
         },
         {
           "name": "status",

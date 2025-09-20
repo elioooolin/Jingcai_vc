@@ -273,7 +273,7 @@
     </view>
 
     <!-- 高补餐 -->
-    <view class="meal-section" wx:if="{{supplementMenu.length > 0}}">
+    <view class="meal-section" wx:if="{{showSupplementSection && supplementMenu.length > 0}}">
       <view class="meal-title">
         <text class="meal-title-icon">🍎</text>
         <text>高补餐</text>
@@ -335,7 +335,7 @@
     <!-- 订单摘要 -->
     <view class="order-summary" wx:if="{{hasSelectedItems}}">
       <view class="order-summary-title">订单确认</view>
-      <view class="summary-item" wx:for="{{orderSummary}}" wx:key="type">
+      <view class="summary-item {{item.type === '特殊需求' ? 'special-requirements' : ''}}" wx:for="{{orderSummary}}" wx:key="type">
         <text class="summary-label">{{item.type}}</text>
         <text class="summary-value">{{item.dishes}}</text>
       </view>
