@@ -7,11 +7,36 @@ interface MenuItem {
   icon: string;
   color: string;
   selected: boolean;
+  _id?: string;
+  category?: string;
+  meal_type?: string;
+  ingredients?: string;
+  keywords?: string;
+  chefRecommend?: boolean;
+  nutritional_info?: {
+    calories: string;
+    protein: string;
+    fat: string;
+    carbohydrates: string;
+  };
 }
 
 interface OrderSummaryItem {
   type: string;
   dishes: string;
+}
+
+interface MenuData {
+  day: number;
+  meals: {
+    [mealType: string]: {
+      [category: string]: {
+        selection_rule: string;
+        required_count: number;
+        dishes: MenuItem[];
+      };
+    };
+  };
 }
 
 Page({
@@ -22,190 +47,32 @@ Page({
     hasSelectedItems: false,
     canSubmit: false,
     orderSummary: [] as OrderSummaryItem[],
+    loading: true,
+    menuDay: 0,
     
-    // 早餐菜单
-    breakfastMenu: [
-      {
-        id: 'breakfast_001',
-        name: '小米粥',
-        description: '温胃养身，易于消化',
-        icon: '粥',
-        color: '#d4a574',
-        selected: false
-      },
-      {
-        id: 'breakfast_002',
-        name: '燕麦粥',
-        description: '营养丰富，促进消化',
-        icon: '粥',
-        color: '#fbbf24',
-        selected: false
-      },
-      {
-        id: 'breakfast_003',
-        name: '蒸蛋',
-        description: '嫩滑可口，蛋白质丰富',
-        icon: '蛋',
-        color: '#f59e0b',
-        selected: false
-      },
-      {
-        id: 'breakfast_004',
-        name: '煮鸡蛋',
-        description: '营养全面，易于吸收',
-        icon: '蛋',
-        color: '#f59e0b',
-        selected: false
-      }
-    ] as MenuItem[],
+    // 从数据库加载的菜单数据
+    breakfastMenu: [] as MenuItem[],
+    lunchMainMenu: [] as MenuItem[],
+    lunchSoupMenu: [] as MenuItem[],
+    dinnerMainMenu: [] as MenuItem[],
+    dinnerSoupMenu: [] as MenuItem[],
+    supplementMenu: [] as MenuItem[],
     
-    // 午餐主菜
-    lunchMainMenu: [
-      {
-        id: 'lunch_main_001',
-        name: '红烧鸡腿',
-        description: '蛋白质丰富，口感鲜美',
-        icon: '鸡',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'lunch_main_002',
-        name: '清蒸鲈鱼',
-        description: '低脂高蛋白，营养丰富',
-        icon: '鱼',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'lunch_main_003',
-        name: '蒸蛋羹',
-        description: '嫩滑营养，易于消化',
-        icon: '蛋',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'lunch_main_004',
-        name: '瘦肉粥',
-        description: '温补身体，营养均衡',
-        icon: '肉',
-        color: '#ea580c',
-        selected: false
-      }
-    ] as MenuItem[],
+    // 选择规则
+    breakfastRule: '',
+    lunchMainRule: '',
+    lunchSoupRule: '',
+    dinnerMainRule: '',
+    dinnerSoupRule: '',
+    supplementRule: '',
     
-    // 午餐汤品
-    lunchSoupMenu: [
-      {
-        id: 'lunch_soup_001',
-        name: '冬瓜汤',
-        description: '清热利水，去水肿',
-        icon: '汤',
-        color: '#3b82f6',
-        selected: false
-      },
-      {
-        id: 'lunch_soup_002',
-        name: '排骨汤',
-        description: '补钙养身，滋补营养',
-        icon: '汤',
-        color: '#3b82f6',
-        selected: false
-      }
-    ] as MenuItem[],
-    
-    // 晚餐主菜
-    dinnerMainMenu: [
-      {
-        id: 'dinner_main_001',
-        name: '清蒸鲈鱼',
-        description: '低脂高蛋白，营养丰富',
-        icon: '鱼',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'dinner_main_002',
-        name: '时令蔬菜',
-        description: '维生素丰富，清淡易消化',
-        icon: '蔬',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'dinner_main_003',
-        name: '豆腐汤',
-        description: '植物蛋白，营养丰富',
-        icon: '豆',
-        color: '#ea580c',
-        selected: false
-      },
-      {
-        id: 'dinner_main_004',
-        name: '小米粥',
-        description: '温胃养身，易于消化',
-        icon: '粥',
-        color: '#ea580c',
-        selected: false
-      }
-    ] as MenuItem[],
-    
-    // 晚餐汤品
-    dinnerSoupMenu: [
-      {
-        id: 'dinner_soup_001',
-        name: '紫菜蛋花汤',
-        description: '清淡营养，补充维生素',
-        icon: '汤',
-        color: '#3b82f6',
-        selected: false
-      },
-      {
-        id: 'dinner_soup_002',
-        name: '丝瓜汤',
-        description: '清热解毒，促进乳汁分泌',
-        icon: '汤',
-        color: '#3b82f6',
-        selected: false
-      }
-    ] as MenuItem[],
-    
-    // 高补餐
-    supplementMenu: [
-      {
-        id: 'supplement_001',
-        name: '鸽子汤',
-        description: '滋补养身，促进恢复',
-        icon: '汤',
-        color: '#d4a574',
-        selected: false
-      },
-      {
-        id: 'supplement_002',
-        name: '乌鸡汤',
-        description: '补气养血，增强体质',
-        icon: '汤',
-        color: '#d4a574',
-        selected: false
-      },
-      {
-        id: 'supplement_003',
-        name: '猪蹄汤',
-        description: '下奶催乳，补充胶原蛋白',
-        icon: '汤',
-        color: '#d4a574',
-        selected: false
-      },
-      {
-        id: 'supplement_004',
-        name: '鲫鱼汤',
-        description: '催乳下奶，营养丰富',
-        icon: '汤',
-        color: '#d4a574',
-        selected: false
-      }
-    ] as MenuItem[]
+    // 必选数量
+    breakfastRequired: 0,
+    lunchMainRequired: 0,
+    lunchSoupRequired: 0,
+    dinnerMainRequired: 0,
+    dinnerSoupRequired: 0,
+    supplementRequired: 0
   },
 
   onLoad(options: any) {
@@ -216,6 +83,221 @@ Page({
     // 设置导航栏标题
     wx.setNavigationBarTitle({
       title: `${options.date || ''} 点餐`
+    });
+    
+    // 加载菜单数据
+    this.loadMenuData();
+  },
+
+  // 从数据库加载菜单数据
+  async loadMenuData() {
+    const selectedDate = this.data.selectedDate;
+    if (!selectedDate) {
+      wx.showToast({
+        title: '日期参数缺失',
+        icon: 'error'
+      });
+      return;
+    }
+
+    this.setData({ loading: true });
+
+    try {
+      console.log('正在获取菜单数据，日期:', selectedDate);
+      
+      const result = await wx.cloud.callFunction({
+        name: 'getMenuForDate',
+        data: { date: selectedDate }
+      });
+
+      console.log('菜单数据获取结果:', result);
+
+      if (result.result.success) {
+        const menuData = result.result.data as { date: string; menuDay: number; menu: MenuData };
+        console.log('解析菜单数据:', menuData);
+        
+        this.setData({ menuDay: menuData.menuDay });
+        this.parseMenuData(menuData.menu);
+      } else {
+        console.error('获取菜单失败:', result.result);
+        wx.showToast({
+          title: result.result.message || '获取菜单失败',
+          icon: 'error'
+        });
+        // 使用默认菜单数据
+        this.loadDefaultMenu();
+      }
+    } catch (error) {
+      console.error('调用云函数失败:', error);
+      wx.showToast({
+        title: '网络错误，请稍后重试',
+        icon: 'error'
+      });
+      // 使用默认菜单数据
+      this.loadDefaultMenu();
+    } finally {
+      this.setData({ loading: false });
+    }
+  },
+
+  // 解析菜单数据
+  parseMenuData(menuData: MenuData) {
+    console.log('开始解析菜单数据:', menuData);
+    
+    const meals = menuData.meals;
+    
+    // 解析早餐
+    if (meals.breakfast && meals.breakfast['菜品']) {
+      this.setData({
+        breakfastMenu: meals.breakfast['菜品'].dishes,
+        breakfastRule: meals.breakfast['菜品'].selection_rule,
+        breakfastRequired: meals.breakfast['菜品'].required_count
+      });
+    }
+    
+    // 解析午餐
+    if (meals.lunch) {
+      if (meals.lunch['菜品']) {
+        this.setData({
+          lunchMainMenu: meals.lunch['菜品'].dishes,
+          lunchMainRule: meals.lunch['菜品'].selection_rule,
+          lunchMainRequired: meals.lunch['菜品'].required_count
+        });
+      }
+      if (meals.lunch['汤品']) {
+        this.setData({
+          lunchSoupMenu: meals.lunch['汤品'].dishes,
+          lunchSoupRule: meals.lunch['汤品'].selection_rule,
+          lunchSoupRequired: meals.lunch['汤品'].required_count
+        });
+      }
+    }
+    
+    // 解析晚餐
+    if (meals.dinner) {
+      if (meals.dinner['菜品']) {
+        this.setData({
+          dinnerMainMenu: meals.dinner['菜品'].dishes,
+          dinnerMainRule: meals.dinner['菜品'].selection_rule,
+          dinnerMainRequired: meals.dinner['菜品'].required_count
+        });
+      }
+      if (meals.dinner['汤品']) {
+        this.setData({
+          dinnerSoupMenu: meals.dinner['汤品'].dishes,
+          dinnerSoupRule: meals.dinner['汤品'].selection_rule,
+          dinnerSoupRequired: meals.dinner['汤品'].required_count
+        });
+      }
+    }
+    
+    console.log('菜单数据解析完成');
+  },
+
+  // 加载默认菜单（备用）
+  loadDefaultMenu() {
+    console.log('使用默认菜单数据');
+    this.setData({
+      breakfastMenu: [
+        {
+          id: 'default_breakfast_001',
+          name: '小米粥',
+          description: '温胃养身，易于消化',
+          icon: '菜',
+          color: '#d4a574',
+          selected: false
+        },
+        {
+          id: 'default_breakfast_002',
+          name: '蒸蛋',
+          description: '嫩滑可口，蛋白质丰富',
+          icon: '菜',
+          color: '#d4a574',
+          selected: false
+        }
+      ],
+      lunchMainMenu: [
+        {
+          id: 'default_lunch_main_001',
+          name: '红烧鸡腿',
+          description: '蛋白质丰富，口感鲜美',
+          icon: '菜',
+          color: '#ea580c',
+          selected: false
+        },
+        {
+          id: 'default_lunch_main_002',
+          name: '清蒸鲈鱼',
+          description: '低脂高蛋白，营养丰富',
+          icon: '菜',
+          color: '#ea580c',
+          selected: false
+        }
+      ],
+      lunchSoupMenu: [
+        {
+          id: 'default_lunch_soup_001',
+          name: '冬瓜汤',
+          description: '清热利水，去水肿',
+          icon: '汤',
+          color: '#3b82f6',
+          selected: false
+        },
+        {
+          id: 'default_lunch_soup_002',
+          name: '排骨汤',
+          description: '补钙养身，滋补营养',
+          icon: '汤',
+          color: '#3b82f6',
+          selected: false
+        }
+      ],
+      dinnerMainMenu: [
+        {
+          id: 'default_dinner_main_001',
+          name: '清蒸鲈鱼',
+          description: '低脂高蛋白，营养丰富',
+          icon: '菜',
+          color: '#ea580c',
+          selected: false
+        },
+        {
+          id: 'default_dinner_main_002',
+          name: '时令蔬菜',
+          description: '维生素丰富，清淡易消化',
+          icon: '菜',
+          color: '#ea580c',
+          selected: false
+        }
+      ],
+      dinnerSoupMenu: [
+        {
+          id: 'default_dinner_soup_001',
+          name: '紫菜蛋花汤',
+          description: '清淡营养，补充维生素',
+          icon: '汤',
+          color: '#3b82f6',
+          selected: false
+        },
+        {
+          id: 'default_dinner_soup_002',
+          name: '丝瓜汤',
+          description: '清热解毒，促进乳汁分泌',
+          icon: '汤',
+          color: '#3b82f6',
+          selected: false
+        }
+      ],
+      breakfastRule: '二选一',
+      lunchMainRule: '四选二',
+      lunchSoupRule: '二选一',
+      dinnerMainRule: '四选二',
+      dinnerSoupRule: '二选一',
+      breakfastRequired: 2,
+      lunchMainRequired: 2,
+      lunchSoupRequired: 1,
+      dinnerMainRequired: 2,
+      dinnerSoupRequired: 1
     });
   },
 
@@ -259,13 +341,21 @@ Page({
 
   // 获取最大选择数
   getMaxSelections(meal: string): number {
+    const requiredKey = `${meal}Required` as keyof typeof this.data;
+    const required = this.data[requiredKey] as number;
+    
+    if (required > 0) {
+      return required;
+    }
+    
+    // 备用规则
     const rules: Record<string, number> = {
-      'breakfast': 2, // 主菜二选一 + 其他
-      'lunchMain': 2, // 四选二
-      'lunchSoup': 1, // 二选一
-      'dinnerMain': 2, // 四选二
-      'dinnerSoup': 1, // 二选一
-      'supplement': 1 // 四选一
+      'breakfast': 2,
+      'lunchMain': 2,
+      'lunchSoup': 1,
+      'dinnerMain': 2,
+      'dinnerSoup': 1,
+      'supplement': 1
     };
     return rules[meal] || 1;
   },
@@ -322,16 +412,20 @@ Page({
 
   // 检查是否可以提交
   checkCanSubmit() {
-    const breakfastSelected = this.data.breakfastMenu.some(item => item.selected);
-    const lunchMainSelected = this.data.lunchMainMenu.filter(item => item.selected).length >= 1;
-    const lunchSoupSelected = this.data.lunchSoupMenu.some(item => item.selected);
-    const dinnerMainSelected = this.data.dinnerMainMenu.filter(item => item.selected).length >= 1;
-    const dinnerSoupSelected = this.data.dinnerSoupMenu.some(item => item.selected);
+    const breakfastSelected = this.data.breakfastMenu.filter(item => item.selected).length;
+    const lunchMainSelected = this.data.lunchMainMenu.filter(item => item.selected).length;
+    const lunchSoupSelected = this.data.lunchSoupMenu.filter(item => item.selected).length;
+    const dinnerMainSelected = this.data.dinnerMainMenu.filter(item => item.selected).length;
+    const dinnerSoupSelected = this.data.dinnerSoupMenu.filter(item => item.selected).length;
     
-    // 必须选择：早餐、午餐(主菜+汤)、晚餐(主菜+汤)
-    const canSubmit = breakfastSelected && 
-                     lunchMainSelected && lunchSoupSelected && 
-                     dinnerMainSelected && dinnerSoupSelected;
+    // 检查是否满足最低要求
+    const breakfastOk = breakfastSelected >= Math.min(this.data.breakfastRequired, 1);
+    const lunchMainOk = lunchMainSelected >= Math.min(this.data.lunchMainRequired, 1);
+    const lunchSoupOk = lunchSoupSelected >= Math.min(this.data.lunchSoupRequired, 1);
+    const dinnerMainOk = dinnerMainSelected >= Math.min(this.data.dinnerMainRequired, 1);
+    const dinnerSoupOk = dinnerSoupSelected >= Math.min(this.data.dinnerSoupRequired, 1);
+    
+    const canSubmit = breakfastOk && lunchMainOk && lunchSoupOk && dinnerMainOk && dinnerSoupOk;
     
     this.setData({ canSubmit });
   },
@@ -354,12 +448,45 @@ Page({
 
     this.setData({ submitting: true });
 
-    // 模拟提交订单
+    // 收集订单数据
+    const orderData = {
+      date: this.data.selectedDate,
+      menuDay: this.data.menuDay,
+      breakfast: this.data.breakfastMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      lunchMain: this.data.lunchMainMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      lunchSoup: this.data.lunchSoupMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      dinnerMain: this.data.dinnerMainMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      dinnerSoup: this.data.dinnerSoupMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      supplement: this.data.supplementMenu.filter(item => item.selected).map(item => ({
+        id: item.id,
+        name: item.name
+      })),
+      specialRequirements: this.data.specialRequirements
+    };
+
+    console.log('提交订单数据:', orderData);
+
+    // TODO: 调用云函数提交订单
+    // 现在先模拟提交
     setTimeout(() => {
       this.setData({ submitting: false });
-      console.log("模拟提交订单")
       wx.showToast({
-        title: '订单提交成功！等待管理员确认',
+        title: '订单提交成功！',
         icon: 'success',
         duration: 2000
       });
@@ -376,5 +503,11 @@ Page({
     wx.navigateTo({
       url: `/pages/dish-detail/dish-detail?id=${id}`
     });
+  },
+
+  // 刷新菜单数据
+  onPullDownRefresh() {
+    this.loadMenuData();
+    wx.stopPullDownRefresh();
   }
 });

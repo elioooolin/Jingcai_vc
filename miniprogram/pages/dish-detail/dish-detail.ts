@@ -11,10 +11,7 @@ interface DishInfo {
     name: string;
     value: string;
   }>;
-  benefits: Array<{
-    title: string;
-    description: string;
-  }>;
+  chefRecommend: boolean;
   recommendation: string;
   suggestions: Array<{
     label: string;
@@ -26,6 +23,10 @@ interface DishInfo {
     icon: string;
     color: string;
   }>;
+  keywords: string[];
+  ingredients: string;
+  category: string;
+  meal_type: string;
 }
 
 Page({
@@ -43,66 +44,87 @@ Page({
   },
 
   // 加载菜品信息
-  loadDishInfo(dishId: string) {
-    // 模拟API调用
-    setTimeout(() => {
-      const mockDishInfo: DishInfo = {
-        id: dishId,
-        name: '小米粥',
-        description: '温胃养身，易于消化的营养粥品',
-        icon: '粥',
-        rating: 5,
-        tags: ['易消化', '养胃', '补气血', '产后适宜'],
-        nutrition: [
-          { name: '热量(千卡)', value: '120' },
-          { name: '蛋白质', value: '4.5g' },
-          { name: '碳水化合物', value: '22g' },
-          { name: '脂肪', value: '1.2g' },
-          { name: '铁', value: '0.8mg' },
-          { name: '锌', value: '2.1mg' }
-        ],
-        benefits: [
-          {
-            title: '健脾养胃',
-            description: '小米性温，具有健脾和胃的功效，特别适合产后脾胃虚弱的产妇'
-          },
-          {
-            title: '补充能量',
-            description: '富含碳水化合物，能够快速为产妇提供所需能量，促进身体恢复'
-          },
-          {
-            title: '富含维生素B族',
-            description: '含有丰富的维生素B1、B2等，有助于神经系统健康和新陈代谢'
-          },
-          {
-            title: '易于消化',
-            description: '质地柔软，容易消化吸收，减轻肠胃负担'
-          }
-        ],
-        recommendation: '小米粥是月子期间的经典选择，不仅营养丰富，而且温和易消化。对于产后身体虚弱、食欲不振的产妇来说，小米粥能够很好地滋养脾胃，补充所需的营养和能量。建议搭配蒸蛋或其他蛋白质食物，营养更加均衡。',
-        suggestions: [
-          { label: '适宜时间', value: '早餐、晚餐' },
-          { label: '建议份量', value: '150-200ml/次' },
-          { label: '搭配建议', value: '蒸蛋、咸菜、坚果' },
-          { label: '注意事项', value: '温热食用，避免过烫' }
-        ],
-        related: [
-          { id: 'dish_002', name: '燕麦粥', icon: '粥', color: '#fbbf24' },
-          { id: 'dish_003', name: '蒸蛋', icon: '蛋', color: '#f59e0b' },
-          { id: 'dish_004', name: '瘦肉粥', icon: '肉', color: '#ea580c' }
-        ]
-      };
-      
-      this.setData({ dishInfo: mockDishInfo });
-      
-      // 设置导航栏标题
-      wx.setNavigationBarTitle({
-        title: mockDishInfo.name
+  async loadDishInfo(dishId: string) {
+    try {
+      wx.showLoading({
+        title: '加载中...'
       });
+
+      // 调用云函数获取菜品详情
+      const result = await wx.cloud.callFunction({
+        name: 'getDishDetail',
+        data: { dishId }
+      });
+
+      wx.hideLoading();
+
+      if (result.result.success) {
+        const dishInfo = result.result.data;
+        this.setData({ dishInfo });
+
+        // 设置导航栏标题
+        wx.setNavigationBarTitle({
+          title: dishInfo.name
+        });
+
+        // 检查是否收藏
+        this.checkFavoriteStatus(dishId);
+      } else {
+        wx.showToast({
+          title: '菜品信息获取失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载菜品信息失败:', error);
       
-      // 检查是否收藏
-      this.checkFavoriteStatus(dishId);
-    }, 1000);
+      // 使用备用数据
+      this.loadFallbackDishInfo(dishId);
+    }
+  },
+
+  // 加载备用菜品信息（兼容性处理）
+  loadFallbackDishInfo(dishId: string) {
+    const mockDishInfo: DishInfo = {
+      id: dishId,
+      name: '小米粥',
+      description: '温胃养身，易于消化的营养粥品',
+      icon: '🥣',
+      rating: 5,
+      tags: ['易消化', '养胃', '补气血', '产后适宜'],
+      nutrition: [
+        { name: '热量', value: '120kcal' },
+        { name: '蛋白质', value: '4.5g' },
+        { name: '碳水化合物', value: '22g' },
+        { name: '脂肪', value: '1.2g' }
+      ],
+      chefRecommend: true,
+      recommendation: '小米粥是月子期间的经典选择，不仅营养丰富，而且温和易消化。',
+      suggestions: [
+        { label: '适宜时间', value: '早餐、晚餐' },
+        { label: '建议份量', value: '150-200ml/次' },
+        { label: '搭配建议', value: '蒸蛋、咸菜、坚果' },
+        { label: '注意事项', value: '温热食用，避免过烫' }
+      ],
+      related: [
+        { id: 'dish_002', name: '燕麦粥', icon: '🥣', color: '#fbbf24' },
+        { id: 'dish_003', name: '蒸蛋', icon: '🥚', color: '#f59e0b' },
+        { id: 'dish_004', name: '瘦肉粥', icon: '🥣', color: '#ea580c' }
+      ],
+      keywords: ['养胃', '补血', '温润'],
+      ingredients: '小米、红枣、枸杞',
+      category: '菜品',
+      meal_type: 'breakfast'
+    };
+    
+    this.setData({ dishInfo: mockDishInfo });
+    
+    wx.setNavigationBarTitle({
+      title: mockDishInfo.name
+    });
+    
+    this.checkFavoriteStatus(dishId);
   },
 
   // 检查收藏状态

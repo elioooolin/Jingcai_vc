@@ -49,19 +49,36 @@
     </view>
   </t-card>
 
-  <!-- 功效与作用 -->
-  <t-card title="功效与作用" class="benefits-card">
-    <view class="benefits-list">
-      <view 
-        wx:for="{{dishInfo.benefits}}" 
-        wx:key="title"
-        class="benefit-item"
-      >
-        <view class="benefit-dot brand-gradient"></view>
-        <view class="benefit-content">
-          <text class="benefit-title">{{item.title}}</text>
-          <text class="benefit-desc">{{item.description}}</text>
-        </view>
+  <!-- 菜品详情 -->
+  <t-card title="菜品详情" class="details-card">
+    <!-- 食材信息 -->
+    <view class="detail-section">
+      <view class="detail-label">主要食材</view>
+      <text class="detail-content">{{dishInfo.ingredients || '优质食材精选'}}</text>
+    </view>
+    
+    <!-- 关键词标签 -->
+    <view class="detail-section" wx:if="{{dishInfo.keywords && dishInfo.keywords.length > 0}}">
+      <view class="detail-label">特点</view>
+      <view class="keywords-section">
+        <t-tag 
+          wx:for="{{dishInfo.keywords}}" 
+          wx:key="*this"
+          theme="primary" 
+          variant="light"
+          size="small"
+          class="keyword-tag"
+        >
+          {{item}}
+        </t-tag>
+      </view>
+    </view>
+    
+    <!-- 主厨推荐标识 -->
+    <view class="detail-section" wx:if="{{dishInfo.chefRecommend}}">
+      <view class="chef-recommend-badge">
+        <text class="chef-icon">👨‍🍳</text>
+        <text class="chef-text">主厨推荐</text>
       </view>
     </view>
   </t-card>

@@ -54,17 +54,6 @@
           </view>
         </view>
 
-        <!-- 开始点餐按钮 -->
-        <t-button
-          theme="primary"
-          size="large"
-          block
-          bind:tap="startOrdering"
-          class="order-button"
-        >
-          开始点餐
-        </t-button>
-
         <!-- 今日已点菜单 -->
         <view class="card" wx:if="{{todayOrder}}">
           <view class="flex-between mb-24">

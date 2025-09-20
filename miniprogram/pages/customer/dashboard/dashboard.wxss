@@ -258,15 +258,6 @@
   color: #666;
 }
 
-/* 开始点餐按钮 */
-.order-button {
-  margin: 48rpx 0;
-  --td-button-default-height: 96rpx;
-  --td-button-large-font-size: 32rpx;
-  --td-button-border-radius: 24rpx;
-  font-weight: 500;
-  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
-}
 
 /* 订单项目 */
 .order-items {

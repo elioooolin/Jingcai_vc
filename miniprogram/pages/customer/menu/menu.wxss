@@ -20,6 +20,42 @@
   opacity: 0.95;
 }
 
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+  color: var(--brand-primary);
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 32rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--brand-primary);
+  opacity: 0.8;
+}
+
+/* 菜单内容 */
+.menu-content {
+  min-height: calc(100vh - 200rpx);
+}
+
 /* 餐次区域 */
 .meal-section {
   margin-bottom: 64rpx;

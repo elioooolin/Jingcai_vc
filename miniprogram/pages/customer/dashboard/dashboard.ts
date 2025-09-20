@@ -341,23 +341,19 @@ Page({
       dateList: newDateList,
       selectedDate: date
     });
-  },
-
-  // 开始点餐
-  startOrdering() {
-    const { selectedDate } = this.data;
     
-    if (!selectedDate) {
-      wx.showToast({
-        title: '请先选择日期',
-        icon: 'none',
-        duration: 2000
-      });
-      return;
-    }
-    
+    // 跳转到点餐页面
+    console.log('跳转到点餐页面，日期:', date);
     wx.navigateTo({
-      url: `/pages/customer/menu/menu?date=${selectedDate}`
+      url: `/pages/customer/menu/menu?date=${date}`,
+      fail: (error) => {
+        console.error('跳转失败:', error);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'error',
+          duration: 2000
+        });
+      }
     });
   },
 
