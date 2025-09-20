@@ -4,29 +4,18 @@ interface DishInfo {
   id: string;
   name: string;
   description: string;
-  icon: string;
-  rating: number;
-  tags: string[];
-  nutrition: Array<{
-    name: string;
-    value: string;
-  }>;
+  nutritional_info: {
+    calories: string;
+    protein: string;
+    fat: string;
+    carbohydrates: string;
+  };
   chefRecommend: boolean;
-  recommendation: string;
-  suggestions: Array<{
-    label: string;
-    value: string;
-  }>;
-  related: Array<{
-    id: string;
-    name: string;
-    icon: string;
-    color: string;
-  }>;
   keywords: string[];
   ingredients: string;
   category: string;
   meal_type: string;
+  imageUrl: string;
 }
 
 Page({
@@ -37,6 +26,8 @@ Page({
   },
 
   onLoad(options: any) {
+    console.log('📱 菜品详情页 onLoad');
+    
     if (options.id) {
       this.setData({ dishId: options.id });
       this.loadDishInfo(options.id);
@@ -46,11 +37,40 @@ Page({
   // 加载菜品信息
   async loadDishInfo(dishId: string) {
     try {
+      // 首先尝试从本地存储获取菜品信息
+      const localDishData = wx.getStorageSync(`dish_detail_${dishId}`);
+      
+      if (localDishData && localDishData.timestamp) {
+        // 检查数据是否在1小时内（防止数据过期）
+        const oneHour = 60 * 60 * 1000;
+        const isDataFresh = (Date.now() - localDishData.timestamp) < oneHour;
+        
+        if (isDataFresh) {
+          console.log('使用本地存储的菜品信息:', localDishData);
+          
+          // 转换为详情页需要的格式
+          const dishInfo = {
+            ...localDishData
+          };
+          
+          this.setData({ dishInfo });
+          
+          // 设置导航栏标题
+          wx.setNavigationBarTitle({
+            title: dishInfo.name
+          });
+          
+          // 检查是否收藏
+          this.checkFavoriteStatus(dishId);
+          return;
+        }
+      }
+      
+      // 如果本地没有数据或数据过期，则调用云函数
       wx.showLoading({
         title: '加载中...'
       });
 
-      // 调用云函数获取菜品详情
       const result = await wx.cloud.callFunction({
         name: 'getDishDetail',
         data: { dishId }
@@ -58,8 +78,8 @@ Page({
 
       wx.hideLoading();
 
-      if (result.result.success) {
-        const dishInfo = result.result.data;
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const dishInfo = result.result.data as DishInfo;
         this.setData({ dishInfo });
 
         // 设置导航栏标题
@@ -84,44 +104,38 @@ Page({
     }
   },
 
-  // 加载备用菜品信息（兼容性处理）
+  // 加载备用菜品信息（当信息获取失败时）
   loadFallbackDishInfo(dishId: string) {
-    const mockDishInfo: DishInfo = {
+    // 诚实地告知用户信息暂时缺失
+    const fallbackDishInfo: DishInfo = {
       id: dishId,
-      name: '小米粥',
-      description: '温胃养身，易于消化的营养粥品',
-      icon: '🥣',
-      rating: 5,
-      tags: ['易消化', '养胃', '补气血', '产后适宜'],
-      nutrition: [
-        { name: '热量', value: '120kcal' },
-        { name: '蛋白质', value: '4.5g' },
-        { name: '碳水化合物', value: '22g' },
-        { name: '脂肪', value: '1.2g' }
-      ],
-      chefRecommend: true,
-      recommendation: '小米粥是月子期间的经典选择，不仅营养丰富，而且温和易消化。',
-      suggestions: [
-        { label: '适宜时间', value: '早餐、晚餐' },
-        { label: '建议份量', value: '150-200ml/次' },
-        { label: '搭配建议', value: '蒸蛋、咸菜、坚果' },
-        { label: '注意事项', value: '温热食用，避免过烫' }
-      ],
-      related: [
-        { id: 'dish_002', name: '燕麦粥', icon: '🥣', color: '#fbbf24' },
-        { id: 'dish_003', name: '蒸蛋', icon: '🥚', color: '#f59e0b' },
-        { id: 'dish_004', name: '瘦肉粥', icon: '🥣', color: '#ea580c' }
-      ],
-      keywords: ['养胃', '补血', '温润'],
-      ingredients: '小米、红枣、枸杞',
-      category: '菜品',
-      meal_type: 'breakfast'
+      name: '菜品信息暂时缺失',
+      description: '抱歉，该菜品的详细信息暂时无法获取。我们正在努力完善菜品信息，请稍后再试或联系客服了解更多详情。',
+      nutritional_info: {
+        calories: '--',
+        protein: '--',
+        fat: '--',
+        carbohydrates: '--'
+      },
+      chefRecommend: false,
+      imageUrl: '', // 空图片URL，将显示占位符
+      keywords: [],
+      ingredients: '信息暂时缺失',
+      category: '未知',
+      meal_type: 'unknown'
     };
     
-    this.setData({ dishInfo: mockDishInfo });
+    this.setData({ dishInfo: fallbackDishInfo });
     
     wx.setNavigationBarTitle({
-      title: mockDishInfo.name
+      title: '菜品详情'
+    });
+    
+    // 显示友好的错误提示
+    wx.showToast({
+      title: '菜品信息暂时无法获取',
+      icon: 'none',
+      duration: 3000
     });
     
     this.checkFavoriteStatus(dishId);
@@ -133,6 +147,26 @@ Page({
     const isFavorite = favorites.includes(dishId);
     this.setData({ isFavorite });
   },
+
+  // 预览图片
+  previewImage(e: any) {
+    const { url } = e.currentTarget.dataset;
+    if (url) {
+      wx.previewImage({
+        current: url,
+        urls: [url],
+        fail: (error) => {
+          console.error('预览图片失败:', error);
+          wx.showToast({
+            title: '图片加载失败',
+            icon: 'error',
+            duration: 2000
+          });
+        }
+      });
+    }
+  },
+
 
   // 选择菜品
   selectDish() {
@@ -184,14 +218,6 @@ Page({
     });
   },
 
-  // 查看相关菜品
-  viewRelatedDish(e: any) {
-    const { id } = e.currentTarget.dataset;
-    
-    wx.redirectTo({
-      url: `/pages/dish-detail/dish-detail?id=${id}`
-    });
-  },
 
   // 页面分享
   onShareAppMessage() {

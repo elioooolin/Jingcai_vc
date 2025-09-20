@@ -13,6 +13,7 @@ interface MenuItem {
   ingredients?: string;
   keywords?: string;
   chefRecommend?: boolean;
+  imageUrl?: string;
   nutritional_info?: {
     calories: string;
     protein: string;
@@ -49,6 +50,10 @@ Page({
     orderSummary: [] as OrderSummaryItem[],
     loading: true,
     menuDay: 0,
+    
+    // 菜单加载错误状态
+    menuLoadError: false,
+    menuErrorMessage: '',
     
     // 从数据库加载的菜单数据
     breakfastMenu: [] as MenuItem[],
@@ -112,7 +117,7 @@ Page({
 
       console.log('菜单数据获取结果:', result);
 
-      if (result.result.success) {
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
         const menuData = result.result.data as { date: string; menuDay: number; menu: MenuData };
         console.log('解析菜单数据:', menuData);
         
@@ -120,21 +125,26 @@ Page({
         this.parseMenuData(menuData.menu);
       } else {
         console.error('获取菜单失败:', result.result);
+        const errorMessage = (result.result && typeof result.result === 'object' && 'message' in result.result) 
+          ? (result.result.message as string) 
+          : '获取菜单失败';
         wx.showToast({
-          title: result.result.message || '获取菜单失败',
-          icon: 'error'
+          title: errorMessage,
+          icon: 'error',
+          duration: 3000
         });
-        // 使用默认菜单数据
-        this.loadDefaultMenu();
+        // 显示菜单加载失败状态
+        this.showMenuLoadFailure('服务器返回错误，无法获取菜单数据');
       }
     } catch (error) {
       console.error('调用云函数失败:', error);
       wx.showToast({
         title: '网络错误，请稍后重试',
-        icon: 'error'
+        icon: 'error',
+        duration: 3000
       });
-      // 使用默认菜单数据
-      this.loadDefaultMenu();
+      // 显示菜单加载失败状态
+      this.showMenuLoadFailure('网络连接失败，无法获取菜单数据');
     } finally {
       this.setData({ loading: false });
     }
@@ -192,113 +202,163 @@ Page({
     }
     
     console.log('菜单数据解析完成');
+    
+    // 一次性存储所有菜品信息到本地
+    this.storeDishInfoToLocal();
   },
 
-  // 加载默认菜单（备用）
-  loadDefaultMenu() {
-    console.log('使用默认菜单数据');
+  // 已删除loadDefaultMenu方法，不再使用模拟数据
+  // 当菜单加载失败时，诚实地显示错误信息而不是虚假数据
+
+  // 显示菜单加载失败状态
+  showMenuLoadFailure(errorMessage: string) {
+    console.log('显示菜单加载失败状态:', errorMessage);
+    
+    // 清空所有菜单数据
     this.setData({
-      breakfastMenu: [
-        {
-          id: 'default_breakfast_001',
-          name: '小米粥',
-          description: '温胃养身，易于消化',
-          icon: '菜',
-          color: '#d4a574',
-          selected: false
-        },
-        {
-          id: 'default_breakfast_002',
-          name: '蒸蛋',
-          description: '嫩滑可口，蛋白质丰富',
-          icon: '菜',
-          color: '#d4a574',
-          selected: false
-        }
-      ],
-      lunchMainMenu: [
-        {
-          id: 'default_lunch_main_001',
-          name: '红烧鸡腿',
-          description: '蛋白质丰富，口感鲜美',
-          icon: '菜',
-          color: '#ea580c',
-          selected: false
-        },
-        {
-          id: 'default_lunch_main_002',
-          name: '清蒸鲈鱼',
-          description: '低脂高蛋白，营养丰富',
-          icon: '菜',
-          color: '#ea580c',
-          selected: false
-        }
-      ],
-      lunchSoupMenu: [
-        {
-          id: 'default_lunch_soup_001',
-          name: '冬瓜汤',
-          description: '清热利水，去水肿',
-          icon: '汤',
-          color: '#3b82f6',
-          selected: false
-        },
-        {
-          id: 'default_lunch_soup_002',
-          name: '排骨汤',
-          description: '补钙养身，滋补营养',
-          icon: '汤',
-          color: '#3b82f6',
-          selected: false
-        }
-      ],
-      dinnerMainMenu: [
-        {
-          id: 'default_dinner_main_001',
-          name: '清蒸鲈鱼',
-          description: '低脂高蛋白，营养丰富',
-          icon: '菜',
-          color: '#ea580c',
-          selected: false
-        },
-        {
-          id: 'default_dinner_main_002',
-          name: '时令蔬菜',
-          description: '维生素丰富，清淡易消化',
-          icon: '菜',
-          color: '#ea580c',
-          selected: false
-        }
-      ],
-      dinnerSoupMenu: [
-        {
-          id: 'default_dinner_soup_001',
-          name: '紫菜蛋花汤',
-          description: '清淡营养，补充维生素',
-          icon: '汤',
-          color: '#3b82f6',
-          selected: false
-        },
-        {
-          id: 'default_dinner_soup_002',
-          name: '丝瓜汤',
-          description: '清热解毒，促进乳汁分泌',
-          icon: '汤',
-          color: '#3b82f6',
-          selected: false
-        }
-      ],
-      breakfastRule: '二选一',
-      lunchMainRule: '四选二',
-      lunchSoupRule: '二选一',
-      dinnerMainRule: '四选二',
-      dinnerSoupRule: '二选一',
-      breakfastRequired: 2,
-      lunchMainRequired: 2,
-      lunchSoupRequired: 1,
-      dinnerMainRequired: 2,
-      dinnerSoupRequired: 1
+      breakfastMenu: [],
+      lunchMainMenu: [],
+      lunchSoupMenu: [],
+      dinnerMainMenu: [],
+      dinnerSoupMenu: [],
+      supplementMenu: [],
+      breakfastRule: '',
+      lunchMainRule: '',
+      lunchSoupRule: '',
+      dinnerMainRule: '',
+      dinnerSoupRule: '',
+      breakfastRequired: 0,
+      lunchMainRequired: 0,
+      lunchSoupRequired: 0,
+      dinnerMainRequired: 0,
+      dinnerSoupRequired: 0,
+      menuLoadError: true,
+      menuErrorMessage: errorMessage
     });
+    
+    // 显示重试提示
+    wx.showModal({
+      title: '菜单加载失败',
+      content: `${errorMessage}\n\n是否重新尝试加载菜单？`,
+      confirmText: '重试',
+      cancelText: '稍后再试',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户选择重试
+          this.retryLoadMenu();
+        }
+      }
+    });
+  },
+
+  // 重试加载菜单
+  retryLoadMenu() {
+    console.log('用户选择重试加载菜单');
+    
+    // 重置错误状态
+    this.setData({
+      menuLoadError: false,
+      menuErrorMessage: ''
+    });
+    
+    // 重新加载菜单数据
+    this.loadMenuData();
+  },
+
+  // 联系客服
+  contactService() {
+    wx.showModal({
+      title: '联系客服',
+      content: '如需帮助，请联系客服人员：\n\n电话：400-123-4567\n微信：lovemoon_service\n\n或者您可以稍后重试加载菜单。',
+      confirmText: '我知道了',
+      showCancel: false
+    });
+  },
+
+  // 一次性存储所有菜品信息到本地
+  storeDishInfoToLocal() {
+    console.log('开始批量存储菜品信息到本地...');
+    
+    try {
+      // 收集所有菜品数据
+      const allMenus = [
+        ...this.data.breakfastMenu,
+        ...this.data.lunchMainMenu,
+        ...this.data.lunchSoupMenu,
+        ...this.data.dinnerMainMenu,
+        ...this.data.dinnerSoupMenu,
+        ...this.data.supplementMenu
+      ];
+      
+      const timestamp = Date.now();
+      let storedCount = 0;
+      
+      // 批量存储每个菜品的详细信息
+      allMenus.forEach(dishItem => {
+        if (dishItem && dishItem.id) {
+          const dishDetailData = {
+            id: dishItem.id,
+            name: dishItem.name,
+            description: dishItem.description || '精心制作的营养菜品，适合月子期间食用。',
+            imageUrl: dishItem.imageUrl,
+            category: dishItem.category || '菜品',
+            meal_type: dishItem.meal_type || 'unknown',
+            keywords: dishItem.keywords || [],
+            ingredients: dishItem.ingredients || '优质食材精选',
+            chefRecommend: dishItem.chefRecommend || false,
+            nutritional_info: dishItem.nutritional_info || {
+              calories: '--',
+              protein: '--',
+              fat: '--',
+              carbohydrates: '--'
+            },
+            timestamp: timestamp
+          };
+          
+          // 存储到本地
+          wx.setStorageSync(`dish_detail_${dishItem.id}`, dishDetailData);
+          storedCount++;
+        }
+      });
+      
+      console.log(`✅ 批量存储完成，共存储 ${storedCount} 个菜品信息`);
+      
+      // 可选：清理过期的菜品信息
+      this.cleanExpiredDishInfo();
+      
+    } catch (error) {
+      console.error('❌ 批量存储菜品信息失败:', error);
+    }
+  },
+
+  // 清理过期的菜品信息
+  cleanExpiredDishInfo() {
+    try {
+      const storageInfo = wx.getStorageInfoSync();
+      const dishDetailKeys = storageInfo.keys.filter(key => key.startsWith('dish_detail_'));
+      const oneDay = 24 * 60 * 60 * 1000; // 24小时过期
+      let cleanedCount = 0;
+      
+      dishDetailKeys.forEach(key => {
+        try {
+          const dishData = wx.getStorageSync(key);
+          if (dishData && dishData.timestamp && (Date.now() - dishData.timestamp) > oneDay) {
+            wx.removeStorageSync(key);
+            cleanedCount++;
+          }
+        } catch (error) {
+          // 如果读取失败，也删除这个键
+          wx.removeStorageSync(key);
+          cleanedCount++;
+        }
+      });
+      
+      if (cleanedCount > 0) {
+        console.log(`🧹 清理了 ${cleanedCount} 个过期的菜品信息`);
+      }
+    } catch (error) {
+      console.error('清理过期菜品信息失败:', error);
+    }
   },
 
   // 选择菜品
@@ -498,11 +558,98 @@ Page({
   },
 
   // 查看菜品详情
-  viewDishDetail(e: any) {
-    const { id } = e.currentTarget.dataset;
-    wx.navigateTo({
-      url: `/pages/dish-detail/dish-detail?id=${id}`
-    });
+  // 跳转到菜品详情页
+  goToDishDetail(e: any) {
+    try {
+      console.log('🔍 goToDishDetail 被调用了！');
+      
+      const dataset = e?.currentTarget?.dataset || e?.target?.dataset || {};
+      const { dishId, name } = dataset;
+      console.log('🆔 提取的数据 - dishId:', dishId, 'name:', name);
+
+      if (!dishId) {
+        console.error('缺少菜品ID');
+        wx.showToast({
+          title: '菜品信息错误',
+          icon: 'error'
+        });
+        return;
+      }
+
+      // 显示loading提示
+      console.log('🔄 显示loading提示...');
+      wx.showToast({
+        title: '正在跳转...',
+        icon: 'loading',
+        duration: 1500,
+        mask: true
+      });
+      
+      // 延迟跳转，让用户看到loading效果
+      setTimeout(() => {
+        console.log('🚀 开始跳转到详情页...');
+        wx.navigateTo({
+          url: `/pages/dish-detail/dish-detail?id=${dishId}&name=${encodeURIComponent(name)}`,
+          success: () => {
+            console.log('✅ 跳转成功');
+          },
+          fail: (error) => {
+            console.error('❌ 跳转失败:', error);
+            wx.showToast({
+              title: '页面跳转失败',
+              icon: 'error'
+            });
+          }
+        });
+      }, 800); // 800ms延迟，让用户能看到loading
+      
+    } catch (error) {
+      console.error('goToDishDetail 执行错误:', error);
+      wx.showToast({
+        title: '操作失败',
+        icon: 'error'
+      });
+    }
+  },
+
+  // 预览菜品图片
+  previewImage(e: any) {
+    e.stopPropagation(); // 阻止事件冒泡，避免触发菜品选择
+    const { url } = e.currentTarget.dataset;
+    
+    if (url) {
+      wx.previewImage({
+        current: url,
+        urls: [url],
+        fail: (error) => {
+          console.error('预览图片失败:', error);
+          wx.showToast({
+            title: '图片加载失败',
+            icon: 'error',
+            duration: 2000
+          });
+        }
+      });
+    }
+  },
+
+  // 图片加载成功
+  onImageLoad(e: any) {
+    const { name, url } = e.currentTarget.dataset;
+    console.log(`✅ 图片加载成功: ${name}`);
+    console.log(`   URL: ${url}`);
+    console.log(`   图片尺寸:`, e.detail);
+  },
+
+  // 图片加载失败
+  onImageError(e: any) {
+    const { name, url } = e.currentTarget.dataset;
+    console.error(`❌ 图片加载失败: ${name}`, e.detail);
+    console.error(`   失败的URL: ${url}`);
+    console.error(`   错误详情:`, e.detail.errMsg || '未知错误');
+    
+    // 可以在这里设置默认图片或显示占位符
+    // 暂时先记录错误，后续可以添加重试逻辑
   },
 
   // 刷新菜单数据

@@ -2,146 +2,86 @@
   <!-- 菜品图片和基本信息 -->
   <view class="dish-header">
     <view class="dish-image-container">
-      <view class="dish-image brand-gradient">
-        <text class="dish-icon">{{dishInfo.icon}}</text>
+      <image 
+        wx:if="{{dishInfo.imageUrl}}"
+        class="dish-image" 
+        src="{{dishInfo.imageUrl}}" 
+        mode="aspectFill"
+        bind:tap="previewImage"
+        data-url="{{dishInfo.imageUrl}}"
+        lazy-load="{{true}}"
+      />
+      <view 
+        wx:else
+        class="dish-image-placeholder"
+      >
+        <text class="placeholder-icon">🍽️</text>
+        <text class="placeholder-text">暂无图片</text>
       </view>
     </view>
     
     <view class="dish-basic-info">
       <text class="dish-name">{{dishInfo.name}}</text>
-      <text class="dish-description">{{dishInfo.description}}</text>
       
-      <!-- 评分 -->
-      <view class="rating-section">
-        <view class="stars">
-          <text wx:for="{{5}}" wx:key="*this" class="star {{index < dishInfo.rating ? 'active' : ''}}">★</text>
+      <!-- 主厨推荐标识 -->
+      <view class="chef-recommend-badge" wx:if="{{dishInfo.chefRecommend}}">
+        <text class="chef-icon">👨‍🍳</text>
+        <text class="chef-text">主厨推荐</text>
+      </view>
+      
+      <!-- 主要食材 -->
+      <view class="info-section">
+        <view class="info-label">主要食材</view>
+        <text class="info-content">{{dishInfo.ingredients || '优质食材精选'}}</text>
+      </view>
+      
+      <!-- 特点标签 -->
+      <view class="info-section" wx:if="{{dishInfo.keywords && dishInfo.keywords.length > 0}}">
+        <view class="info-label">特点</view>
+        <view class="keywords-container">
+          <t-tag 
+            wx:for="{{dishInfo.keywords}}" 
+            wx:key="*this"
+            theme="primary" 
+            variant="light"
+            size="small"
+            class="keyword-tag"
+          >
+            {{item}}
+          </t-tag>
         </view>
-        <text class="rating-text">({{dishInfo.rating}}.0分)</text>
       </view>
       
-      <!-- 标签 -->
-      <view class="tags-section">
-        <t-tag 
-          wx:for="{{dishInfo.tags}}" 
-          wx:key="*this"
-          theme="light" 
-          variant="outline"
-          size="small"
-          class="dish-tag"
-        >
-          {{item}}
-        </t-tag>
-      </view>
+      <text class="dish-description">{{dishInfo.description}}</text>
     </view>
   </view>
 
   <!-- 营养成分 -->
-  <t-card title="营养成分 (每100g)" class="nutrition-card">
+  <t-card class="nutrition-card">
+    <view slot="header" class="nutrition-header">
+      <text class="nutrition-title">营养成分</text>
+      <text class="nutrition-subtitle">每100g含量</text>
+    </view>
     <view class="nutrition-grid">
-      <view 
-        wx:for="{{dishInfo.nutrition}}" 
-        wx:key="name"
-        class="nutrition-item"
-      >
-        <text class="nutrition-value">{{item.value}}</text>
-        <text class="nutrition-name">{{item.name}}</text>
+      <view class="nutrition-item">
+        <text class="nutrition-value">{{dishInfo.nutritional_info.calories || '--'}}</text>
+        <text class="nutrition-name">热量(kcal)</text>
+      </view>
+      <view class="nutrition-item">
+        <text class="nutrition-value">{{dishInfo.nutritional_info.protein || '--'}}</text>
+        <text class="nutrition-name">蛋白质(g)</text>
+      </view>
+      <view class="nutrition-item">
+        <text class="nutrition-value">{{dishInfo.nutritional_info.fat || '--'}}</text>
+        <text class="nutrition-name">脂肪(g)</text>
+      </view>
+      <view class="nutrition-item">
+        <text class="nutrition-value">{{dishInfo.nutritional_info.carbohydrates || '--'}}</text>
+        <text class="nutrition-name">碳水化合物(g)</text>
       </view>
     </view>
   </t-card>
 
-  <!-- 菜品详情 -->
-  <t-card title="菜品详情" class="details-card">
-    <!-- 食材信息 -->
-    <view class="detail-section">
-      <view class="detail-label">主要食材</view>
-      <text class="detail-content">{{dishInfo.ingredients || '优质食材精选'}}</text>
-    </view>
-    
-    <!-- 关键词标签 -->
-    <view class="detail-section" wx:if="{{dishInfo.keywords && dishInfo.keywords.length > 0}}">
-      <view class="detail-label">特点</view>
-      <view class="keywords-section">
-        <t-tag 
-          wx:for="{{dishInfo.keywords}}" 
-          wx:key="*this"
-          theme="primary" 
-          variant="light"
-          size="small"
-          class="keyword-tag"
-        >
-          {{item}}
-        </t-tag>
-      </view>
-    </view>
-    
-    <!-- 主厨推荐标识 -->
-    <view class="detail-section" wx:if="{{dishInfo.chefRecommend}}">
-      <view class="chef-recommend-badge">
-        <text class="chef-icon">👨‍🍳</text>
-        <text class="chef-text">主厨推荐</text>
-      </view>
-    </view>
-  </t-card>
-
-  <!-- 营养师推荐 -->
-  <view class="recommendation-card">
-    <view class="recommendation-header">
-      <text class="recommendation-icon">👩‍⚕️</text>
-      <text class="recommendation-title">营养师推荐</text>
-    </view>
-    <text class="recommendation-content">{{dishInfo.recommendation}}</text>
-  </view>
-
-  <!-- 食用建议 -->
-  <t-card title="食用建议" class="suggestion-card">
-    <t-cell-group>
-      <t-cell 
-        wx:for="{{dishInfo.suggestions}}" 
-        wx:key="label"
-        title="{{item.label}}" 
-        note="{{item.value}}"
-      />
-    </t-cell-group>
-  </t-card>
-
-  <!-- 相关推荐 -->
-  <t-card title="相关推荐" class="related-card">
-    <view class="related-grid">
-      <view 
-        wx:for="{{dishInfo.related}}" 
-        wx:key="id"
-        class="related-item"
-        bind:tap="viewRelatedDish"
-        data-id="{{item.id}}"
-      >
-        <view class="related-image" style="background-color: {{item.color}};">
-          <text class="related-icon">{{item.icon}}</text>
-        </view>
-        <text class="related-name">{{item.name}}</text>
-      </view>
-    </view>
-  </t-card>
-
-  <!-- 操作按钮 -->
-  <view class="action-buttons">
-    <t-button
-      theme="primary"
-      size="large"
-      bind:tap="selectDish"
-      class="select-button"
-    >
-      选择此菜品
-    </t-button>
-    
-    <t-button
-      theme="light"
-      size="large"
-      bind:tap="toggleFavorite"
-      class="favorite-button"
-    >
-      {{isFavorite ? '💖' : '❤️'}}
-    </t-button>
-  </view>
 </view>
 
 <t-toast id="t-toast" />

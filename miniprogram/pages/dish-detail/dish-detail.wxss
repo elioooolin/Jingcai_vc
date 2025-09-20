@@ -8,28 +8,60 @@
 }
 
 .dish-image-container {
-  text-align: center;
-  margin-bottom: 32rpx;
-}
-
-.dish-image {
-  width: 200rpx;
-  height: 200rpx;
+  width: 100%;
+  max-width: 560rpx;
+  margin: 0 auto 32rpx;
+  position: relative;
+  height: 0;
+  padding-bottom: 57.14%; /* 7:4 宽高比 (4/7 * 100% = 57.14%) */
   border-radius: 32rpx;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   box-shadow: 0 8rpx 32rpx rgba(212, 165, 116, 0.25);
 }
 
-.dish-icon {
-  font-size: 80rpx;
-  color: #ffffff;
-  font-weight: 500;
+.dish-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 32rpx;
+  background-color: #f8f8f8;
+  object-fit: cover;
 }
+
+/* 图片占位符样式 */
+.dish-image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 32rpx;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed #d1d5db;
+}
+
+.placeholder-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.6;
+}
+
+.placeholder-text {
+  font-size: 24rpx;
+  color: #6b7280;
+  opacity: 0.8;
+}
+
 
 .dish-basic-info {
   text-align: center;
+  padding: 32rpx 32rpx 0;
 }
 
 .dish-name {
@@ -37,56 +69,93 @@
   font-size: 48rpx;
   font-weight: 600;
   color: var(--brand-text);
-  margin-bottom: 16rpx;
+  margin-bottom: 24rpx;
+  line-height: 1.3;
+}
+
+/* 信息区域样式 */
+.info-section {
+  margin: 24rpx 0;
+  text-align: left;
+}
+
+.info-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.info-label::before {
+  content: '';
+  width: 6rpx;
+  height: 28rpx;
+  background: linear-gradient(135deg, var(--brand-primary) 0%, #e8b366 100%);
+  border-radius: 3rpx;
+  margin-right: 12rpx;
+}
+
+.info-content {
+  font-size: 26rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+  padding-left: 18rpx;
+}
+
+/* 关键词容器 */
+.keywords-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding-left: 18rpx;
+}
+
+.keyword-tag {
+  margin: 0;
+  background: transparent !important;
+  border: none !important;
+  color: var(--brand-text-secondary) !important;
+  font-size: 26rpx !important;
+  padding: 0 !important;
+  font-weight: normal !important;
+}
+
+/* 主厨推荐标识优化 */
+.chef-recommend-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  margin: 16rpx 0 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+}
+
+.chef-icon {
+  margin-right: 8rpx;
+  font-size: 28rpx;
+}
+
+.chef-text {
+  font-size: 24rpx;
 }
 
 .dish-description {
   display: block;
   font-size: 28rpx;
   color: var(--brand-text-secondary);
-  margin-bottom: 32rpx;
-  line-height: 1.5;
-}
-
-/* 评分区域 */
-.rating-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-}
-
-.stars {
-  margin-right: 16rpx;
-}
-
-.star {
-  font-size: 36rpx;
-  color: #e0e0e0;
-  margin-right: 4rpx;
-}
-
-.star.active {
-  color: #fbbf24;
-}
-
-.rating-text {
-  font-size: 28rpx;
-  color: var(--brand-text-secondary);
-}
-
-/* 标签区域 */
-.tags-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16rpx;
-}
-
-.dish-tag {
-  --td-tag-light-color: var(--brand-primary);
-  --td-tag-light-bg-color: rgba(212, 165, 116, 0.1);
-  --td-tag-light-border-color: var(--brand-primary);
+  line-height: 1.6;
+  text-align: justify;
+  margin: 32rpx 0;
+  padding: 24rpx;
+  background: rgba(212, 165, 116, 0.05);
+  border-radius: 16rpx;
+  border-left: 6rpx solid var(--brand-primary);
 }
 
 /* 营养成分 */
@@ -94,15 +163,40 @@
   margin-bottom: 32rpx;
 }
 
+.nutrition-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0 16rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.nutrition-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: 8rpx;
+}
+
+.nutrition-subtitle {
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  opacity: 0.8;
+}
+
 .nutrition-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32rpx;
-  padding: 32rpx 0;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32rpx 48rpx;
+  padding: 32rpx 16rpx;
 }
 
 .nutrition-item {
   text-align: center;
+  padding: 16rpx;
+  background: rgba(212, 165, 116, 0.05);
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(212, 165, 116, 0.1);
 }
 
 .nutrition-value {
@@ -117,165 +211,10 @@
   display: block;
   font-size: 24rpx;
   color: var(--brand-text-secondary);
-}
-
-/* 菜品详情 */
-.details-card {
-  margin-bottom: 32rpx;
-}
-
-.detail-section {
-  margin-bottom: 24rpx;
-  padding: 16rpx 0;
-}
-
-.detail-section:last-child {
-  margin-bottom: 0;
-}
-
-.detail-label {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--brand-text);
-  margin-bottom: 12rpx;
-}
-
-.detail-content {
-  display: block;
-  font-size: 30rpx;
-  color: var(--brand-text-secondary);
-  line-height: 1.6;
-}
-
-.keywords-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-}
-
-.keyword-tag {
-  margin: 0 !important;
-}
-
-.chef-recommend-badge {
-  display: inline-flex;
-  align-items: center;
-  background: linear-gradient(135deg, #ff6b6b, #ffa726);
-  color: white;
-  padding: 12rpx 24rpx;
-  border-radius: 50rpx;
-  font-size: 28rpx;
-  font-weight: 600;
-}
-
-.chef-icon {
-  margin-right: 8rpx;
-  font-size: 32rpx;
-}
-
-.chef-text {
-  font-size: 28rpx;
-}
-
-/* 营养师推荐 */
-.recommendation-card {
-  background: #e6f2ff;
-  border: 2rpx solid #9cc5f0;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-}
-
-.recommendation-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24rpx;
-}
-
-.recommendation-icon {
-  font-size: 32rpx;
-  margin-right: 16rpx;
-}
-
-.recommendation-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1a5490;
-}
-
-.recommendation-content {
-  font-size: 28rpx;
-  color: #1a5490;
-  line-height: 1.6;
-}
-
-/* 食用建议 */
-.suggestion-card {
-  margin-bottom: 32rpx;
-}
-
-/* 相关推荐 */
-.related-card {
-  margin-bottom: 32rpx;
-}
-
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx;
-  padding: 16rpx 0;
-}
-
-.related-item {
-  text-align: center;
-  cursor: pointer;
-}
-
-.related-image {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12rpx;
-}
-
-.related-icon {
-  font-size: 36rpx;
-  color: #ffffff;
   font-weight: 500;
 }
 
-.related-name {
-  display: block;
-  font-size: 24rpx;
-  color: var(--brand-text-secondary);
-}
 
-/* 操作按钮 */
-.action-buttons {
-  display: flex;
-  gap: 24rpx;
-  margin-top: 48rpx;
-  margin-bottom: 32rpx;
-}
-
-.select-button {
-  flex: 1;
-  --td-button-default-height: 96rpx;
-  --td-button-large-font-size: 32rpx;
-  --td-button-border-radius: 24rpx;
-  font-weight: 500;
-  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
-}
-
-.favorite-button {
-  width: 96rpx;
-  --td-button-default-height: 96rpx;
-  --td-button-border-radius: 24rpx;
-  font-size: 32rpx;
-}
 
 /* TDesign 组件样式覆盖 */
 .t-card {
@@ -306,17 +245,6 @@
   font-size: 28rpx;
 }
 
-.benefits-card .t-card__title::before {
-  content: '💊';
-}
-
-.suggestion-card .t-card__title::before {
-  content: '🍽️';
-}
-
-.related-card .t-card__title::before {
-  content: '🔄';
-}
 
 .t-cell-group {
   border-radius: 0;
@@ -352,11 +280,4 @@
     gap: 24rpx;
   }
   
-  .related-grid {
-    gap: 16rpx;
-  }
-  
-  .action-buttons {
-    gap: 16rpx;
-  }
 }
