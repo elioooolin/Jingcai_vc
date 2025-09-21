@@ -62,7 +62,7 @@ exports.main = async (event, context) => {
       userId: orderData.userId,
       phone: user.phone || '',
       orderDate: new Date(orderData.orderDate),
-      order_details: formatOrderDetails(orderData),
+      order_details: formatOrderDetails(orderData, user),
       status: 'pending',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -160,9 +160,10 @@ exports.main = async (event, context) => {
 /**
  * 格式化订单详情，按照 menu-data.js 中的格式
  * @param {Object} orderData 前端传来的订单数据
+ * @param {Object} user 用户信息（包含饮食偏好）
  * @returns {Object} 格式化后的订单详情
  */
-function formatOrderDetails(orderData) {
+function formatOrderDetails(orderData, user) {
   const order_details = {};
   
   // 早餐 - 单选，存储菜品名称
@@ -199,10 +200,25 @@ function formatOrderDetails(orderData) {
     order_details.supplement = orderData.supplement[0].name;
   }
   
-  // 特殊需求
-  if (orderData.specialRequirements && orderData.specialRequirements.trim()) {
-    order_details.special_requirements = orderData.specialRequirements.trim();
+  // 特殊需求 - 合并用户输入的特殊需求和用户的饮食偏好
+  const specialRequirements = [];
+  
+  // 添加用户的饮食偏好（如果存在且不为空）
+  if (user && user.dietPreference && user.dietPreference.trim()) {
+    specialRequirements.push(user.dietPreference.trim());
   }
+  
+  // 添加用户输入的特殊需求（如果存在且不为空）
+  if (orderData.specialRequirements && orderData.specialRequirements.trim()) {
+    specialRequirements.push(orderData.specialRequirements.trim());
+  }
+  
+  // 如果有任何特殊需求，则合并并保存
+  if (specialRequirements.length > 0) {
+    order_details.special_requirements = specialRequirements.join('；');
+  }
+  
+  console.log('合并后的特殊需求:', order_details.special_requirements);
   
   console.log('格式化后的订单详情:', order_details);
   
