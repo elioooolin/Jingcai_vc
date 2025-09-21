@@ -1,35 +1,13 @@
 /* 用户头部 */
 .profile-header {
   background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-  padding: 48rpx 32rpx;
+  padding: 48rpx 32rpx 20rpx 32rpx;
   margin: -32rpx -32rpx 32rpx -32rpx;
   color: #ffffff;
 }
 
-.avatar-section {
-  display: flex;
-  align-items: center;
-}
-
-.avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.2);
-  margin-right: 32rpx;
-}
-
-.avatar-text {
-  font-size: 48rpx;
-  font-weight: 500;
-  color: #ffffff;
-}
-
-.user-info {
-  flex: 1;
+.user-info-section {
+  text-align: center;
 }
 
 .user-name {
@@ -85,9 +63,34 @@
   margin-bottom: 32rpx;
 }
 
-/* 编辑弹窗 */
-.edit-content {
-  padding: 32rpx 0;
+.contact-btn {
+  margin-bottom: 24rpx;
+}
+
+.logout-btn {
+  /* 默认样式 */
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-text {
+  background: #ffffff;
+  padding: 32rpx 48rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: var(--brand-text);
 }
 
 /* TDesign 组件样式覆盖 */

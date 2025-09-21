@@ -40,8 +40,8 @@ Page({
     
     
     storeOptions: [
-      { label: '爱睦·梅溪湖店', value: 'meixihu' },
-      { label: '爱睦轻予·德思勤店', value: 'desiqin' }
+      { label: '爱睦·梅溪湖店', value: '爱睦·梅溪湖店' },
+      { label: '爱睦轻予·德思勤店', value: '爱睦轻予·德思勤店' }
     ]
   },
 

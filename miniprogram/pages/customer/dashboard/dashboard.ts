@@ -507,11 +507,6 @@ Page({
           
           console.log('已订餐的日期:', res.result.orderedDates);
           console.log('待确认订单:', formattedPendingOrders);
-          console.log('🔍 调试信息:');
-          console.log('  - 原始订单数量:', allOrders.length);
-          console.log('  - pending订单数量:', pendingOrders.length);
-          console.log('  - 格式化后订单数量:', formattedPendingOrders.length);
-          console.log('  - 格式化后的订单详情:', JSON.stringify(formattedPendingOrders, null, 2));
           
           // 重新初始化日期列表，应用订单限制
           this.initDateList();

@@ -1,59 +1,19 @@
 // pages/customer/profile/profile.ts
 
-interface ProfileData {
-  birthday?: string;
-  store?: string;
-  room?: string;
-  checkInDate?: string;
-  totalDays?: string;
-  dietPreference?: string;
-  allergies?: string;
-  supplementCount?: string;
-}
-
 Page({
   data: {
-    userInfo: {},
-    checkInDays: 5,
-    profileData: {
-      birthday: '1990-05-15',
-      store: '朝阳店',
-      room: 'A201',
-      checkInDate: '2024-01-01',
-      totalDays: '28天',
-      dietPreference: '清淡少盐，不吃辣',
-      allergies: '海鲜',
-      supplementCount: '1'
-    } as ProfileData,
-    
-    stats: {
-      totalOrders: 15,
-      confirmedOrders: 12,
-      favoriteDishes: 8,
-    },
-    
-    // 编辑相关
-    editDialogVisible: false,
-    editDialogTitle: '',
-    editType: '',
-    editValue: '',
-    
-    supplementOptions: [
-      { label: '0次/天', value: '0' },
-      { label: '1次/天', value: '1' },
-      { label: '2次/天', value: '2' },
-      { label: '3次/天', value: '3' }
-    ]
+    userInfo: {} as any,
+    loading: false
   },
 
   onLoad() {
     this.checkLoginStatus();
-    this.initUserInfo();
-    this.loadProfileData();
+    this.loadUserProfile();
   },
 
   onShow() {
-    this.refreshStats();
+    // 页面显示时刷新用户信息
+    this.loadUserProfile();
   },
 
   // 检查登录状态
@@ -68,187 +28,107 @@ Page({
     this.setData({ userInfo });
   },
 
-  // 初始化用户信息
-  initUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.setData({ userInfo });
-    }
-  },
+  // 加载用户完整信息
+  async loadUserProfile() {
+    if (this.data.loading) return;
+    
+    this.setData({ loading: true });
+    
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo._id) {
+        console.error('用户信息不完整');
+        this.setData({ loading: false });
+        return;
+      }
 
-  // 加载个人资料数据
-  loadProfileData() {
-    // 从本地存储或API加载个人资料数据
-    const savedProfile = wx.getStorageSync('profileData');
-    if (savedProfile) {
-      this.setData({ profileData: { ...this.data.profileData, ...savedProfile } });
-    }
-  },
-
-  // 刷新统计数据
-  refreshStats() {
-    // 模拟API调用获取统计数据
-    setTimeout(() => {
-      this.setData({
-        stats: {
-          totalOrders: Math.floor(Math.random() * 20) + 10,
-          confirmedOrders: Math.floor(Math.random() * 15) + 8,
-          favoriteDishes: Math.floor(Math.random() * 10) + 5,
+      console.log('开始加载用户完整信息...');
+      
+      // 调用云函数获取用户完整信息
+      const result = await wx.cloud.callFunction({
+        name: 'getUserInfo',
+        data: {
+          userId: userInfo._id
         }
       });
-    }, 500);
-  },
-
-  // 格式化手机号
-  formatPhone(phone: string): string {
-    if (!phone) return '未绑定';
-    return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-  },
-
-  // 获取高补餐文本
-  getSupplementText(value: string): string {
-    const option = this.data.supplementOptions.find(opt => opt.value === value);
-    return option?.label || '未设置';
-  },
-
-  // 编辑姓名
-  editName() {
-    this.showEditDialog('name', '编辑姓名', (this.data.userInfo as any)?.name || '');
-  },
-
-  // 编辑生日
-  editBirthday() {
-    this.showEditDialog('birthday', '编辑生日', this.data.profileData.birthday || '');
-  },
-
-  // 编辑饮食偏好
-  editDietPreference() {
-    this.showEditDialog('dietPreference', '编辑饮食偏好', this.data.profileData.dietPreference || '');
-  },
-
-  // 编辑过敏食物
-  editAllergies() {
-    this.showEditDialog('allergies', '编辑过敏食物', this.data.profileData.allergies || '');
-  },
-
-  // 编辑高补餐次数
-  editSupplementCount() {
-    this.showEditDialog('supplementCount', '编辑高补餐次数', this.data.profileData.supplementCount || '1');
-  },
-
-  // 显示编辑弹窗
-  showEditDialog(type: string, title: string, value: string) {
-    this.setData({
-      editDialogVisible: true,
-      editDialogTitle: title,
-      editType: type,
-      editValue: value
-    });
-  },
-
-  // 编辑值变化
-  onEditValueChange(e: any) {
-    this.setData({ editValue: e.detail.value });
-  },
-
-  // 确认编辑
-  confirmEdit() {
-    const { editType, editValue } = this.data;
-    
-    if (!editValue.trim()) {
-      wx.showToast({
-        title: '请输入有效内容',
-        icon: 'none',
-        duration: 2000
-      });
-      return;
-    }
-
-    if (editType === 'name') {
-      // 更新用户信息
-      const userInfo = { ...this.data.userInfo, name: editValue };
-      this.setData({ userInfo });
-      wx.setStorageSync('userInfo', userInfo);
-    } else {
-      // 更新个人资料
-      const profileData = { ...this.data.profileData, [editType]: editValue };
-      this.setData({ profileData });
-      wx.setStorageSync('profileData', profileData);
-    }
-
-    this.setData({ editDialogVisible: false });
-    
-    wx.showToast({
-      title: '修改成功',
-      icon: 'success',
-      duration: 2000
-    });
-  },
-
-  // 取消编辑
-  cancelEdit() {
-    this.setData({ editDialogVisible: false });
-  },
-
-  // 查看收藏
-  viewFavorites() {
-    wx.showToast({
-      title: '收藏功能开发中',
-      icon: 'none',
-      duration: 2000
-    });
-  },
-
-  // 意见反馈
-  feedback() {
-    wx.showToast({
-      title: '意见反馈功能开发中',
-      icon: 'none',
-      duration: 2000
-    });
-  },
-
-  // 联系客服
-  contactService() {
-    wx.showModal({
-      title: '联系客服',
-      content: '客服电话：400-123-4567\n服务时间：09:00-18:00\n\n是否拨打客服电话？',
-      confirmText: '拨打',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          wx.makePhoneCall({
-            phoneNumber: '400-123-4567',
-            fail: () => {
-              wx.showToast({
-                title: '拨打失败，请手动拨打',
-                icon: 'error',
-                duration: 2000
-              });
-            }
+      
+      console.log('用户信息云函数调用结果:', result.result);
+      
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const fullUserInfo = result.result.userInfo;
+        
+        console.log('✅ 用户信息获取成功');
+        
+        // 计算入住天数
+        const checkInDays = this.calculateCheckInDays(fullUserInfo.checkInDate);
+        
+        this.setData({
+          userInfo: {
+            ...fullUserInfo,
+            checkInDays: checkInDays
+          },
+          loading: false
+        });
+        
+        console.log('✅ 用户信息加载完成', this.data.userInfo);
+        
+      } else {
+        console.error('获取用户信息失败:', result.result);
+        
+        // 如果云函数失败，使用本地存储的基本信息
+        console.log('🔄 云函数失败，使用本地存储信息');
+        const localUserInfo = wx.getStorageSync('userInfo');
+        if (localUserInfo) {
+          this.setData({
+            userInfo: localUserInfo,
+            loading: false
+          });
+          console.log('📱 使用本地存储的用户信息:', localUserInfo);
+        } else {
+          this.setData({ loading: false });
+          wx.showToast({
+            title: '加载失败',
+            icon: 'error'
           });
         }
       }
-    });
+      
+    } catch (error) {
+      console.error('加载用户信息出错:', error);
+      
+      // 如果出现异常，也尝试使用本地存储信息
+      console.log('🔄 出现异常，使用本地存储信息');
+      const localUserInfo = wx.getStorageSync('userInfo');
+      if (localUserInfo) {
+        this.setData({
+          userInfo: localUserInfo,
+          loading: false
+        });
+        console.log('📱 使用本地存储的用户信息:', localUserInfo);
+      } else {
+        this.setData({ loading: false });
+        wx.showToast({
+          title: '加载失败',
+          icon: 'error'
+        });
+      }
+    }
   },
 
-  // 关于我们
-  aboutUs() {
-    wx.showModal({
-      title: '关于爱睦',
-      content: '爱睦专注于提供专业的月子餐服务，致力于为每一位产妇提供营养均衡、口感美味的月子餐。\n\n版本号：v1.0.0',
-      showCancel: false,
-      confirmText: '知道了'
-    });
-  },
-
-  // 编辑个人资料
-  editProfile() {
-    wx.showToast({
-      title: '请使用上方各项进行编辑',
-      icon: 'none',
-      duration: 2000
-    });
+  // 计算入住天数
+  calculateCheckInDays(checkInDate: string): number {
+    if (!checkInDate) return 0;
+    
+    try {
+      const checkIn = new Date(checkInDate);
+      const today = new Date();
+      const diffTime = today.getTime() - checkIn.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.max(1, diffDays); // 至少显示第1天
+    } catch (error) {
+      console.error('计算入住天数失败:', error);
+      return 1;
+    }
   },
 
   // 退出登录

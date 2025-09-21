@@ -1,14 +1,9 @@
 <view class="page-container">
   <!-- 用户信息卡片 -->
   <view class="profile-header">
-    <view class="avatar-section">
-      <view class="avatar brand-gradient">
-        <text class="avatar-text">{{userInfo.name ? userInfo.name.charAt(0) : 'U'}}</text>
-      </view>
-      <view class="user-info">
-        <text class="user-name">{{userInfo.name || '用户'}}</text>
-        <text class="user-desc">今天是入住第{{checkInDays}}天</text>
-      </view>
+    <view class="user-info-section">
+      <text class="user-name">{{userInfo.name || '用户'}}</text>
+      <text class="user-desc">今天是入住第{{userInfo.checkInDays || 0}}天</text>
     </view>
   </view>
 
@@ -17,35 +12,31 @@
     <t-cell-group>
       <t-cell 
         title="姓名" 
-        note="{{userInfo.name || '未设置'}}"
-        arrow
-        bind:click="editName"
+        note="{{userInfo.name && userInfo.name !== 'undefined' ? userInfo.name : '未设置'}}"
       />
       <t-cell 
         title="手机号" 
-        note="{{formatPhone(userInfo.phone)}}"
+        note="{{userInfo.phone}}"
       />
       <t-cell 
         title="生日" 
-        note="{{profileData.birthday || '未设置'}}"
-        arrow
-        bind:click="editBirthday"
+        note="{{userInfo.birthday}}"
       />
       <t-cell 
         title="入住门店" 
-        note="{{profileData.store || '朝阳店'}}"
+        note="{{userInfo.store && userInfo.store !== 'undefined' ? userInfo.store : '未设置'}}"
       />
       <t-cell 
         title="房间号" 
-        note="{{profileData.room || 'A201'}}"
+        note="{{userInfo.room && userInfo.room !== 'undefined' ? userInfo.room : '未设置'}}"
       />
       <t-cell 
         title="入住日期" 
-        note="{{profileData.checkInDate || '2024-01-01'}}"
+        note="{{userInfo.checkInDate}}"
       />
       <t-cell 
         title="入住天数" 
-        note="{{profileData.totalDays || '28天'}}"
+        note="{{userInfo.totalDays && userInfo.totalDays !== 'undefined' ? userInfo.totalDays + '天' : '未设置'}}"
       />
     </t-cell-group>
   </t-card>
@@ -55,73 +46,11 @@
     <t-cell-group>
       <t-cell 
         title="饮食偏好" 
-        note="{{profileData.dietPreference || '无特殊偏好'}}"
-        arrow
-        bind:click="editDietPreference"
-      />
-      <t-cell 
-        title="过敏食物" 
-        note="{{profileData.allergies || '无'}}"
-        arrow
-        bind:click="editAllergies"
+        note="{{userInfo.dietPreference && userInfo.dietPreference !== 'undefined' ? userInfo.dietPreference : '无特殊偏好'}}"
       />
       <t-cell 
         title="高补餐次数" 
-        note="{{profileData.supplementCount || '1次/天'}}"
-        arrow
-        bind:click="editSupplementCount"
-      />
-    </t-cell-group>
-  </t-card>
-
-  <!-- 统计信息 -->
-  <t-card title="我的统计" class="stats-card">
-    <view class="stats-grid">
-      <view class="stat-item">
-        <text class="stat-number">{{stats.totalOrders}}</text>
-        <text class="stat-label">总订单数</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-number">{{stats.confirmedOrders}}</text>
-        <text class="stat-label">已确认订单</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-number">{{stats.favoriteDishes}}</text>
-        <text class="stat-label">收藏菜品</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-number">{{checkInDays}}</text>
-        <text class="stat-label">入住天数</text>
-      </view>
-    </view>
-  </t-card>
-
-  <!-- 功能菜单 -->
-  <t-card title="更多功能" class="function-card">
-    <t-cell-group>
-      <t-cell 
-        title="我的收藏" 
-        left-icon="heart"
-        arrow
-        bind:click="viewFavorites"
-      />
-      <t-cell 
-        title="意见反馈" 
-        left-icon="chat"
-        arrow
-        bind:click="feedback"
-      />
-      <t-cell 
-        title="联系客服" 
-        left-icon="service"
-        arrow
-        bind:click="contactService"
-      />
-      <t-cell 
-        title="关于我们" 
-        left-icon="info-circle"
-        arrow
-        bind:click="aboutUs"
+        note="{{userInfo.supplementCount}}"
       />
     </t-cell-group>
   </t-card>
@@ -132,63 +61,15 @@
       theme="light"
       size="large"
       block
-      bind:tap="editProfile"
-      class="mb-24"
-    >
-      编辑个人资料
-    </t-button>
-    <t-button
-      theme="light"
-      size="large"
-      block
       bind:tap="logout"
+      class="logout-btn"
     >
       退出登录
     </t-button>
   </view>
-</view>
 
-<!-- 编辑弹窗 -->
-<t-dialog
-  visible="{{editDialogVisible}}"
-  title="{{editDialogTitle}}"
-  confirm-btn="确定"
-  cancel-btn="取消"
-  bind:confirm="confirmEdit"
-  bind:cancel="cancelEdit"
->
-  <view class="edit-content">
-    <t-input
-      wx:if="{{editType === 'name'}}"
-      value="{{editValue}}"
-      placeholder="请输入姓名"
-      bind:change="onEditValueChange"
-    />
-    <t-textarea
-      wx:if="{{editType === 'dietPreference' || editType === 'allergies'}}"
-      value="{{editValue}}"
-      placeholder="{{editType === 'dietPreference' ? '请描述您的饮食偏好' : '请列出过敏食物'}}"
-      bind:change="onEditValueChange"
-      maxlength="200"
-    />
-    <t-picker
-      wx:if="{{editType === 'supplementCount'}}"
-      value="{{editValue}}"
-      data-source="{{supplementOptions}}"
-      bind:change="onEditValueChange"
-    >
-      <t-cell title="选择次数" note="{{getSupplementText(editValue)}}" arrow />
-    </t-picker>
-    <t-date-time-picker
-      wx:if="{{editType === 'birthday'}}"
-      title="选择生日"
-      mode="date"
-      value="{{editValue}}"
-      bind:change="onEditValueChange"
-    >
-      <t-cell title="生日" note="{{editValue || '请选择'}}" arrow />
-    </t-date-time-picker>
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-overlay">
+    <text class="loading-text">正在加载用户信息...</text>
   </view>
-</t-dialog>
-
-<t-toast id="t-toast" />
+</view>
