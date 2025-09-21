@@ -112,6 +112,21 @@
           "description": "高补餐次数"
         },
         {
+          "name": "familyMealCount",
+          "type": "number",
+          "description": "陪人餐次数"
+        },
+        {
+          "name": "extraFamilyBreakfastCnt",
+          "type": "number",
+          "description": "额外收费的早餐陪人餐次数"
+        },
+        {
+          "name": "extraFamilyMainMealCnt",
+          "type": "number",
+          "description": "额外收费的午晚餐陪人餐次数"
+        },
+        {
           "name": "createdBy",
           "type": "string",
           "description": "创建者（管理员ID）"
@@ -161,6 +176,16 @@
         {
           "name": "order_details",
           "type": "object"
+        },
+        {
+          "name": "extraFamilyBreakfastCnt",
+          "type": "number",
+          "description": "本订单额外收费的早餐陪人餐次数"
+        },
+        {
+          "name": "extraFamilyMainMealCnt",
+          "type": "number",
+          "description": "本订单额外收费的午晚餐陪人餐次数"
         },
         {
           "name": "status",

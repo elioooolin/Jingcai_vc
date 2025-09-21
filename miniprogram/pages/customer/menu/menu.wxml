@@ -74,6 +74,34 @@
           </view>
         </view>
       </view>
+      
+      <!-- 早餐陪人餐 -->
+      <view class="family-meal-section">
+        <view class="family-meal-title">
+          <text class="family-meal-icon">👥</text>
+          <text>陪人餐</text>
+          <text class="family-meal-price">（28元/份）</text>
+        </view>
+        <view class="family-meal-counter">
+          <text class="family-meal-label">数量：</text>
+          <view class="counter-controls">
+            <button 
+              class="counter-btn minus {{breakfastFamilyMealCount <= 0 ? 'disabled' : ''}}"
+              bind:tap="changeFamilyMealCount"
+              data-meal="breakfast"
+              data-action="minus"
+              disabled="{{breakfastFamilyMealCount <= 0}}"
+            >-</button>
+            <text class="counter-value">{{breakfastFamilyMealCount}}</text>
+            <button 
+              class="counter-btn plus"
+              bind:tap="changeFamilyMealCount"
+              data-meal="breakfast"
+              data-action="plus"
+            >+</button>
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- 午餐 -->
@@ -172,6 +200,34 @@
           </view>
         </view>
       </view>
+      
+      <!-- 午餐陪人餐 -->
+      <view class="family-meal-section">
+        <view class="family-meal-title">
+          <text class="family-meal-icon">👥</text>
+          <text>陪人餐</text>
+          <text class="family-meal-price">（38元/份）</text>
+        </view>
+        <view class="family-meal-counter">
+          <text class="family-meal-label">数量：</text>
+          <view class="counter-controls">
+            <button 
+              class="counter-btn minus {{lunchFamilyMealCount <= 0 ? 'disabled' : ''}}"
+              bind:tap="changeFamilyMealCount"
+              data-meal="lunch"
+              data-action="minus"
+              disabled="{{lunchFamilyMealCount <= 0}}"
+            >-</button>
+            <text class="counter-value">{{lunchFamilyMealCount}}</text>
+            <button 
+              class="counter-btn plus"
+              bind:tap="changeFamilyMealCount"
+              data-meal="lunch"
+              data-action="plus"
+            >+</button>
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- 晚餐 -->
@@ -267,6 +323,34 @@
               <text class="select-icon">{{item.selected ? '✓' : '+'}}</text>
             </view>
           </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 晚餐陪人餐 -->
+      <view class="family-meal-section">
+        <view class="family-meal-title">
+          <text class="family-meal-icon">👥</text>
+          <text>陪人餐</text>
+          <text class="family-meal-price">（38元/份）</text>
+        </view>
+        <view class="family-meal-counter">
+          <text class="family-meal-label">数量：</text>
+          <view class="counter-controls">
+            <button 
+              class="counter-btn minus {{dinnerFamilyMealCount <= 0 ? 'disabled' : ''}}"
+              bind:tap="changeFamilyMealCount"
+              data-meal="dinner"
+              data-action="minus"
+              disabled="{{dinnerFamilyMealCount <= 0}}"
+            >-</button>
+            <text class="counter-value">{{dinnerFamilyMealCount}}</text>
+            <button 
+              class="counter-btn plus"
+              bind:tap="changeFamilyMealCount"
+              data-meal="dinner"
+              data-action="plus"
+            >+</button>
           </view>
         </view>
       </view>

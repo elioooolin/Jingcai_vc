@@ -24,19 +24,19 @@
     "list": [
       {
         "pagePath": "pages/customer/dashboard/dashboard",
-        "text": "首页",
+        "text": "现在点餐",
         "iconPath": "assets/icons/veggie_basket_lm.png",
         "selectedIconPath": "assets/icons/veggie_basket_lm.png"
       },
       {
         "pagePath": "pages/customer/history/history",
-        "text": "订单",
+        "text": "历史订单",
         "iconPath": "assets/icons/food.png",
         "selectedIconPath": "assets/icons/food.png"
       },
       {
         "pagePath": "pages/customer/profile/profile",
-        "text": "我的",
+        "text": "个人中心",
         "iconPath": "assets/icons/mama.png",
         "selectedIconPath": "assets/icons/mama.png"
       }

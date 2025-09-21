@@ -10,6 +10,7 @@ interface FormData {
   room: string;
   dietPreference: string;
   supplementCount: string;
+  familyMealCount: string;
 }
 
 Page({
@@ -35,7 +36,8 @@ Page({
       store: '',
       room: '',
       dietPreference: '',
-      supplementCount: '0'
+      supplementCount: '0',
+      familyMealCount: '0'
     } as FormData,
     
     
@@ -72,6 +74,54 @@ Page({
     });
   },
 
+  // 加载客户数据（编辑模式）
+  async loadCustomerData(customerId: string) {
+    try {
+      wx.showLoading({
+        title: '加载客户信息...'
+      });
+
+      const result = await wx.cloud.callFunction({
+        name: 'getUserInfo',
+        data: {
+          userId: customerId
+        }
+      });
+
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const userData = result.result.userInfo;
+        
+        this.setData({
+          formData: {
+            name: userData.name || '',
+            phone: userData.phone || '',
+            birthday: userData.birthday || '',
+            checkInDate: userData.checkInDate || '',
+            totalDays: userData.totalDays ? userData.totalDays.toString() : '',
+            store: userData.store || '',
+            room: userData.room || '',
+            dietPreference: userData.dietPreference || '',
+            supplementCount: userData.supplementCount ? userData.supplementCount.toString() : '0',
+            familyMealCount: userData.familyMealCount ? userData.familyMealCount.toString() : '0'
+          }
+        });
+
+        console.log('客户数据加载成功:', userData);
+      } else {
+        throw new Error('获取客户信息失败');
+      }
+    } catch (error) {
+      console.error('加载客户数据失败:', error);
+      wx.showToast({
+        title: '加载客户信息失败',
+        icon: 'none',
+        duration: 2000
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
   // 检查管理员权限
   checkAdminAuth() {
     const userInfo = wx.getStorageSync('userInfo');
@@ -81,27 +131,6 @@ Page({
       });
       return;
     }
-  },
-
-  // 加载客户数据（编辑模式）
-  loadCustomerData(customerId: string) {
-    // 模拟API调用
-    console.log("loadCustomerData customerId:", customerId);
-    setTimeout(() => {
-      const mockCustomerData: FormData = {
-        name: '张女士',
-        phone: '13800138001',
-        birthday: '1990-05-15',
-        checkInDate: '2024-01-01',
-        totalDays: '28',
-        store: 'store1',
-        room: 'A201',
-        dietPreference: '清淡少盐，不吃辣',
-        supplementCount: '1'
-      };
-      
-      this.setData({ formData: mockCustomerData });
-    }, 1000);
   },
 
   // 表单字段变化
@@ -137,7 +166,7 @@ Page({
   },
 
   // 隐藏日期选择器
-  hideDatePicker(e: any) {
+  hideDatePicker() {
     this.setData({
       birthdayVisible: false,
       checkInDateVisible: false
@@ -183,7 +212,7 @@ Page({
   },
 
   // 隐藏选择器
-  hidePicker(e: any) {
+  hidePicker() {
     this.setData({
       storeVisible: false
     });
@@ -301,6 +330,17 @@ Page({
       return false;
     }
 
+    // 验证陪人餐次数
+    const familyMealCount = parseInt(formData.familyMealCount);
+    if (isNaN(familyMealCount) || familyMealCount < 0 || familyMealCount > 999) {
+      wx.showToast({
+        title: '陪人餐次数应在0-999之间',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    }
+
     return true;
   },
 
@@ -325,7 +365,7 @@ Page({
         console.log('保存客户信息结果:', res.result);
         
         if (res.result.success) {
-          this.handleSaveSuccess(res.result);
+          this.handleSaveSuccess();
         } else {
           this.handleSaveError(res.result);
         }
@@ -343,7 +383,7 @@ Page({
   },
 
   // 处理保存成功
-  handleSaveSuccess(result: any) {
+  handleSaveSuccess() {
     this.setData({ submitting: false });
     
     const { isEdit } = this.data;

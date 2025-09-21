@@ -63,6 +63,8 @@ exports.main = async (event, context) => {
       phone: user.phone || '',
       orderDate: new Date(orderData.orderDate),
       order_details: formatOrderDetails(orderData, user),
+      extraFamilyBreakfastCnt: 0, // 将在后面计算后更新
+      extraFamilyMainMealCnt: 0,  // 将在后面计算后更新
       status: 'pending',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -77,75 +79,160 @@ exports.main = async (event, context) => {
     
     console.log('订单保存成功，ID:', result._id);
     
-    // 如果订单包含高补餐，需要扣减用户的 supplementCount
+    // 处理高补餐和陪人餐的扣减
+    let supplementCountUpdated = false;
+    let familyMealCountUpdated = false;
+    let newSupplementCount = user.supplementCount || 0;
+    let newFamilyMealCount = user.familyMealCount || 0;
+    let updateErrors = [];
+    
+    // 处理高补餐扣减
     if (orderEntry.order_details.supplement) {
       console.log('订单包含高补餐，开始扣减用户 supplementCount...');
       
       try {
-        // 获取用户当前的 supplementCount
         const currentSupplementCount = user.supplementCount || 0;
         console.log('用户当前 supplementCount:', currentSupplementCount);
         
         if (currentSupplementCount > 0) {
-          // 扣减 supplementCount
-          const newSupplementCount = currentSupplementCount - 1;
-          
-          await db.collection('users')
-            .doc(orderData.userId)
-            .update({
-              data: {
-                supplementCount: newSupplementCount,
-                updatedAt: new Date()
-              }
-            });
-          
-          console.log(`✅ 用户 supplementCount 已从 ${currentSupplementCount} 扣减为 ${newSupplementCount}`);
-          
-          return {
-            success: true,
-            message: '订单提交成功',
-            orderId: result._id,
-            orderData: orderEntry,
-            supplementCountUpdated: true,
-            newSupplementCount: newSupplementCount
-          };
+          newSupplementCount = currentSupplementCount - 1;
+          supplementCountUpdated = true;
+          console.log(`✅ 准备将用户 supplementCount 从 ${currentSupplementCount} 扣减为 ${newSupplementCount}`);
         } else {
           console.warn('⚠️ 用户 supplementCount 为 0，无法扣减');
-          
-          return {
-            success: true,
-            message: '订单提交成功，但高补餐次数不足',
-            orderId: result._id,
-            orderData: orderEntry,
-            supplementCountUpdated: false,
-            warning: '用户高补餐次数不足'
-          };
+          updateErrors.push('用户高补餐次数不足');
+        }
+      } catch (error) {
+        console.error('❌ 处理高补餐扣减时出错:', error);
+        updateErrors.push('高补餐次数处理失败: ' + error.message);
+      }
+    }
+    
+    // 处理陪人餐扣减
+    const breakfastFamilyMeals = orderData.familyMeals?.breakfast || 0;
+    const lunchFamilyMeals = orderData.familyMeals?.lunch || 0;
+    const dinnerFamilyMeals = orderData.familyMeals?.dinner || 0;
+    const totalFamilyMeals = breakfastFamilyMeals + lunchFamilyMeals + dinnerFamilyMeals;
+    
+    let extraFamilyBreakfastCnt = 0;
+    let extraFamilyMainMealCnt = 0;
+    
+    if (totalFamilyMeals > 0) {
+      console.log(`订单包含 ${totalFamilyMeals} 份陪人餐（早餐${breakfastFamilyMeals}份，午餐${lunchFamilyMeals}份，晚餐${dinnerFamilyMeals}份）`);
+      
+      try {
+        const currentFamilyMealCount = user.familyMealCount || 0;
+        console.log('用户当前免费陪人餐次数:', currentFamilyMealCount);
+        
+        // 计算免费和收费陪人餐的分配
+        let remainingFreeMeals = currentFamilyMealCount;
+        
+        // 优先使用免费次数抵扣更贵的午晚餐（38元/份）
+        const totalMainMeals = lunchFamilyMeals + dinnerFamilyMeals;
+        let freeMainMeals = Math.min(totalMainMeals, remainingFreeMeals);
+        remainingFreeMeals -= freeMainMeals;
+        extraFamilyMainMealCnt = totalMainMeals - freeMainMeals;
+        
+        // 剩余免费次数抵扣早餐（28元/份）
+        let freeBreakfastMeals = Math.min(breakfastFamilyMeals, remainingFreeMeals);
+        remainingFreeMeals -= freeBreakfastMeals;
+        extraFamilyBreakfastCnt = breakfastFamilyMeals - freeBreakfastMeals;
+        
+        // 更新用户的免费陪人餐次数
+        const usedFreeMeals = freeMainMeals + freeBreakfastMeals;
+        if (usedFreeMeals > 0) {
+          newFamilyMealCount = currentFamilyMealCount - usedFreeMeals;
+          familyMealCountUpdated = true;
+          console.log(`✅ 使用了 ${usedFreeMeals} 次免费陪人餐，剩余 ${newFamilyMealCount} 次`);
         }
         
-      } catch (updateError) {
-        console.error('❌ 更新用户 supplementCount 失败:', updateError);
+        // 记录额外收费的陪人餐
+        if (extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0) {
+          console.log(`💰 额外收费陪人餐：早餐 ${extraFamilyBreakfastCnt} 份，午晚餐 ${extraFamilyMainMealCnt} 份`);
+        }
         
-        // 订单已保存成功，但 supplementCount 更新失败
-        // 这种情况需要记录错误，但不影响订单提交的成功状态
-        return {
-          success: true,
-          message: '订单提交成功，但高补餐次数更新失败',
-          orderId: result._id,
-          orderData: orderEntry,
-          supplementCountUpdated: false,
-          error: '高补餐次数更新失败: ' + updateError.message
-        };
+        console.log(`📊 陪人餐分配明细：`);
+        console.log(`   - 免费午晚餐：${freeMainMeals} 份`);
+        console.log(`   - 收费午晚餐：${extraFamilyMainMealCnt} 份`);
+        console.log(`   - 免费早餐：${freeBreakfastMeals} 份`);
+        console.log(`   - 收费早餐：${extraFamilyBreakfastCnt} 份`);
+        
+      } catch (error) {
+        console.error('❌ 处理陪人餐扣减时出错:', error);
+        updateErrors.push('陪人餐次数处理失败: ' + error.message);
       }
-    } else {
-      // 订单不包含高补餐，正常返回
-      return {
-        success: true,
-        message: '订单提交成功',
-        orderId: result._id,
-        orderData: orderEntry,
-        supplementCountUpdated: false
-      };
     }
+    
+    // 执行数据库更新
+    const needsUserUpdate = supplementCountUpdated || familyMealCountUpdated || extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0;
+    
+    if (needsUserUpdate) {
+      try {
+        const updateData = { updatedAt: new Date() };
+        if (supplementCountUpdated) {
+          updateData.supplementCount = newSupplementCount;
+        }
+        if (familyMealCountUpdated) {
+          updateData.familyMealCount = newFamilyMealCount;
+        }
+        
+        // 累加额外收费的陪人餐次数
+        if (extraFamilyBreakfastCnt > 0) {
+          const currentExtraBreakfast = user.extraFamilyBreakfastCnt || 0;
+          updateData.extraFamilyBreakfastCnt = currentExtraBreakfast + extraFamilyBreakfastCnt;
+        }
+        if (extraFamilyMainMealCnt > 0) {
+          const currentExtraMainMeal = user.extraFamilyMainMealCnt || 0;
+          updateData.extraFamilyMainMealCnt = currentExtraMainMeal + extraFamilyMainMealCnt;
+        }
+        
+        await db.collection('users')
+          .doc(orderData.userId)
+          .update({
+            data: updateData
+          });
+        
+        console.log('✅ 用户次数更新成功:', updateData);
+      } catch (updateError) {
+        console.error('❌ 更新用户次数失败:', updateError);
+        updateErrors.push('数据库更新失败: ' + updateError.message);
+      }
+    }
+    
+    // 更新订单的额外收费陪人餐信息
+    if (extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0) {
+      try {
+        await db.collection('orders')
+          .doc(result._id)
+          .update({
+            data: {
+              extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
+              extraFamilyMainMealCnt: extraFamilyMainMealCnt,
+              updatedAt: new Date()
+            }
+          });
+        
+        console.log('✅ 订单额外收费信息更新成功');
+      } catch (updateError) {
+        console.error('❌ 更新订单额外收费信息失败:', updateError);
+        updateErrors.push('订单额外收费信息更新失败: ' + updateError.message);
+      }
+    }
+    
+    // 返回结果
+    return {
+      success: true,
+      message: updateErrors.length > 0 ? '订单提交成功，但部分次数更新失败' : '订单提交成功',
+      orderId: result._id,
+      orderData: orderEntry,
+      supplementCountUpdated: supplementCountUpdated,
+      familyMealCountUpdated: familyMealCountUpdated,
+      newSupplementCount: newSupplementCount,
+      newFamilyMealCount: newFamilyMealCount,
+      extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
+      extraFamilyMainMealCnt: extraFamilyMainMealCnt,
+      errors: updateErrors.length > 0 ? updateErrors : undefined
+    };
     
   } catch (error) {
     console.error('提交订单失败:', error);
@@ -198,6 +285,25 @@ function formatOrderDetails(orderData, user) {
   // 高补餐 - 单选，存储菜品名称
   if (orderData.supplement && orderData.supplement.length > 0) {
     order_details.supplement = orderData.supplement[0].name;
+  }
+  
+  // 陪人餐 - 存储各餐的陪人餐数量
+  if (orderData.familyMeals) {
+    const familyMeals = {};
+    if (orderData.familyMeals.breakfast > 0) {
+      familyMeals.breakfast = orderData.familyMeals.breakfast;
+    }
+    if (orderData.familyMeals.lunch > 0) {
+      familyMeals.lunch = orderData.familyMeals.lunch;
+    }
+    if (orderData.familyMeals.dinner > 0) {
+      familyMeals.dinner = orderData.familyMeals.dinner;
+    }
+    
+    // 只有当有陪人餐时才添加到订单详情中
+    if (Object.keys(familyMeals).length > 0) {
+      order_details.family_meals = familyMeals;
+    }
   }
   
   // 特殊需求 - 合并用户输入的特殊需求和用户的饮食偏好

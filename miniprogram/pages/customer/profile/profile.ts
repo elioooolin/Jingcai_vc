@@ -3,7 +3,9 @@
 Page({
   data: {
     userInfo: {} as any,
-    loading: false
+    loading: false,
+    extraFamilyMealCost: 0,  // 额外陪人餐总费用
+    extraFamilyMealFormula: '' // 费用计算公式
   },
 
   onLoad() {
@@ -70,6 +72,9 @@ Page({
           loading: false
         });
         
+        // 计算额外陪人餐费用
+        this.calculateExtraFamilyMealCost(fullUserInfo);
+        
         console.log('✅ 用户信息加载完成', this.data.userInfo);
         
       } else {
@@ -83,6 +88,10 @@ Page({
             userInfo: localUserInfo,
             loading: false
           });
+          
+          // 计算额外陪人餐费用
+          this.calculateExtraFamilyMealCost(localUserInfo);
+          
           console.log('📱 使用本地存储的用户信息:', localUserInfo);
         } else {
           this.setData({ loading: false });
@@ -129,6 +138,61 @@ Page({
       console.error('计算入住天数失败:', error);
       return 1;
     }
+  },
+
+  // 计算额外陪人餐费用
+  calculateExtraFamilyMealCost(userInfo: any) {
+    if (!userInfo) {
+      this.setData({
+        extraFamilyMealCost: 0,
+        extraFamilyMealFormula: ''
+      });
+      return;
+    }
+
+    const extraBreakfastCnt = userInfo.extraFamilyBreakfastCnt || 0;
+    const extraMainMealCnt = userInfo.extraFamilyMainMealCnt || 0;
+    
+    // 价格常量
+    const BREAKFAST_PRICE = 28; // 早餐陪人餐价格
+    const MAIN_MEAL_PRICE = 38; // 午晚餐陪人餐价格
+    
+    // 计算费用
+    const breakfastCost = extraBreakfastCnt * BREAKFAST_PRICE;
+    const mainMealCost = extraMainMealCnt * MAIN_MEAL_PRICE;
+    const totalCost = breakfastCost + mainMealCost;
+    
+    // 生成计算公式
+    let formula = '';
+    const formulaParts = [];
+    
+    if (extraBreakfastCnt > 0) {
+      formulaParts.push(`早餐 ${extraBreakfastCnt}份 × ${BREAKFAST_PRICE}元/份 = ${breakfastCost}元`);
+    }
+    
+    if (extraMainMealCnt > 0) {
+      formulaParts.push(`午晚餐 ${extraMainMealCnt}份 × ${MAIN_MEAL_PRICE}元/份 = ${mainMealCost}元`);
+    }
+    
+    if (formulaParts.length > 0) {
+      formula = formulaParts.join(', ');
+    } else {
+      formula = '';
+    }
+    
+    console.log('💰 额外陪人餐费用计算:', {
+      extraBreakfastCnt,
+      extraMainMealCnt,
+      breakfastCost,
+      mainMealCost,
+      totalCost,
+      formula
+    });
+    
+    this.setData({
+      extraFamilyMealCost: totalCost,
+      extraFamilyMealFormula: formula
+    });
   },
 
   // 退出登录

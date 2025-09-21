@@ -68,11 +68,29 @@ exports.main = async (event, context) => {
       };
     }
     
-    // 2. 检查订单是否包含高补餐
+    // 2. 检查订单是否包含高补餐和陪人餐
     let hasSupplementMeal = false;
+    let hasFamilyMeals = false;
+    let totalFamilyMeals = 0;
+    let extraFamilyBreakfastCnt = 0;
+    let extraFamilyMainMealCnt = 0;
+    
     if (order.order_details && order.order_details.supplement) {
       hasSupplementMeal = true;
       console.log('订单包含高补餐:', order.order_details.supplement);
+    }
+    
+    if (order.order_details && order.order_details.family_meals) {
+      hasFamilyMeals = true;
+      const familyMeals = order.order_details.family_meals;
+      totalFamilyMeals = (familyMeals.breakfast || 0) + (familyMeals.lunch || 0) + (familyMeals.dinner || 0);
+      console.log('订单包含陪人餐:', familyMeals, '总计:', totalFamilyMeals, '份');
+      
+      // 获取额外收费的陪人餐信息
+      extraFamilyBreakfastCnt = order.extraFamilyBreakfastCnt || 0;
+      extraFamilyMainMealCnt = order.extraFamilyMainMealCnt || 0;
+      
+      console.log(`额外收费陪人餐：早餐 ${extraFamilyBreakfastCnt} 份，午晚餐 ${extraFamilyMainMealCnt} 份`);
     }
     
     // 3. 删除订单
@@ -83,9 +101,9 @@ exports.main = async (event, context) => {
     
     console.log('订单删除成功');
     
-    // 4. 如果订单包含高补餐，恢复用户的supplementCount
-    if (hasSupplementMeal) {
-      console.log('正在恢复用户高补餐次数...');
+    // 4. 如果订单包含高补餐或陪人餐，恢复用户的次数
+    if (hasSupplementMeal || hasFamilyMeals) {
+      console.log('正在恢复用户次数...');
       
       try {
         // 获取用户当前信息
@@ -94,40 +112,93 @@ exports.main = async (event, context) => {
           .get();
         
         if (userResult.data) {
-          const currentSupplementCount = userResult.data.supplementCount || 0;
-          const newSupplementCount = currentSupplementCount + 1;
+          const updateData = { updatedAt: new Date() };
+          let supplementCountRestored = false;
+          let familyMealCountRestored = false;
+          let newSupplementCount = userResult.data.supplementCount || 0;
+          let newFamilyMealCount = userResult.data.familyMealCount || 0;
           
-          // 更新用户的supplementCount
+          // 恢复高补餐次数
+          if (hasSupplementMeal) {
+            newSupplementCount = newSupplementCount + 1;
+            updateData.supplementCount = newSupplementCount;
+            supplementCountRestored = true;
+            console.log(`✅ 准备恢复高补餐次数: ${userResult.data.supplementCount || 0} -> ${newSupplementCount}`);
+          }
+          
+          // 恢复陪人餐次数
+          if (hasFamilyMeals && totalFamilyMeals > 0) {
+            // 计算需要恢复的免费陪人餐次数（总数减去额外收费的数量）
+            const freeFamilyMealsToRestore = totalFamilyMeals - extraFamilyBreakfastCnt - extraFamilyMainMealCnt;
+            
+            if (freeFamilyMealsToRestore > 0) {
+              newFamilyMealCount = newFamilyMealCount + freeFamilyMealsToRestore;
+              updateData.familyMealCount = newFamilyMealCount;
+              familyMealCountRestored = true;
+              console.log(`✅ 准备恢复免费陪人餐次数: ${userResult.data.familyMealCount || 0} -> ${newFamilyMealCount} (恢复 ${freeFamilyMealsToRestore} 次)`);
+            }
+            
+            // 恢复额外收费的陪人餐次数（从累计计数中减去）
+            if (extraFamilyBreakfastCnt > 0) {
+              const currentExtraBreakfast = userResult.data.extraFamilyBreakfastCnt || 0;
+              const newExtraBreakfast = Math.max(0, currentExtraBreakfast - extraFamilyBreakfastCnt);
+              updateData.extraFamilyBreakfastCnt = newExtraBreakfast;
+              console.log(`✅ 准备恢复额外早餐陪人餐: ${currentExtraBreakfast} -> ${newExtraBreakfast} (减少 ${extraFamilyBreakfastCnt} 次)`);
+            }
+            
+            if (extraFamilyMainMealCnt > 0) {
+              const currentExtraMainMeal = userResult.data.extraFamilyMainMealCnt || 0;
+              const newExtraMainMeal = Math.max(0, currentExtraMainMeal - extraFamilyMainMealCnt);
+              updateData.extraFamilyMainMealCnt = newExtraMainMeal;
+              console.log(`✅ 准备恢复额外午晚餐陪人餐: ${currentExtraMainMeal} -> ${newExtraMainMeal} (减少 ${extraFamilyMainMealCnt} 次)`);
+            }
+          }
+          
+          // 更新用户次数
           await db.collection('users')
             .doc(userId)
             .update({
-              data: {
-                supplementCount: newSupplementCount,
-                updatedAt: new Date()
-              }
+              data: updateData
             });
           
-          console.log(`✅ 用户高补餐次数已从 ${currentSupplementCount} 恢复为 ${newSupplementCount}`);
+          console.log('✅ 用户次数恢复成功:', updateData);
+          
+          let message = '订单取消成功';
+          if (supplementCountRestored && familyMealCountRestored) {
+            message += '，高补餐和陪人餐次数已恢复';
+          } else if (supplementCountRestored) {
+            message += '，高补餐次数已恢复';
+          } else if (familyMealCountRestored) {
+            message += '，陪人餐次数已恢复';
+          }
           
           return {
             success: true,
-            message: '订单取消成功，高补餐次数已恢复',
+            message: message,
             orderId: orderId,
-            supplementCountRestored: true,
+            supplementCountRestored: supplementCountRestored,
+            familyMealCountRestored: familyMealCountRestored,
             newSupplementCount: newSupplementCount,
+            newFamilyMealCount: newFamilyMealCount,
+            restoredFreeFamilyMeals: totalFamilyMeals - extraFamilyBreakfastCnt - extraFamilyMainMealCnt,
+            restoredExtraBreakfast: extraFamilyBreakfastCnt,
+            restoredExtraMainMeal: extraFamilyMainMealCnt,
             cancelledOrder: {
               orderId: orderId,
               orderDate: order.orderDate,
-              orderDetails: order.order_details
+              orderDetails: order.order_details,
+              extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
+              extraFamilyMainMealCnt: extraFamilyMainMealCnt
             }
           };
         } else {
-          console.warn('⚠️ 用户信息不存在，无法恢复高补餐次数');
+          console.warn('⚠️ 用户信息不存在，无法恢复次数');
           return {
             success: true,
-            message: '订单取消成功，但无法恢复高补餐次数',
+            message: '订单取消成功，但无法恢复次数',
             orderId: orderId,
             supplementCountRestored: false,
+            familyMealCountRestored: false,
             warning: '用户信息不存在',
             cancelledOrder: {
               orderId: orderId,
@@ -137,13 +208,14 @@ exports.main = async (event, context) => {
           };
         }
       } catch (updateError) {
-        console.error('❌ 恢复高补餐次数失败:', updateError);
+        console.error('❌ 恢复次数失败:', updateError);
         return {
           success: true,
-          message: '订单取消成功，但高补餐次数恢复失败',
+          message: '订单取消成功，但次数恢复失败',
           orderId: orderId,
           supplementCountRestored: false,
-          error: '高补餐次数恢复失败: ' + updateError.message,
+          familyMealCountRestored: false,
+          error: '次数恢复失败: ' + updateError.message,
           cancelledOrder: {
             orderId: orderId,
             orderDate: order.orderDate,
@@ -152,12 +224,13 @@ exports.main = async (event, context) => {
         };
       }
     } else {
-      // 没有高补餐的情况
+      // 订单不包含高补餐或陪人餐，正常返回
       return {
         success: true,
         message: '订单取消成功',
         orderId: orderId,
         supplementCountRestored: false,
+        familyMealCountRestored: false,
         cancelledOrder: {
           orderId: orderId,
           orderDate: order.orderDate,

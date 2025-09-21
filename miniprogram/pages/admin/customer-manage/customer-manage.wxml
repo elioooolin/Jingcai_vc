@@ -158,6 +158,18 @@
           required
         />
       </view>
+
+      <view class="form-group">
+        <t-input
+          label="陪人餐次数"
+          type="number"
+          placeholder="请输入陪人餐次数（0-999）"
+          value="{{formData.familyMealCount}}"
+          bind:change="onFieldChange"
+          data-field="familyMealCount"
+          required
+        />
+      </view>
     </view>
 
 
