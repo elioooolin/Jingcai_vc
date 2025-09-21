@@ -6,39 +6,18 @@ interface OrderItem {
   submitTime: string;
   status: string;
   statusText: string;
-  dishes: Array<{
+  items: Array<{
     type: string;
-    names: string;
+    dishes: string;
   }>;
   specialRequirements?: string;
-  customerName: string;
-  room: string;
 }
 
 Page({
   data: {
-    selectedMonth: '2024-01',
-    selectedMonthText: '2024年1月',
-    selectedStatus: 'all',
-    selectedStatusText: '全部状态',
+    userInfo: {} as any,
     orderList: [] as OrderItem[],
-    hasMore: true,
-    loadingMore: false,
-    currentPage: 1,
-    pageSize: 10,
-    
-    monthOptions: [
-      { label: '2024年1月', value: '2024-01' },
-      { label: '2023年12月', value: '2023-12' },
-      { label: '2023年11月', value: '2023-11' }
-    ],
-    
-    statusOptions: [
-      { label: '全部状态', value: 'all' },
-      { label: '待确认', value: 'submitted' },
-      { label: '已确认', value: 'confirmed' },
-      { label: '已取消', value: 'cancelled' }
-    ]
+    loading: false
   },
 
   onLoad() {
@@ -48,17 +27,11 @@ Page({
 
   onShow() {
     // 页面显示时刷新数据
-    this.refreshData();
+    this.loadOrderList();
   },
 
   onPullDownRefresh() {
-    this.refreshData();
-  },
-
-  onReachBottom() {
-    if (this.data.hasMore && !this.data.loadingMore) {
-      this.loadMore();
-    }
+    this.loadOrderList();
   },
 
   // 检查登录状态
@@ -70,220 +43,180 @@ Page({
       });
       return;
     }
-  },
-
-  // 刷新数据
-  refreshData() {
-    this.setData({
-      orderList: [],
-      currentPage: 1,
-      hasMore: true
-    });
-    this.loadOrderList();
+    this.setData({ userInfo });
   },
 
   // 加载订单列表
-  loadOrderList() {
-    const { selectedMonth, selectedStatus, currentPage, pageSize } = this.data;
+  async loadOrderList() {
+    if (this.data.loading) return;
     
-    // 模拟API调用
-    setTimeout(() => {
-      const mockOrders = this.generateMockOrders();
-      const filteredOrders = this.filterOrders(mockOrders, selectedMonth, selectedStatus);
+    this.setData({ loading: true });
+    
+    try {
+      console.log('开始加载订单历史...');
       
-      // 分页处理
-      const startIndex = (currentPage - 1) * pageSize;
-      const endIndex = startIndex + pageSize;
-      const pageOrders = filteredOrders.slice(startIndex, endIndex);
+      // 调用云函数获取用户订单
+      const result = await wx.cloud.callFunction({
+        name: 'getUserOrders',
+        data: {
+          userId: this.data.userInfo._id
+        }
+      });
       
-      const newOrderList = currentPage === 1 ? pageOrders : [...this.data.orderList, ...pageOrders];
+      console.log('订单历史云函数调用结果:', result.result);
       
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const allOrders = result.result.orders || [];
+        
+        // 筛选出非pending状态的订单（历史订单）
+        const historyOrders = allOrders.filter((order: any) => order.status !== 'pending');
+        
+        // 按订单日期降序排列（越晚的日期在前）
+        historyOrders.sort((a: any, b: any) => {
+          const dateA = new Date(a.orderDate || a.orderDateString);
+          const dateB = new Date(b.orderDate || b.orderDateString);
+          return dateB.getTime() - dateA.getTime();
+        });
+        
+        // 转换订单格式以适配UI显示
+        const formattedOrders = historyOrders.map((order: any) => ({
+          id: order.orderId,
+          date: this.formatOrderDate(order.orderDate || order.orderDateString),
+          submitTime: this.formatSubmitTime(order.createdAt),
+          status: order.status,
+          statusText: this.getStatusText(order.status, order.orderDate || order.orderDateString),
+          items: this.formatOrderItems(order.orderSummary),
+          specialRequirements: order.orderSummary?.special_requirements || ''
+        }));
+        
+        this.setData({
+          orderList: formattedOrders,
+          loading: false
+        });
+        
+        console.log('✅ 订单历史加载完成:', formattedOrders.length, '个订单');
+        
+      } else {
+        console.error('获取订单历史失败:', result.result);
+        this.setData({
+          orderList: [],
+          loading: false
+        });
+        
+        wx.showToast({
+          title: '加载失败',
+          icon: 'error'
+        });
+      }
+      
+    } catch (error) {
+      console.error('加载订单历史出错:', error);
       this.setData({
-        orderList: newOrderList,
-        hasMore: endIndex < filteredOrders.length,
-        loadingMore: false
+        orderList: [],
+        loading: false
       });
-
-      // 停止下拉刷新
-      wx.stopPullDownRefresh();
-    }, 1000);
-  },
-
-  // 生成模拟订单数据
-  generateMockOrders(): OrderItem[] {
-    return [
-      {
-        id: 'order_001',
-        date: '2024年1月5日',
-        submitTime: '09:30',
-        status: 'submitted',
-        statusText: '待确认',
-        dishes: [
-          { type: '早餐', names: '小米粥 + 蒸蛋' },
-          { type: '午餐', names: '红烧鸡腿 + 蒸蛋羹 + 冬瓜汤' },
-          { type: '晚餐', names: '清蒸鲈鱼 + 紫菜蛋花汤' }
-        ],
-        specialRequirements: '少盐，不吃蒜',
-        customerName: "",
-        room: ""
-      },
-      {
-        id: 'order_002',
-        date: '2024年1月4日',
-        submitTime: '08:45',
-        status: 'confirmed',
-        statusText: '已确认',
-        dishes: [
-          { type: '早餐', names: '燕麦粥 + 煮鸡蛋' },
-          { type: '午餐', names: '蒸蛋羹 + 排骨汤' },
-          { type: '晚餐', names: '时令蔬菜 + 丝瓜汤' }
-        ],
-        customerName: "",
-        room: ""
-      },
-      {
-        id: 'order_003',
-        date: '2024年1月3日',
-        submitTime: '10:15',
-        status: 'confirmed',
-        statusText: '已确认',
-        dishes: [
-          { type: '早餐', names: '小米粥 + 蒸蛋' },
-          { type: '午餐', names: '红烧鸡腿 + 冬瓜汤' },
-          { type: '晚餐', names: '豆腐汤 + 紫菜蛋花汤' },
-          { type: '高补餐', names: '猪蹄汤' }
-        ],
-        customerName: "",
-        room: ""
-      },
-      {
-        id: 'order_004',
-        date: '2024年1月2日',
-        submitTime: '09:00',
-        status: 'confirmed',
-        statusText: '已确认',
-        dishes: [
-          { type: '早餐', names: '燕麦粥 + 煮鸡蛋' },
-          { type: '午餐', names: '清蒸鲈鱼 + 排骨汤' },
-          { type: '晚餐', names: '时令蔬菜 + 丝瓜汤' }
-        ],
-        customerName: "",
-        room: ""
-      },
-      {
-        id: 'order_005',
-        date: '2024年1月1日',
-        submitTime: '11:30',
-        status: 'confirmed',
-        statusText: '已确认',
-        dishes: [
-          { type: '早餐', names: '小米粥 + 蒸蛋' },
-          { type: '午餐', names: '瘦肉粥 + 冬瓜汤' },
-          { type: '晚餐', names: '清蒸鲈鱼 + 紫菜蛋花汤' },
-          { type: '高补餐', names: '乌鸡汤' }
-        ],
-        specialRequirements: '不吃辣',
-        customerName: "",
-        room: ""
-      }
-    ];
-  },
-
-  // 过滤订单
-  filterOrders(orders: OrderItem[], month: string, status: string): OrderItem[] {
-    return orders.filter(order => {
-      const monthMatch = month === 'all' || order.date.includes(month.replace('-', '年') + '月');
-      const statusMatch = status === 'all' || order.status === status;
-      return monthMatch && statusMatch;
-    });
-  },
-
-  // 月份选择
-  onMonthChange(e: any) {
-    const selectedOption = this.data.monthOptions.find(option => option.value === e.detail.value);
-    this.setData({
-      selectedMonth: e.detail.value,
-      selectedMonthText: selectedOption?.label || ''
-    });
-    this.refreshData();
-  },
-
-  // 状态选择
-  onStatusChange(e: any) {
-    const selectedOption = this.data.statusOptions.find(option => option.value === e.detail.value);
-    this.setData({
-      selectedStatus: e.detail.value,
-      selectedStatusText: selectedOption?.label || ''
-    });
-    this.refreshData();
-  },
-
-  // 加载更多
-  loadMore() {
-    if (this.data.loadingMore || !this.data.hasMore) return;
-    
-    this.setData({ 
-      loadingMore: true,
-      currentPage: this.data.currentPage + 1
-    });
-    
-    this.loadOrderList();
-  },
-
-  // 修改订单
-  editOrder(e: any) {
-    const orderId = e.currentTarget.dataset.id;
-    const order = this.data.orderList.find(item => item.id === orderId);
-    
-    if (!order) return;
-    
-    // 跳转到点餐页面，传入订单信息进行编辑
-    wx.navigateTo({
-      url: `/pages/customer/menu/menu?date=${order.date}&editMode=true&orderId=${orderId}`
-    });
-  },
-
-  // 取消订单
-  cancelOrder(e: any) {
-    const orderId = e.currentTarget.dataset.id;
-    
-    wx.showModal({
-      title: '确认取消',
-      content: '确定要取消这个订单吗？取消后无法恢复。',
-      confirmText: '确认取消',
-      cancelText: '我再想想',
-      success: (res) => {
-        if (res.confirm) {
-          // 执行取消操作
-          this.performCancelOrder(orderId);
-        }
-        // 用户取消操作时不需要额外处理
-      }
-    });
-  },
-
-  // 执行取消订单
-  performCancelOrder(orderId: string) {
-    // 模拟API调用
-    setTimeout(() => {
-      const orderList = this.data.orderList.map(order => {
-        if (order.id === orderId) {
-          return {
-            ...order,
-            status: 'cancelled',
-            statusText: '已取消'
-          };
-        }
-        return order;
-      });
-      
-      this.setData({ orderList });
       
       wx.showToast({
-        title: '订单已取消',
-        icon: 'success',
-        duration: 2000
+        title: '加载失败',
+        icon: 'error'
       });
-    }, 1000);
+    }
+    
+    // 停止下拉刷新
+    wx.stopPullDownRefresh();
+  },
+
+  // 格式化订单日期
+  formatOrderDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `${year}年${month}月${day}日`;
+    } catch (error) {
+      console.error('日期格式化失败:', error);
+      return dateString;
+    }
+  },
+
+  // 格式化提交时间
+  formatSubmitTime(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } catch (error) {
+      console.error('时间格式化失败:', error);
+      return '';
+    }
+  },
+
+  // 根据订单状态和日期获取状态文本
+  getStatusText(status: string, orderDate: string): string {
+    if (status === 'pending') {
+      return '待确认';
+    } else if (status === 'cancelled') {
+      return '已取消';
+    } else {
+      // 对于其他状态（confirmed等），根据日期判断
+      try {
+        const orderDateObj = new Date(orderDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        orderDateObj.setHours(0, 0, 0, 0);
+        
+        if (orderDateObj.getTime() < today.getTime()) {
+          return '已上餐';
+        } else {
+          return '已确认';
+        }
+      } catch (error) {
+        console.error('日期比较失败:', error);
+        return '已确认';
+      }
+    }
+  },
+
+  // 格式化订单项目
+  formatOrderItems(orderSummary: any): Array<{type: string, dishes: string}> {
+    if (!orderSummary) return [];
+    
+    const items: Array<{type: string, dishes: string}> = [];
+    
+    // 早餐
+    if (orderSummary.breakfast) {
+      items.push({
+        type: '早餐',
+        dishes: orderSummary.breakfast
+      });
+    }
+    
+    // 午餐
+    if (orderSummary.lunch) {
+      items.push({
+        type: '午餐',
+        dishes: orderSummary.lunch
+      });
+    }
+    
+    // 晚餐
+    if (orderSummary.dinner) {
+      items.push({
+        type: '晚餐',
+        dishes: orderSummary.dinner
+      });
+    }
+    
+    // 高补餐
+    if (orderSummary.supplement) {
+      items.push({
+        type: '高补餐',
+        dishes: orderSummary.supplement
+      });
+    }
+    
+    return items;
   }
 });

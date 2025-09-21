@@ -588,22 +588,15 @@ Page({
         wx.showToast({
           title: '订单提交成功！',
           icon: 'success',
-          duration: 2000
+          duration: 1500
         });
 
-        // 延迟返回上一页
+        console.log('订单提交成功，准备重新加载dashboard页面...');
+        
+        // 延迟重新加载dashboard页面，让用户看到成功提示
         setTimeout(() => {
-          wx.navigateBack({
-            success: () => {
-              console.log('返回上一页成功');
-            },
-            fail: (error) => {
-              console.error('返回上一页失败:', error);
-              // 如果返回失败，跳转到首页
-              wx.reLaunch({
-                url: '/pages/customer/dashboard/dashboard'
-              });
-            }
+          wx.reLaunch({
+            url: '/pages/customer/dashboard/dashboard?orderSubmitted=true'
           });
         }, 1500);
         

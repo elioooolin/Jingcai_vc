@@ -1,0 +1,9 @@
+{
+  "name": "getUserOrders",
+  "version": "1.0.0",
+  "description": "获取用户所有订单",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

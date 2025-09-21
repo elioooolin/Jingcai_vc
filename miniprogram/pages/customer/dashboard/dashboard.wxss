@@ -27,8 +27,8 @@
   letter-spacing: 1rpx;
 }
 
-/* 标签页区域 */
-.tabs-section {
+/* 内容区域 */
+.content-section {
   margin-bottom: 32rpx;
 }
 
@@ -156,6 +156,33 @@
   color: white;
 }
 
+/* 已订餐日期样式 */
+.date-item.has-order {
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4f4d4 100%);
+  border-color: #4caf50;
+  border-width: 2rpx;
+  position: relative;
+}
+
+.date-item.has-order .date-day {
+  color: #2e7d32;
+}
+
+.date-item.has-order .date-month {
+  color: #4caf50;
+}
+
+.order-badge {
+  font-size: 12rpx;
+  color: #2e7d32;
+  font-weight: 500;
+  margin-top: 2rpx;
+  background: rgba(76, 175, 80, 0.15);
+  padding: 1rpx 6rpx;
+  border-radius: 8rpx;
+  line-height: 1.2;
+}
+
 /* 响应式设计 - 小屏幕适配 */
 @media (max-width: 400px) {
   .date-grid {
@@ -253,9 +280,160 @@
   border-width: 3rpx;
 }
 
+.legend-dot.has-order {
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4f4d4 100%);
+  border-color: #4caf50;
+  border-width: 2rpx;
+}
+
 .legend-text {
   font-size: 24rpx;
   color: #666;
+}
+
+/* 待确定订单区域样式 */
+.section-header {
+  margin-bottom: 24rpx;
+  padding: 0 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+.refresh-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.refresh-text {
+  font-size: 24rpx;
+  color: var(--brand-primary);
+  opacity: 0.8;
+}
+
+.pending-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.pending-order-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin: 0 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  border: 2rpx solid #f0f0f0;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.order-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.cancel-order-btn {
+  background: #fff;
+  border: 2rpx solid #ff6b6b;
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  font-size: 24rpx;
+  color: #ff6b6b;
+  line-height: 1;
+  min-width: auto;
+  height: auto;
+}
+
+.cancel-order-btn::after {
+  border: none;
+}
+
+.cancel-order-btn:active {
+  background: #fff5f5;
+  transform: scale(0.98);
+}
+
+.cancel-order-btn.cancelling,
+.cancel-order-btn[disabled] {
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+  color: #999;
+  opacity: 0.6;
+}
+
+.cancel-order-btn.cancelling:active,
+.cancel-order-btn[disabled]:active {
+  transform: none;
+  background: #f5f5f5;
+}
+
+.order-date-large {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--brand-primary);
+  letter-spacing: 0.5rpx;
+}
+
+.order-content {
+  margin-top: 0;
+}
+
+.order-content .summary-item {
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f8f8f8;
+}
+
+.order-content .summary-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* 空状态样式 */
+.no-pending-orders {
+  text-align: center;
+  padding: 60rpx 32rpx;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  opacity: 0.6;
+  margin-bottom: 16rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--brand-text);
+  margin-bottom: 8rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
 }
 
 
@@ -280,47 +458,43 @@
 .summary-label {
   font-size: 28rpx;
   color: var(--brand-text-secondary);
+  min-width: 120rpx;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .summary-value {
   font-size: 28rpx;
   font-weight: 500;
   color: var(--brand-text);
+  flex: 1;
+  margin-left: 16rpx;
+  text-align: right;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
-/* 历史订单 */
-.history-list {
-  margin-top: 24rpx;
+/* 特殊需求项的特殊样式 */
+.summary-item.special-requirements {
+  background: rgba(255, 243, 224, 0.8);
+  border-radius: 12rpx;
+  padding: 20rpx 16rpx;
+  margin: 8rpx 0;
+  border: 2rpx solid #f0d0a0;
 }
 
-.order-date {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: var(--brand-text);
+.summary-item.special-requirements .summary-label {
+  color: #d4a574;
+  font-weight: 600;
 }
 
-/* 个人中心 */
-.action-buttons {
-  margin-top: 48rpx;
+.summary-item.special-requirements .summary-value {
+  color: #8b6914;
+  font-style: italic;
+  text-align: left;
 }
 
-/* TDesign 组件样式覆盖 */
-.t-tabs--card .t-tabs__track {
-  background: #f5f5f5;
-  border-radius: 24rpx;
-  padding: 4rpx;
-}
 
-.t-tabs--card .t-tab-nav__item {
-  border-radius: 20rpx;
-  font-weight: 500;
-}
-
-.t-tabs--card .t-tab-nav__item.t-is-active {
-  background: #ffffff;
-  color: var(--brand-primary);
-  box-shadow: 0 4rpx 16rpx rgba(212, 165, 116, 0.15);
-}
 
 .t-cell-group {
   border-radius: 24rpx;

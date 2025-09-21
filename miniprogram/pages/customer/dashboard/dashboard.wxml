@@ -7,18 +7,11 @@
     </view>
   </view>
 
-  <!-- 导航标签 -->
-  <view class="tabs-section">
-    <t-tabs 
-      value="{{activeTab}}" 
-      bind:change="onTabChange"
-      theme="card"
-      space-evenly="{{false}}"
-    >
-      <t-tab-panel label="今日点餐" value="order">
+  <!-- 点餐内容 -->
+  <view class="content-section">
         <!-- 日期选择 -->
         <view class="card">
-          <view class="card-title">选择日期</view>
+          <view class="card-title">点击日期开始点餐</view>
           <view class="date-info">
             入住：{{userInfo.checkInDate || '2024-12-01'}} ({{userInfo.totalDays || 28}}天) | 可点餐：{{orderDateRange || '入住第8天到出所当日'}} | 需提前至少3天点餐
           </view>
@@ -27,7 +20,7 @@
               <view 
                 wx:for="{{dateList}}" 
                 wx:key="date"
-                class="date-item {{item.disabled || item.tooEarly || item.expired ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}}"
+                class="date-item {{item.disabled || item.tooEarly || item.expired ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}} {{item.hasOrder ? 'has-order' : ''}}"
                 bind:tap="selectDate"
                 data-date="{{item.date}}"
                 data-index="{{index}}"
@@ -35,6 +28,7 @@
                 <view class="date-month" wx:if="{{item.showMonth}}">{{item.monthName}}</view>
                 <view class="date-day">{{item.day}}</view>
                 <view class="today-badge" wx:if="{{item.isToday}}">今天</view>
+                <view class="order-badge" wx:if="{{item.hasOrder}}">已订餐</view>
               </view>
             </view>
             <view class="date-legend">
@@ -47,6 +41,10 @@
                 <text class="legend-text">不可点餐</text>
               </view>
               <view class="legend-item">
+                <view class="legend-dot has-order"></view>
+                <text class="legend-text">已订餐</text>
+              </view>
+              <view class="legend-item">
                 <view class="legend-dot today"></view>
                 <text class="legend-text">今天</text>
               </view>
@@ -54,84 +52,62 @@
           </view>
         </view>
 
-        <!-- 今日已点菜单 -->
-        <view class="card" wx:if="{{todayOrder}}">
-          <view class="flex-between mb-24">
-            <text class="card-title">今日已点菜单</text>
-            <t-tag 
-              theme="{{todayOrder.status === 'submitted' ? 'primary' : 'success'}}" 
-              variant="light"
-              size="small"
-            >
-              {{todayOrder.statusText}}
-            </t-tag>
-          </view>
-          <view class="order-items">
-            <view class="summary-item" wx:for="{{todayOrder.items}}" wx:key="type">
-              <text class="summary-label">{{item.type}}</text>
-              <text class="summary-value">{{item.dishes}}</text>
+        <!-- 待确定订单 -->
+        <view class="pending-orders-section">
+          
+          <!-- 总标题 -->
+          <view class="section-header" wx:if="{{pendingOrders.length > 0 || refreshingOrders}}">
+            <text class="section-title">待确定订单</text>
+            <view class="refresh-indicator" wx:if="{{refreshingOrders}}">
+              <text class="refresh-text">正在刷新...</text>
             </view>
           </view>
-        </view>
-      </t-tab-panel>
-
-      <t-tab-panel label="订单历史" value="history">
-        <view class="history-list">
-          <view class="card" wx:for="{{orderHistory}}" wx:key="id">
-            <view class="flex-between mb-16">
-              <text class="order-date">{{item.date}}</text>
-              <t-tag 
-                theme="success" 
-                variant="light"
-                size="small"
-              >
-                {{item.statusText}}
-              </t-tag>
-            </view>
-            <view class="order-items">
-              <view class="summary-item" wx:for="{{item.items}}" wx:key="type" wx:for-item="dish">
-                <text class="summary-label">{{dish.type}}</text>
-                <text class="summary-value">{{dish.dishes}}</text>
+          
+          <!-- 订单列表 -->
+          <view class="pending-orders-list" wx:if="{{pendingOrders.length > 0}}">
+            <view class="pending-order-item" wx:for="{{pendingOrders}}" wx:key="uniqueKey" wx:for-index="index">
+              <!-- 订单日期和状态 -->
+              <view class="order-header">
+                <text class="order-date-large">{{item.date}}</text>
+                <view class="order-actions">
+                  <t-tag 
+                    theme="primary" 
+                    variant="light"
+                    size="small"
+                  >
+                    {{item.statusText}}
+                  </t-tag>
+                  <button 
+                    class="cancel-order-btn {{cancellingOrderId === item.id ? 'cancelling' : ''}}"
+                    bind:tap="cancelOrder"
+                    data-order-id="{{item.id}}"
+                    data-order-date="{{item.date}}"
+                    disabled="{{cancellingOrderId === item.id}}"
+                  >
+                    {{cancellingOrderId === item.id ? '取消中...' : '取消订单'}}
+                  </button>
+                </view>
+              </view>
+              
+              <!-- 订单内容 -->
+              <view class="order-content">
+                <view class="summary-item {{dish.type === '特殊需求' ? 'special-requirements' : ''}}" wx:for="{{item.items}}" wx:key="type" wx:for-item="dish">
+                  <text class="summary-label">{{dish.type}}</text>
+                  <text class="summary-value">{{dish.dishes}}</text>
+                </view>
               </view>
             </view>
           </view>
         </view>
-      </t-tab-panel>
-
-      <t-tab-panel label="个人中心" value="profile">
-        <view class="card">
-          <view class="card-title">个人信息</view>
-          <t-cell-group>
-            <t-cell title="姓名" note="{{userInfo.name || '未设置'}}" />
-            <t-cell title="手机号" note="{{userInfo.phone || '未设置'}}" />
-            <t-cell title="入住门店" note="{{userInfo.store || '未设置'}}" />
-            <t-cell title="房间号" note="{{userInfo.room || '未设置'}}" />
-            <t-cell title="入住天数" note="{{userInfo.totalDays ? userInfo.totalDays + '天' : '未设置'}}" />
-            <t-cell title="已入住" note="{{checkInDays > 0 ? checkInDays + '天' : '未开始'}}" />
-          </t-cell-group>
+        
+        <!-- 无待确定订单时的提示 -->
+        <view class="card no-pending-orders" wx:if="{{pendingOrders.length === 0}}">
+          <view class="empty-state">
+            <text class="empty-icon">📋</text>
+            <text class="empty-title">暂无待确定订单</text>
+            <text class="empty-desc">您当前没有需要确认的订单</text>
+          </view>
         </view>
-
-        <view class="action-buttons">
-          <t-button
-            theme="light"
-            size="large"
-            block
-            bind:tap="editProfile"
-            class="mb-24"
-          >
-            修改个人信息
-          </t-button>
-          <t-button
-            theme="light"
-            size="large"
-            block
-            bind:tap="logout"
-          >
-            退出登录
-          </t-button>
-        </view>
-      </t-tab-panel>
-    </t-tabs>
   </view>
 </view>
 
