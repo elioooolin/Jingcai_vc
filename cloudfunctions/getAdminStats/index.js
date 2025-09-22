@@ -22,7 +22,7 @@ exports.main = async (event, context) => {
     const usersResult = await db.collection('users')
       .where({
         userType: 'customer',
-        status: 'active'
+        status: 'active',
       })
       .get();
     
@@ -31,7 +31,8 @@ exports.main = async (event, context) => {
     let activeCustomers = 0;
     
     for (const user of usersResult.data) {
-      if (user.checkInDate && user.totalDays) {
+      
+      if (user.checkInDate && user.totalDays && user.isMock !== true) {
         try {
           // 计算退房日期 = checkInDate + totalDays
           const checkInDate = new Date(user.checkInDate);

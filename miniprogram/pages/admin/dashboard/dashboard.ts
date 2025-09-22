@@ -607,46 +607,69 @@ Page({
   },
 
   // 加载客户列表
-  loadCustomerList() {
-    // 模拟API调用
-    setTimeout(() => {
-      const mockCustomers: CustomerItem[] = [
-        {
-          id: 'customer_001',
-          name: '张女士',
-          phone: '138****5678',
-          room: 'A201',
-          store: 'store1', // 朝阳店
-          checkInDate: '2024-01-01',
-          totalDays: '28天'
-        },
-        {
-          id: 'customer_002',
-          name: '李女士',
-          phone: '139****1234',
-          room: 'B105',
-          store: 'store2', // 海淀店
-          checkInDate: '2024-01-03',
-          totalDays: '21天'
-        },
-        {
-          id: 'customer_003',
-          name: '王女士',
-          phone: '137****9876',
-          room: 'C302',
-          store: 'store3', // 西城店
-          checkInDate: '2024-01-02',
-          totalDays: '14天'
+  async loadCustomerList() {
+    console.log('🔄 开始加载客户列表...');
+    console.log('查询条件 - 门店:', this.data.selectedCustomerStore);
+    
+    try {
+      // 调用云函数获取真实客户数据
+      const result = await wx.cloud.callFunction({
+        name: 'getAdminCustomers',
+        data: {
+          store: this.data.selectedCustomerStore
         }
-      ];
+      });
       
-      // 根据选中的门店筛选客户
-      const filteredCustomers = this.data.selectedCustomerStore === 'all' 
-        ? mockCustomers 
-        : mockCustomers.filter(customer => customer.store === this.data.selectedCustomerStore);
+      console.log('客户数据云函数调用结果:', result.result);
       
-      this.setData({ customerList: filteredCustomers });
-    }, 1000);
+      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
+        const customers = (result.result as any).customers || [];
+        
+        // 转换为CustomerItem格式
+        const formattedCustomers: CustomerItem[] = customers.map((customer: any) => ({
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          room: customer.room,
+          store: customer.store,
+          checkInDate: customer.checkInDate,
+          totalDays: customer.totalDays
+        }));
+        
+        this.setData({ 
+          customerList: formattedCustomers 
+        });
+        
+        console.log(`✅ 客户列表加载成功，共 ${formattedCustomers.length} 条记录`);
+        
+      } else {
+        console.error('获取客户数据失败:', result.result);
+        
+        // 显示错误信息
+        wx.showToast({
+          title: '加载客户失败',
+          icon: 'error',
+          duration: 2000
+        });
+        
+        this.setData({ 
+          customerList: [] 
+        });
+      }
+      
+    } catch (error) {
+      console.error('加载客户列表出错:', error);
+      
+      wx.showToast({
+        title: '网络错误，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+      
+      this.setData({ 
+        customerList: [] 
+      });
+    }
   },
 
   // 确认订单
