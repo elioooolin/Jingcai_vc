@@ -111,7 +111,6 @@ exports.main = async (event, context) => {
         isAdmin: user.isAdmin,
         room: user.room,
         checkInDate: user.checkInDate,
-        expectedCheckOutDate: user.expectedCheckOutDate,
         status: user.status
       }
     }

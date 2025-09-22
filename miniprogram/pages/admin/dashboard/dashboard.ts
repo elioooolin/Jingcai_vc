@@ -61,6 +61,7 @@ Page({
 
   onLoad() {
     this.checkAdminAuth();
+    this.refreshStats(); // 加载时获取真实统计数据
     this.loadOrderList();
     this.loadCustomerList();
     this.updateExportPreview();
@@ -95,18 +96,52 @@ Page({
   },
 
   // 刷新统计数据
-  refreshStats() {
-    // 模拟API调用
-    setTimeout(() => {
-      this.setData({
-        stats: {
-          todayOrders: Math.floor(Math.random() * 10) + 25,
-          pendingOrders: Math.floor(Math.random() * 8) + 3,
-          totalCustomers: Math.floor(Math.random() * 20) + 150,
-          confirmedOrders: Math.floor(Math.random() * 15) + 20
-        }
+  async refreshStats() {
+    console.log('🔄 开始刷新管理员统计数据...');
+    
+    try {
+      // 调用云函数获取真实统计数据
+      const result = await wx.cloud.callFunction({
+        name: 'getAdminStats',
+        data: {}
       });
-    }, 500);
+      
+      console.log('📊 管理员统计数据云函数调用结果:', result.result);
+      
+      if (result.result && result.result.success) {
+        const stats = result.result.stats;
+        
+        this.setData({
+          stats: {
+            totalCustomers: stats.totalCustomers,
+            pendingOrders: stats.pendingOrders,
+            todayOrders: 0, // 暂时保留，后续可以添加今日订单统计
+            confirmedOrders: 0 // 暂时保留，后续可以添加已确认订单统计
+          }
+        });
+        
+        console.log('✅ 统计数据更新成功:', this.data.stats);
+        
+      } else {
+        console.error('❌ 获取统计数据失败:', result.result?.message);
+        
+        // 失败时显示错误提示
+        wx.showToast({
+          title: '统计数据加载失败',
+          icon: 'error',
+          duration: 2000
+        });
+      }
+      
+    } catch (error) {
+      console.error('❌ 调用统计数据云函数失败:', error);
+      
+      wx.showToast({
+        title: '网络错误',
+        icon: 'error',
+        duration: 2000
+      });
+    }
   },
 
   // 标签页切换

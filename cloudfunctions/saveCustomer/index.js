@@ -125,12 +125,6 @@ exports.main = async (event, context) => {
     } else {
       // 创建新客户
       saveData.createdAt = new Date()
-      
-      // 计算预计出院日期
-      const checkInDate = new Date(customerData.checkInDate)
-      const expectedCheckOutDate = new Date(checkInDate.getTime() + (parseInt(customerData.totalDays) * 24 * 60 * 60 * 1000))
-      saveData.expectedCheckOutDate = expectedCheckOutDate
-      
       result = await db.collection('users').add({
         data: saveData
       })

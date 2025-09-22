@@ -11,20 +11,12 @@
   <view class="stats-section">
     <view class="stats-grid">
       <view class="stat-card">
-        <text class="stat-number">{{stats.todayOrders}}</text>
-        <text class="stat-label">今日订单</text>
+        <text class="stat-number">{{stats.totalCustomers}}</text>
+        <text class="stat-label">在住客户数</text>
       </view>
       <view class="stat-card">
         <text class="stat-number">{{stats.pendingOrders}}</text>
-        <text class="stat-label">待确认</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-number">{{stats.totalCustomers}}</text>
-        <text class="stat-label">总客户数</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-number">{{stats.confirmedOrders}}</text>
-        <text class="stat-label">已确认</text>
+        <text class="stat-label">待确认订单</text>
       </view>
     </view>
   </view>

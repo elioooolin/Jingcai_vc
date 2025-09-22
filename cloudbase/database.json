@@ -82,11 +82,6 @@
           "description": "入住日期（客户专用）"
         },
         {
-          "name": "expectedCheckOutDate",
-          "type": "date",
-          "description": "预计出院日期（客户专用）"
-        },
-        {
           "name": "birthday",
           "type": "date",
           "description": "用户生日"
