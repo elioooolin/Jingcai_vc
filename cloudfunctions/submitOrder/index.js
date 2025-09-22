@@ -86,7 +86,7 @@ exports.main = async (event, context) => {
     let newSupplementCount = 0;
     
     // 检查是否需要更新高补餐次数
-    if (orderData.supplement && orderData.supplement.trim() !== '') {
+    if (orderData.supplement && Array.isArray(orderData.supplement) && orderData.supplement.length > 0 && orderData.supplement[0].name.trim() !== '') {
       supplementCountUpdated = true;
       const currentSupplementCount = user.supplementCount || 0;
       newSupplementCount = currentSupplementCount + 1;
@@ -187,30 +187,60 @@ exports.main = async (event, context) => {
 function formatOrderDetails(orderData, user) {
   const details = {};
   
-  // 早餐
-  if (orderData.breakfast && orderData.breakfast.trim() !== '') {
-    details.breakfast = orderData.breakfast.trim();
+  // 早餐 - 处理数组格式，提取name字段
+  if (orderData.breakfast && Array.isArray(orderData.breakfast) && orderData.breakfast.length > 0) {
+    const breakfastItem = orderData.breakfast[0];
+    if (breakfastItem && breakfastItem.name && breakfastItem.name.trim() !== '') {
+      details.breakfast = breakfastItem.name.trim();
+    }
   }
   
-  // 午餐
+  // 午餐 - 合并lunch和lunchSoup数组，提取name字段
+  const lunchItems = [];
   if (orderData.lunch && Array.isArray(orderData.lunch)) {
-    const lunchItems = orderData.lunch.filter(item => item && item.trim() !== '');
-    if (lunchItems.length > 0) {
-      details.lunch = lunchItems;
-    }
+    orderData.lunch.forEach(item => {
+      if (item && item.name && item.name.trim() !== '') {
+        lunchItems.push(item.name.trim());
+      }
+    });
+  }
+  if (orderData.lunchSoup && Array.isArray(orderData.lunchSoup)) {
+    orderData.lunchSoup.forEach(item => {
+      if (item && item.name && item.name.trim() !== '') {
+        lunchItems.push(item.name.trim());
+      }
+    });
+  }
+  if (lunchItems.length > 0) {
+    details.lunch = lunchItems;
   }
   
-  // 晚餐
-  if (orderData.dinner && Array.isArray(orderData.dinner)) {
-    const dinnerItems = orderData.dinner.filter(item => item && item.trim() !== '');
-    if (dinnerItems.length > 0) {
-      details.dinner = dinnerItems;
-    }
+  // 晚餐 - 合并dinnerMain和dinnerSoup数组，提取name字段
+  const dinnerItems = [];
+  if (orderData.dinnerMain && Array.isArray(orderData.dinnerMain)) {
+    orderData.dinnerMain.forEach(item => {
+      if (item && item.name && item.name.trim() !== '') {
+        dinnerItems.push(item.name.trim());
+      }
+    });
+  }
+  if (orderData.dinnerSoup && Array.isArray(orderData.dinnerSoup)) {
+    orderData.dinnerSoup.forEach(item => {
+      if (item && item.name && item.name.trim() !== '') {
+        dinnerItems.push(item.name.trim());
+      }
+    });
+  }
+  if (dinnerItems.length > 0) {
+    details.dinner = dinnerItems;
   }
   
-  // 高补餐
-  if (orderData.supplement && orderData.supplement.trim() !== '') {
-    details.supplement = orderData.supplement.trim();
+  // 高补餐 - 处理数组格式，提取name字段
+  if (orderData.supplement && Array.isArray(orderData.supplement) && orderData.supplement.length > 0) {
+    const supplementItem = orderData.supplement[0];
+    if (supplementItem && supplementItem.name && supplementItem.name.trim() !== '') {
+      details.supplement = supplementItem.name.trim();
+    }
   }
   
   // 陪人餐
@@ -236,5 +266,6 @@ function formatOrderDetails(orderData, user) {
     details.special_requirements = orderData.specialRequirements.trim();
   }
   
+  console.log('格式化后的订单详情:', details);
   return details;
 }

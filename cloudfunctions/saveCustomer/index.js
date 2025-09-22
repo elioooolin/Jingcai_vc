@@ -103,6 +103,7 @@ exports.main = async (event, context) => {
       store: customerData.store,
       dietPreference: customerData.dietPreference || '',
       supplementCount: parseInt(customerData.supplementCount),
+      freeFamilyMealCount: parseInt(customerData.freeFamilyMealCount),
       createdBy: adminUser.data[0].name,
       updatedAt: new Date()
     }
