@@ -81,9 +81,7 @@ exports.main = async (event, context) => {
     
     // 处理高补餐和陪人餐的扣减
     let supplementCountUpdated = false;
-    let familyMealCountUpdated = false;
     let newSupplementCount = user.supplementCount || 0;
-    let newFamilyMealCount = user.familyMealCount || 0;
     let updateErrors = [];
     
     // 处理高补餐扣减
@@ -108,63 +106,38 @@ exports.main = async (event, context) => {
       }
     }
     
-    // 处理陪人餐扣减
+    // 处理陪人餐累计
     const breakfastFamilyMeals = orderData.familyMeals?.breakfast || 0;
     const lunchFamilyMeals = orderData.familyMeals?.lunch || 0;
     const dinnerFamilyMeals = orderData.familyMeals?.dinner || 0;
     const totalFamilyMeals = breakfastFamilyMeals + lunchFamilyMeals + dinnerFamilyMeals;
     
-    let extraFamilyBreakfastCnt = 0;
-    let extraFamilyMainMealCnt = 0;
+    // 新的字段名
+    let familyBreakfastCnt = 0;
+    let familyMainMealCnt = 0;
+    let familyMealCountUpdated = false;
     
     if (totalFamilyMeals > 0) {
       console.log(`订单包含 ${totalFamilyMeals} 份陪人餐（早餐${breakfastFamilyMeals}份，午餐${lunchFamilyMeals}份，晚餐${dinnerFamilyMeals}份）`);
       
       try {
-        const currentFamilyMealCount = user.familyMealCount || 0;
-        console.log('用户当前免费陪人餐次数:', currentFamilyMealCount);
+        // 直接累计到用户的陪人餐次数中，freeFamilyMealCount不变
+        familyBreakfastCnt = breakfastFamilyMeals;
+        familyMainMealCnt = lunchFamilyMeals + dinnerFamilyMeals;
         
-        // 计算免费和收费陪人餐的分配
-        let remainingFreeMeals = currentFamilyMealCount;
-        
-        // 优先使用免费次数抵扣更贵的午晚餐（38元/份）
-        const totalMainMeals = lunchFamilyMeals + dinnerFamilyMeals;
-        let freeMainMeals = Math.min(totalMainMeals, remainingFreeMeals);
-        remainingFreeMeals -= freeMainMeals;
-        extraFamilyMainMealCnt = totalMainMeals - freeMainMeals;
-        
-        // 剩余免费次数抵扣早餐（28元/份）
-        let freeBreakfastMeals = Math.min(breakfastFamilyMeals, remainingFreeMeals);
-        remainingFreeMeals -= freeBreakfastMeals;
-        extraFamilyBreakfastCnt = breakfastFamilyMeals - freeBreakfastMeals;
-        
-        // 更新用户的免费陪人餐次数
-        const usedFreeMeals = freeMainMeals + freeBreakfastMeals;
-        if (usedFreeMeals > 0) {
-          newFamilyMealCount = currentFamilyMealCount - usedFreeMeals;
+        if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
           familyMealCountUpdated = true;
-          console.log(`✅ 使用了 ${usedFreeMeals} 次免费陪人餐，剩余 ${newFamilyMealCount} 次`);
+          console.log(`✅ 本次订单陪人餐：早餐 ${familyBreakfastCnt} 份，午晚餐 ${familyMainMealCnt} 份`);
         }
-        
-        // 记录额外收费的陪人餐
-        if (extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0) {
-          console.log(`💰 额外收费陪人餐：早餐 ${extraFamilyBreakfastCnt} 份，午晚餐 ${extraFamilyMainMealCnt} 份`);
-        }
-        
-        console.log(`📊 陪人餐分配明细：`);
-        console.log(`   - 免费午晚餐：${freeMainMeals} 份`);
-        console.log(`   - 收费午晚餐：${extraFamilyMainMealCnt} 份`);
-        console.log(`   - 免费早餐：${freeBreakfastMeals} 份`);
-        console.log(`   - 收费早餐：${extraFamilyBreakfastCnt} 份`);
         
       } catch (error) {
-        console.error('❌ 处理陪人餐扣减时出错:', error);
+        console.error('❌ 处理陪人餐累计时出错:', error);
         updateErrors.push('陪人餐次数处理失败: ' + error.message);
       }
     }
     
     // 执行数据库更新
-    const needsUserUpdate = supplementCountUpdated || familyMealCountUpdated || extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0;
+    const needsUserUpdate = supplementCountUpdated || familyMealCountUpdated;
     
     if (needsUserUpdate) {
       try {
@@ -172,18 +145,14 @@ exports.main = async (event, context) => {
         if (supplementCountUpdated) {
           updateData.supplementCount = newSupplementCount;
         }
-        if (familyMealCountUpdated) {
-          updateData.familyMealCount = newFamilyMealCount;
+        // 累加陪人餐次数到用户记录中
+        if (familyBreakfastCnt > 0) {
+          const currentFamilyBreakfast = user.familyBreakfastCnt || 0;
+          updateData.familyBreakfastCnt = currentFamilyBreakfast + familyBreakfastCnt;
         }
-        
-        // 累加额外收费的陪人餐次数
-        if (extraFamilyBreakfastCnt > 0) {
-          const currentExtraBreakfast = user.extraFamilyBreakfastCnt || 0;
-          updateData.extraFamilyBreakfastCnt = currentExtraBreakfast + extraFamilyBreakfastCnt;
-        }
-        if (extraFamilyMainMealCnt > 0) {
-          const currentExtraMainMeal = user.extraFamilyMainMealCnt || 0;
-          updateData.extraFamilyMainMealCnt = currentExtraMainMeal + extraFamilyMainMealCnt;
+        if (familyMainMealCnt > 0) {
+          const currentFamilyMainMeal = user.familyMainMealCnt || 0;
+          updateData.familyMainMealCnt = currentFamilyMainMeal + familyMainMealCnt;
         }
         
         await db.collection('users')
@@ -199,23 +168,23 @@ exports.main = async (event, context) => {
       }
     }
     
-    // 更新订单的额外收费陪人餐信息
-    if (extraFamilyBreakfastCnt > 0 || extraFamilyMainMealCnt > 0) {
+    // 更新订单的陪人餐信息
+    if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
       try {
         await db.collection('orders')
           .doc(result._id)
           .update({
             data: {
-              extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
-              extraFamilyMainMealCnt: extraFamilyMainMealCnt,
+              familyBreakfastCnt: familyBreakfastCnt,
+              familyMainMealCnt: familyMainMealCnt,
               updatedAt: new Date()
             }
           });
         
-        console.log('✅ 订单额外收费信息更新成功');
+        console.log('✅ 订单陪人餐信息更新成功');
       } catch (updateError) {
-        console.error('❌ 更新订单额外收费信息失败:', updateError);
-        updateErrors.push('订单额外收费信息更新失败: ' + updateError.message);
+        console.error('❌ 更新订单陪人餐信息失败:', updateError);
+        updateErrors.push('订单陪人餐信息更新失败: ' + updateError.message);
       }
     }
     
@@ -226,11 +195,9 @@ exports.main = async (event, context) => {
       orderId: result._id,
       orderData: orderEntry,
       supplementCountUpdated: supplementCountUpdated,
-      familyMealCountUpdated: familyMealCountUpdated,
       newSupplementCount: newSupplementCount,
-      newFamilyMealCount: newFamilyMealCount,
-      extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
-      extraFamilyMainMealCnt: extraFamilyMainMealCnt,
+      familyBreakfastCnt: familyBreakfastCnt,
+      familyMainMealCnt: familyMainMealCnt,
       errors: updateErrors.length > 0 ? updateErrors : undefined
     };
     

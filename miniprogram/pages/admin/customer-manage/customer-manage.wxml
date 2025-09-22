@@ -164,9 +164,9 @@
           label="陪人餐次数"
           type="number"
           placeholder="请输入陪人餐次数（0-999）"
-          value="{{formData.familyMealCount}}"
+          value="{{formData.freeFamilyMealCount}}"
           bind:change="onFieldChange"
-          data-field="familyMealCount"
+          data-field="freeFamilyMealCount"
           required
         />
       </view>

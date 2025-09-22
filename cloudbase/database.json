@@ -107,19 +107,19 @@
           "description": "高补餐次数"
         },
         {
-          "name": "familyMealCount",
+          "name": "freeFamilyMealCount",
           "type": "number",
-          "description": "陪人餐次数"
+          "description": "免费陪人餐次数"
         },
         {
-          "name": "extraFamilyBreakfastCnt",
+          "name": "familyBreakfastCnt",
           "type": "number",
-          "description": "额外收费的早餐陪人餐次数"
+          "description": "累计早餐陪人餐次数"
         },
         {
-          "name": "extraFamilyMainMealCnt",
+          "name": "familyMainMealCnt",
           "type": "number",
-          "description": "额外收费的午晚餐陪人餐次数"
+          "description": "累计午晚餐陪人餐次数"
         },
         {
           "name": "createdBy",
@@ -173,14 +173,14 @@
           "type": "object"
         },
         {
-          "name": "extraFamilyBreakfastCnt",
+          "name": "familyBreakfastCnt",
           "type": "number",
-          "description": "本订单额外收费的早餐陪人餐次数"
+          "description": "本订单早餐陪人餐次数"
         },
         {
-          "name": "extraFamilyMainMealCnt",
+          "name": "familyMainMealCnt",
           "type": "number",
-          "description": "本订单额外收费的午晚餐陪人餐次数"
+          "description": "本订单午晚餐陪人餐次数"
         },
         {
           "name": "status",

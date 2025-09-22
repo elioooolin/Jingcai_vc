@@ -71,7 +71,9 @@ Page({
     breakfastFamilyMealCount: 0,
     lunchFamilyMealCount: 0,
     dinnerFamilyMealCount: 0,
-    userFamilyMealCount: 0, // 用户剩余陪人餐次数
+    userFreeFamilyMealCount: 0, // 用户剩余免费陪人餐次数
+    userFamilyBreakfastCnt: 0, // 用户累计早餐陪人餐次数
+    userFamilyMainMealCnt: 0, // 用户累计午晚餐陪人餐次数
     
     // 选择规则
     breakfastRule: '',
@@ -573,33 +575,21 @@ Page({
       return;
     }
 
-    // 检查陪人餐数量和费用
+    // 检查陪人餐数量
     const totalFamilyMeals = this.data.breakfastFamilyMealCount + this.data.lunchFamilyMealCount + this.data.dinnerFamilyMealCount;
     if (totalFamilyMeals > 0) {
-      const userFamilyMealCount = this.data.userFamilyMealCount;
+      // 计算超出的陪人餐数量
+      // 超出数量 = familyBreakfastCnt + familyMainMealCnt + 本次订单新增的陪人餐次数 - freeFamilyMealCount
+      const currentTotalFamilyMeals = this.data.userFamilyBreakfastCnt + this.data.userFamilyMainMealCnt;
+      const newTotalFamilyMeals = currentTotalFamilyMeals + totalFamilyMeals;
+      const excessMeals = newTotalFamilyMeals - this.data.userFreeFamilyMealCount;
       
-      if (totalFamilyMeals > userFamilyMealCount) {
-        // 需要额外付费
-        const excessMeals = totalFamilyMeals - userFamilyMealCount;
-        const breakfastExcess = Math.max(0, this.data.breakfastFamilyMealCount - Math.max(0, userFamilyMealCount - this.data.lunchFamilyMealCount - this.data.dinnerFamilyMealCount));
-        const nonBreakfastExcess = excessMeals - breakfastExcess;
-        
-        const breakfastCost = breakfastExcess * 28;
-        const nonBreakfastCost = nonBreakfastExcess * 38;
-        const totalCost = breakfastCost + nonBreakfastCost;
-        
-        let costDetails = [];
-        if (breakfastExcess > 0) {
-          costDetails.push(`早餐陪人餐 ${breakfastExcess} 份 × 28元 = ${breakfastCost}元`);
-        }
-        if (nonBreakfastExcess > 0) {
-          costDetails.push(`午/晚餐陪人餐 ${nonBreakfastExcess} 份 × 38元 = ${nonBreakfastCost}元`);
-        }
-        
+      if (excessMeals > 0) {
+        // 有超出的陪人餐
         const confirmResult = await new Promise<boolean>((resolve) => {
           wx.showModal({
-            title: '陪人餐费用确认',
-            content: `您本次点了 ${totalFamilyMeals} 份陪人餐，剩余免费次数 ${userFamilyMealCount} 次。\n\n超出部分收费明细：\n${costDetails.join('\n')}\n\n总计：${totalCost}元\n\n确认提交订单吗？`,
+            title: '陪人餐数量确认',
+            content: `您本次点了 ${totalFamilyMeals} 份陪人餐。\n\n当前累计陪人餐：${currentTotalFamilyMeals} 份\n本次新增：${totalFamilyMeals} 份\n免费额度：${this.data.userFreeFamilyMealCount} 份\n\n超出免费额度：${excessMeals} 份\n\n确认提交订单吗？`,
             confirmText: '确认提交',
             cancelText: '取消',
             success: (res) => {
@@ -615,11 +605,11 @@ Page({
           return; // 用户取消了订单提交
         }
       } else {
-        // 在免费次数内，显示消耗次数确认
+        // 在免费额度内
         const confirmResult = await new Promise<boolean>((resolve) => {
           wx.showModal({
-            title: '陪人餐次数确认',
-            content: `您本次点了 ${totalFamilyMeals} 份陪人餐，将消耗 ${totalFamilyMeals} 次免费陪人餐，剩余 ${userFamilyMealCount - totalFamilyMeals} 次。\n\n确认提交订单吗？`,
+            title: '陪人餐数量确认',
+            content: `您本次点了 ${totalFamilyMeals} 份陪人餐。\n\n当前累计陪人餐：${currentTotalFamilyMeals} 份\n本次新增：${totalFamilyMeals} 份\n免费额度：${this.data.userFreeFamilyMealCount} 份\n\n仍在免费额度内。\n\n确认提交订单吗？`,
             confirmText: '确认提交',
             cancelText: '取消',
             success: (res) => {
@@ -840,7 +830,9 @@ Page({
     if (!userInfo || !userInfo._id) {
       console.log('用户信息不存在或缺少ID，设置陪人餐次数为0');
       this.setData({ 
-        userFamilyMealCount: 0 
+        userFreeFamilyMealCount: 0,
+        userFamilyBreakfastCnt: 0,
+        userFamilyMainMealCnt: 0
       });
       return;
     }
@@ -855,23 +847,31 @@ Page({
 
       if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
         const userData = result.result.userInfo;
-        const familyMealCount = userData.familyMealCount || 0;
+        const freeFamilyMealCount = userData.freeFamilyMealCount || 0;
+        const familyBreakfastCnt = userData.familyBreakfastCnt || 0;
+        const familyMainMealCnt = userData.familyMainMealCnt || 0;
         
-        console.log(`用户陪人餐次数: ${familyMealCount}`);
+        console.log(`用户免费陪人餐次数: ${freeFamilyMealCount}, 累计早餐: ${familyBreakfastCnt}, 累计午晚餐: ${familyMainMealCnt}`);
         
         this.setData({
-          userFamilyMealCount: familyMealCount
+          userFreeFamilyMealCount: freeFamilyMealCount,
+          userFamilyBreakfastCnt: familyBreakfastCnt,
+          userFamilyMainMealCnt: familyMainMealCnt
         });
       } else {
         console.log('获取用户陪人餐权限失败，设置为0');
         this.setData({ 
-          userFamilyMealCount: 0 
+          userFreeFamilyMealCount: 0,
+          userFamilyBreakfastCnt: 0,
+          userFamilyMainMealCnt: 0
         });
       }
     } catch (error) {
       console.error('检查用户陪人餐权限时出错:', error);
       this.setData({ 
-        userFamilyMealCount: 0 
+        userFreeFamilyMealCount: 0,
+        userFamilyBreakfastCnt: 0,
+        userFamilyMainMealCnt: 0
       });
     }
   },

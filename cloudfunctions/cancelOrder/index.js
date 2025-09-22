@@ -71,9 +71,8 @@ exports.main = async (event, context) => {
     // 2. 检查订单是否包含高补餐和陪人餐
     let hasSupplementMeal = false;
     let hasFamilyMeals = false;
-    let totalFamilyMeals = 0;
-    let extraFamilyBreakfastCnt = 0;
-    let extraFamilyMainMealCnt = 0;
+    let familyBreakfastCnt = 0;
+    let familyMainMealCnt = 0;
     
     if (order.order_details && order.order_details.supplement) {
       hasSupplementMeal = true;
@@ -83,14 +82,13 @@ exports.main = async (event, context) => {
     if (order.order_details && order.order_details.family_meals) {
       hasFamilyMeals = true;
       const familyMeals = order.order_details.family_meals;
-      totalFamilyMeals = (familyMeals.breakfast || 0) + (familyMeals.lunch || 0) + (familyMeals.dinner || 0);
-      console.log('订单包含陪人餐:', familyMeals, '总计:', totalFamilyMeals, '份');
+      console.log('订单包含陪人餐:', familyMeals);
       
-      // 获取额外收费的陪人餐信息
-      extraFamilyBreakfastCnt = order.extraFamilyBreakfastCnt || 0;
-      extraFamilyMainMealCnt = order.extraFamilyMainMealCnt || 0;
+      // 获取订单中的陪人餐信息（使用新字段名）
+      familyBreakfastCnt = order.familyBreakfastCnt || 0;
+      familyMainMealCnt = order.familyMainMealCnt || 0;
       
-      console.log(`额外收费陪人餐：早餐 ${extraFamilyBreakfastCnt} 份，午晚餐 ${extraFamilyMainMealCnt} 份`);
+      console.log(`订单陪人餐：早餐 ${familyBreakfastCnt} 份，午晚餐 ${familyMainMealCnt} 份`);
     }
     
     // 3. 删除订单
@@ -116,7 +114,6 @@ exports.main = async (event, context) => {
           let supplementCountRestored = false;
           let familyMealCountRestored = false;
           let newSupplementCount = userResult.data.supplementCount || 0;
-          let newFamilyMealCount = userResult.data.familyMealCount || 0;
           
           // 恢复高补餐次数
           if (hasSupplementMeal) {
@@ -126,31 +123,23 @@ exports.main = async (event, context) => {
             console.log(`✅ 准备恢复高补餐次数: ${userResult.data.supplementCount || 0} -> ${newSupplementCount}`);
           }
           
-          // 恢复陪人餐次数
-          if (hasFamilyMeals && totalFamilyMeals > 0) {
-            // 计算需要恢复的免费陪人餐次数（总数减去额外收费的数量）
-            const freeFamilyMealsToRestore = totalFamilyMeals - extraFamilyBreakfastCnt - extraFamilyMainMealCnt;
-            
-            if (freeFamilyMealsToRestore > 0) {
-              newFamilyMealCount = newFamilyMealCount + freeFamilyMealsToRestore;
-              updateData.familyMealCount = newFamilyMealCount;
+          // 恢复陪人餐次数（减少累计次数）
+          if (hasFamilyMeals && (familyBreakfastCnt > 0 || familyMainMealCnt > 0)) {
+            // 减少用户的累计陪人餐次数
+            if (familyBreakfastCnt > 0) {
+              const currentFamilyBreakfast = userResult.data.familyBreakfastCnt || 0;
+              const newFamilyBreakfast = Math.max(0, currentFamilyBreakfast - familyBreakfastCnt);
+              updateData.familyBreakfastCnt = newFamilyBreakfast;
               familyMealCountRestored = true;
-              console.log(`✅ 准备恢复免费陪人餐次数: ${userResult.data.familyMealCount || 0} -> ${newFamilyMealCount} (恢复 ${freeFamilyMealsToRestore} 次)`);
+              console.log(`✅ 准备恢复早餐陪人餐: ${currentFamilyBreakfast} -> ${newFamilyBreakfast} (减少 ${familyBreakfastCnt} 次)`);
             }
             
-            // 恢复额外收费的陪人餐次数（从累计计数中减去）
-            if (extraFamilyBreakfastCnt > 0) {
-              const currentExtraBreakfast = userResult.data.extraFamilyBreakfastCnt || 0;
-              const newExtraBreakfast = Math.max(0, currentExtraBreakfast - extraFamilyBreakfastCnt);
-              updateData.extraFamilyBreakfastCnt = newExtraBreakfast;
-              console.log(`✅ 准备恢复额外早餐陪人餐: ${currentExtraBreakfast} -> ${newExtraBreakfast} (减少 ${extraFamilyBreakfastCnt} 次)`);
-            }
-            
-            if (extraFamilyMainMealCnt > 0) {
-              const currentExtraMainMeal = userResult.data.extraFamilyMainMealCnt || 0;
-              const newExtraMainMeal = Math.max(0, currentExtraMainMeal - extraFamilyMainMealCnt);
-              updateData.extraFamilyMainMealCnt = newExtraMainMeal;
-              console.log(`✅ 准备恢复额外午晚餐陪人餐: ${currentExtraMainMeal} -> ${newExtraMainMeal} (减少 ${extraFamilyMainMealCnt} 次)`);
+            if (familyMainMealCnt > 0) {
+              const currentFamilyMainMeal = userResult.data.familyMainMealCnt || 0;
+              const newFamilyMainMeal = Math.max(0, currentFamilyMainMeal - familyMainMealCnt);
+              updateData.familyMainMealCnt = newFamilyMainMeal;
+              familyMealCountRestored = true;
+              console.log(`✅ 准备恢复午晚餐陪人餐: ${currentFamilyMainMeal} -> ${newFamilyMainMeal} (减少 ${familyMainMealCnt} 次)`);
             }
           }
           
@@ -179,16 +168,14 @@ exports.main = async (event, context) => {
             supplementCountRestored: supplementCountRestored,
             familyMealCountRestored: familyMealCountRestored,
             newSupplementCount: newSupplementCount,
-            newFamilyMealCount: newFamilyMealCount,
-            restoredFreeFamilyMeals: totalFamilyMeals - extraFamilyBreakfastCnt - extraFamilyMainMealCnt,
-            restoredExtraBreakfast: extraFamilyBreakfastCnt,
-            restoredExtraMainMeal: extraFamilyMainMealCnt,
+            restoredFamilyBreakfast: familyBreakfastCnt,
+            restoredFamilyMainMeal: familyMainMealCnt,
             cancelledOrder: {
               orderId: orderId,
               orderDate: order.orderDate,
               orderDetails: order.order_details,
-              extraFamilyBreakfastCnt: extraFamilyBreakfastCnt,
-              extraFamilyMainMealCnt: extraFamilyMainMealCnt
+              familyBreakfastCnt: familyBreakfastCnt,
+              familyMainMealCnt: familyMainMealCnt
             }
           };
         } else {

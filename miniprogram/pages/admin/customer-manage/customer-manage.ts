@@ -10,7 +10,7 @@ interface FormData {
   room: string;
   dietPreference: string;
   supplementCount: string;
-  familyMealCount: string;
+  freeFamilyMealCount: string;
 }
 
 Page({
@@ -37,7 +37,7 @@ Page({
       room: '',
       dietPreference: '',
       supplementCount: '0',
-      familyMealCount: '0'
+      freeFamilyMealCount: '0'
     } as FormData,
     
     
@@ -102,7 +102,7 @@ Page({
             room: userData.room || '',
             dietPreference: userData.dietPreference || '',
             supplementCount: userData.supplementCount ? userData.supplementCount.toString() : '0',
-            familyMealCount: userData.familyMealCount ? userData.familyMealCount.toString() : '0'
+            freeFamilyMealCount: userData.freeFamilyMealCount ? userData.freeFamilyMealCount.toString() : '0'
           }
         });
 
@@ -331,8 +331,8 @@ Page({
     }
 
     // 验证陪人餐次数
-    const familyMealCount = parseInt(formData.familyMealCount);
-    if (isNaN(familyMealCount) || familyMealCount < 0 || familyMealCount > 999) {
+    const freeFamilyMealCount = parseInt(formData.freeFamilyMealCount);
+    if (isNaN(freeFamilyMealCount) || freeFamilyMealCount < 0 || freeFamilyMealCount > 999) {
       wx.showToast({
         title: '陪人餐次数应在0-999之间',
         icon: 'none',

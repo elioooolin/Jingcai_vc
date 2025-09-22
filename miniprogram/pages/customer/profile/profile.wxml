@@ -53,8 +53,8 @@
         note="{{userInfo.supplementCount}}"
       />
       <t-cell 
-        title="剩余陪人餐次数" 
-        note="{{userInfo.familyMealCount}}"
+        title="赠送陪人餐次数" 
+        note="{{userInfo.freeFamilyMealCount}}"
       />
       <t-cell 
         title="额外陪人餐费用" 
