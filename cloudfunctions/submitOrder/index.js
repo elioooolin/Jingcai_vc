@@ -65,6 +65,7 @@ exports.main = async (event, context) => {
       orderDate: new Date(orderData.orderDate),
       order_details: formatOrderDetails(orderData, user),
       status: 'pending',
+      isMock: user.isMock === true, // 如果用户是测试用户，订单也标记为测试订单
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -76,68 +77,40 @@ exports.main = async (event, context) => {
       data: orderEntry
     });
     
-    console.log('订单保存成功，ID:', result._id);
+    console.log('订单保存成功，订单ID:', result._id);
     
-    // 处理高补餐和陪人餐的扣减
-    let supplementCountUpdated = false;
-    let newSupplementCount = user.supplementCount || 0;
+    // 处理用户次数更新
     let updateErrors = [];
+    let needsUserUpdate = false;
+    let supplementCountUpdated = false;
+    let newSupplementCount = 0;
     
-    // 处理高补餐扣减
-    if (orderEntry.order_details.supplement) {
-      console.log('订单包含高补餐，开始扣减用户 supplementCount...');
-      
-      try {
-        const currentSupplementCount = user.supplementCount || 0;
-        console.log('用户当前 supplementCount:', currentSupplementCount);
-        
-        if (currentSupplementCount > 0) {
-          newSupplementCount = currentSupplementCount - 1;
-          supplementCountUpdated = true;
-          console.log(`✅ 准备将用户 supplementCount 从 ${currentSupplementCount} 扣减为 ${newSupplementCount}`);
-        } else {
-          console.warn('⚠️ 用户 supplementCount 为 0，无法扣减');
-          updateErrors.push('用户高补餐次数不足');
-        }
-      } catch (error) {
-        console.error('❌ 处理高补餐扣减时出错:', error);
-        updateErrors.push('高补餐次数处理失败: ' + error.message);
-      }
+    // 检查是否需要更新高补餐次数
+    if (orderData.supplement && orderData.supplement.trim() !== '') {
+      supplementCountUpdated = true;
+      const currentSupplementCount = user.supplementCount || 0;
+      newSupplementCount = currentSupplementCount + 1;
+      needsUserUpdate = true;
+      console.log(`✅ 需要更新高补餐次数: ${currentSupplementCount} -> ${newSupplementCount}`);
     }
     
-    // 处理陪人餐累计
-    const breakfastFamilyMeals = orderData.familyMeals?.breakfast || 0;
-    const lunchFamilyMeals = orderData.familyMeals?.lunch || 0;
-    const dinnerFamilyMeals = orderData.familyMeals?.dinner || 0;
-    const totalFamilyMeals = breakfastFamilyMeals + lunchFamilyMeals + dinnerFamilyMeals;
-    
-    // 新的字段名
+    // 计算陪人餐次数
     let familyBreakfastCnt = 0;
     let familyMainMealCnt = 0;
-    let familyMealCountUpdated = false;
     
-    if (totalFamilyMeals > 0) {
-      console.log(`订单包含 ${totalFamilyMeals} 份陪人餐（早餐${breakfastFamilyMeals}份，午餐${lunchFamilyMeals}份，晚餐${dinnerFamilyMeals}份）`);
+    if (orderData.familyMeals) {
+      familyBreakfastCnt = orderData.familyMeals.breakfast || 0;
+      const familyLunchCnt = orderData.familyMeals.lunch || 0;
+      const familyDinnerCnt = orderData.familyMeals.dinner || 0;
+      familyMainMealCnt = familyLunchCnt + familyDinnerCnt;
       
-      try {
-        // 直接累计到用户的陪人餐次数中，freeFamilyMealCount不变
-        familyBreakfastCnt = breakfastFamilyMeals;
-        familyMainMealCnt = lunchFamilyMeals + dinnerFamilyMeals;
-        
-        if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
-          familyMealCountUpdated = true;
-          console.log(`✅ 本次订单陪人餐：早餐 ${familyBreakfastCnt} 份，午晚餐 ${familyMainMealCnt} 份`);
-        }
-        
-      } catch (error) {
-        console.error('❌ 处理陪人餐累计时出错:', error);
-        updateErrors.push('陪人餐次数处理失败: ' + error.message);
+      if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
+        needsUserUpdate = true;
+        console.log(`✅ 需要累加陪人餐次数: 早餐 ${familyBreakfastCnt} 份，午晚餐 ${familyMainMealCnt} 份`);
       }
     }
     
-    // 执行数据库更新
-    const needsUserUpdate = supplementCountUpdated || familyMealCountUpdated;
-    
+    // 更新用户次数
     if (needsUserUpdate) {
       try {
         const updateData = { updatedAt: new Date() };
@@ -187,7 +160,6 @@ exports.main = async (event, context) => {
       }
     }
     
-    // 返回结果
     return {
       success: true,
       message: updateErrors.length > 0 ? '订单提交成功，但部分次数更新失败' : '订单提交成功',
@@ -201,98 +173,68 @@ exports.main = async (event, context) => {
     };
     
   } catch (error) {
-    console.error('提交订单失败:', error);
+    console.error('订单提交失败:', error);
     return {
       success: false,
-      message: '订单提交失败',
-      error: error.message
+      message: '订单提交失败: ' + error.message
     };
   }
 };
 
 /**
- * 格式化订单详情，按照 menu-data.js 中的格式
- * @param {Object} orderData 前端传来的订单数据
- * @param {Object} user 用户信息（包含饮食偏好）
- * @returns {Object} 格式化后的订单详情
+ * 格式化订单详情
  */
 function formatOrderDetails(orderData, user) {
-  const order_details = {};
+  const details = {};
   
-  // 早餐 - 单选，存储菜品名称
-  if (orderData.breakfast && orderData.breakfast.length > 0) {
-    order_details.breakfast = orderData.breakfast[0].name;
-  }
-  
-  // 午餐 - 多选，存储菜品名称数组
-  const lunchDishes = [];
-  if (orderData.lunchMain && orderData.lunchMain.length > 0) {
-    lunchDishes.push(...orderData.lunchMain.map(item => item.name));
-  }
-  if (orderData.lunchSoup && orderData.lunchSoup.length > 0) {
-    lunchDishes.push(...orderData.lunchSoup.map(item => item.name));
-  }
-  if (lunchDishes.length > 0) {
-    order_details.lunch = lunchDishes;
+  // 早餐
+  if (orderData.breakfast && orderData.breakfast.trim() !== '') {
+    details.breakfast = orderData.breakfast.trim();
   }
   
-  // 晚餐 - 多选，存储菜品名称数组
-  const dinnerDishes = [];
-  if (orderData.dinnerMain && orderData.dinnerMain.length > 0) {
-    dinnerDishes.push(...orderData.dinnerMain.map(item => item.name));
-  }
-  if (orderData.dinnerSoup && orderData.dinnerSoup.length > 0) {
-    dinnerDishes.push(...orderData.dinnerSoup.map(item => item.name));
-  }
-  if (dinnerDishes.length > 0) {
-    order_details.dinner = dinnerDishes;
+  // 午餐
+  if (orderData.lunch && Array.isArray(orderData.lunch)) {
+    const lunchItems = orderData.lunch.filter(item => item && item.trim() !== '');
+    if (lunchItems.length > 0) {
+      details.lunch = lunchItems;
+    }
   }
   
-  // 高补餐 - 单选，存储菜品名称
-  if (orderData.supplement && orderData.supplement.length > 0) {
-    order_details.supplement = orderData.supplement[0].name;
+  // 晚餐
+  if (orderData.dinner && Array.isArray(orderData.dinner)) {
+    const dinnerItems = orderData.dinner.filter(item => item && item.trim() !== '');
+    if (dinnerItems.length > 0) {
+      details.dinner = dinnerItems;
+    }
   }
   
-  // 陪人餐 - 存储各餐的陪人餐数量
+  // 高补餐
+  if (orderData.supplement && orderData.supplement.trim() !== '') {
+    details.supplement = orderData.supplement.trim();
+  }
+  
+  // 陪人餐
   if (orderData.familyMeals) {
     const familyMeals = {};
-    if (orderData.familyMeals.breakfast > 0) {
+    if (orderData.familyMeals.breakfast && orderData.familyMeals.breakfast > 0) {
       familyMeals.breakfast = orderData.familyMeals.breakfast;
     }
-    if (orderData.familyMeals.lunch > 0) {
+    if (orderData.familyMeals.lunch && orderData.familyMeals.lunch > 0) {
       familyMeals.lunch = orderData.familyMeals.lunch;
     }
-    if (orderData.familyMeals.dinner > 0) {
+    if (orderData.familyMeals.dinner && orderData.familyMeals.dinner > 0) {
       familyMeals.dinner = orderData.familyMeals.dinner;
     }
     
-    // 只有当有陪人餐时才添加到订单详情中
     if (Object.keys(familyMeals).length > 0) {
-      order_details.family_meals = familyMeals;
+      details.family_meals = familyMeals;
     }
   }
   
-  // 特殊需求 - 合并用户输入的特殊需求和用户的饮食偏好
-  const specialRequirements = [];
-  
-  // 添加用户的饮食偏好（如果存在且不为空）
-  if (user && user.dietPreference && user.dietPreference.trim()) {
-    specialRequirements.push(user.dietPreference.trim());
+  // 特殊需求
+  if (orderData.specialRequirements && orderData.specialRequirements.trim() !== '') {
+    details.special_requirements = orderData.specialRequirements.trim();
   }
   
-  // 添加用户输入的特殊需求（如果存在且不为空）
-  if (orderData.specialRequirements && orderData.specialRequirements.trim()) {
-    specialRequirements.push(orderData.specialRequirements.trim());
-  }
-  
-  // 如果有任何特殊需求，则合并并保存
-  if (specialRequirements.length > 0) {
-    order_details.special_requirements = specialRequirements.join('；');
-  }
-  
-  console.log('合并后的特殊需求:', order_details.special_requirements);
-  
-  console.log('格式化后的订单详情:', order_details);
-  
-  return order_details;
+  return details;
 }

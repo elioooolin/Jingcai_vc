@@ -172,9 +172,7 @@
       <t-tab-panel label="个人中心" value="profile">
         <!-- 管理员信息 -->
         <view class="card admin-info-card">
-          <view class="card-header">
-            <text class="card-title">管理员信息</text>
-          </view>
+          <text class="card-title">管理员信息</text>
           <view class="card-body">
           <t-cell-group>
             <t-cell 
@@ -197,73 +195,8 @@
           </view>
         </view>
 
-        <!-- 系统功能 -->
-        <view class="card system-functions-card">
-          <view class="card-header">
-            <text class="card-title">系统功能</text>
-          </view>
-          <view class="card-body">
-          <t-cell-group>
-            <t-cell 
-              title="数据导出" 
-              note="导出订单和客户数据"
-              arrow
-              bind:tap="goToDataExport"
-            />
-            <t-cell 
-              title="系统设置" 
-              note="配置系统参数"
-              arrow
-              bind:tap="goToSystemSettings"
-            />
-            <t-cell 
-              title="用户权限管理" 
-              note="管理用户权限"
-              arrow
-              bind:tap="goToUserPermissions"
-            />
-          </t-cell-group>
-          </view>
-        </view>
-
-        <!-- 系统统计 -->
-        <view class="card system-stats-card">
-          <view class="card-header">
-            <text class="card-title">系统统计</text>
-          </view>
-          <view class="card-body">
-          <view class="stats-grid-mini">
-            <view class="stat-item-mini">
-              <text class="stat-number-mini">{{systemStats.totalOrders || 0}}</text>
-              <text class="stat-label-mini">总订单数</text>
-            </view>
-            <view class="stat-item-mini">
-              <text class="stat-number-mini">{{systemStats.totalCustomers || 0}}</text>
-              <text class="stat-label-mini">总客户数</text>
-            </view>
-            <view class="stat-item-mini">
-              <text class="stat-number-mini">{{systemStats.todayOrders || 0}}</text>
-              <text class="stat-label-mini">今日订单</text>
-            </view>
-            <view class="stat-item-mini">
-              <text class="stat-number-mini">{{systemStats.activeCustomers || 0}}</text>
-              <text class="stat-label-mini">活跃客户</text>
-            </view>
-          </view>
-          </view>
-        </view>
-
         <!-- 操作按钮 -->
         <view class="profile-actions">
-          <t-button
-            theme="light"
-            size="large"
-            block
-            bind:tap="changePassword"
-            class="mb-24"
-          >
-            修改密码
-          </t-button>
           <t-button
             theme="danger"
             size="large"

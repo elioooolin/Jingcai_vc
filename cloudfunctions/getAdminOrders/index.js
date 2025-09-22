@@ -22,10 +22,8 @@ exports.main = async (event, context) => {
   console.log('获取管理员订单数据请求 - 门店:', store, '日期:', date);
   
   try {
-    // 构建查询条件
-    let whereCondition = {
-      isMock: _.neq(true) // 排除mock数据
-    };
+    // 构建查询条件（不包含isMock筛选，后续手动过滤）
+    let whereCondition = {};
     
     // 添加门店筛选条件
     if (store && store !== 'all') {
@@ -52,10 +50,17 @@ exports.main = async (event, context) => {
       .orderBy('createdAt', 'desc')
       .get();
     
-    console.log(`查询到 ${ordersResult.data.length} 条订单记录`);
+    console.log('获取到的订单数据:', ordersResult.data.length);
+    
+    // 手动过滤掉isMock为true的订单
+    const filteredOrders = ordersResult.data.filter(order => order.isMock !== true);
+    
+    console.log('过滤后的订单数据:', filteredOrders.length);
+    
+    console.log(`查询到 ${ordersResult.data.length} 条订单记录，过滤后 ${filteredOrders.length} 条`);
     
     // 获取所有相关用户信息
-    const userIds = [...new Set(ordersResult.data.map(order => order.userId))];
+    const userIds = [...new Set(filteredOrders.map(order => order.userId))];
     let usersMap = {};
     
     if (userIds.length > 0) {
@@ -72,7 +77,7 @@ exports.main = async (event, context) => {
     }
     
     // 格式化订单数据
-    const formattedOrders = ordersResult.data.map(order => {
+    const formattedOrders = filteredOrders.map(order => {
       const user = usersMap[order.userId] || {};
       
       return {

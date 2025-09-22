@@ -69,14 +69,6 @@ Page({
       role: '系统管理员',
       permissions: '超级管理员'
     },
-
-    // 系统统计数据
-    systemStats: {
-      totalOrders: 0,
-      totalCustomers: 0,
-      todayOrders: 0,
-      activeCustomers: 0
-    }
   },
 
   onLoad() {
@@ -926,41 +918,6 @@ Page({
     } catch (error) {
       console.error('加载系统统计数据失败:', error);
     }
-  },
-
-  // 跳转到数据导出页面
-  goToDataExport() {
-    wx.navigateTo({
-      url: '/pages/admin/data-export/data-export'
-    });
-  },
-
-  // 跳转到系统设置页面
-  goToSystemSettings() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none',
-      duration: 2000
-    });
-  },
-
-  // 跳转到用户权限管理页面
-  goToUserPermissions() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none',
-      duration: 2000
-    });
-  },
-
-  // 修改密码
-  changePassword() {
-    wx.showModal({
-      title: '修改密码',
-      content: '此功能需要在系统设置中完成',
-      showCancel: false,
-      confirmText: '知道了'
-    });
   },
 
   // 退出登录
