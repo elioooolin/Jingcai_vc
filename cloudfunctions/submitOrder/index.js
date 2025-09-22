@@ -63,8 +63,6 @@ exports.main = async (event, context) => {
       phone: user.phone || '',
       orderDate: new Date(orderData.orderDate),
       order_details: formatOrderDetails(orderData, user),
-      extraFamilyBreakfastCnt: 0, // 将在后面计算后更新
-      extraFamilyMainMealCnt: 0,  // 将在后面计算后更新
       status: 'pending',
       createdAt: new Date(),
       updatedAt: new Date()
