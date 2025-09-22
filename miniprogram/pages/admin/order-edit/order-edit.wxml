@@ -1,0 +1,194 @@
+<!--pages/admin/order-edit/order-edit.wxml-->
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">编辑订单</view>
+    <view class="header-subtitle">修改菜品信息和特殊需求</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="loading-text">加载订单信息中...</view>
+  </view>
+
+  <view wx:else class="content">
+    <!-- 订单基本信息 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-title">订单信息</text>
+      </view>
+      <view class="card-body">
+        <view class="order-info">
+          <view class="info-row">
+            <text class="info-label">客户姓名</text>
+            <text class="info-value">{{orderInfo.customerName}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">房间号</text>
+            <text class="info-value">{{orderInfo.room}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">订单日期</text>
+            <text class="info-value">{{orderInfo.orderDate}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">门店</text>
+            <text class="info-value">{{orderInfo.store}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">订单状态</text>
+            <t-tag 
+              theme="{{orderInfo.status === 'pending' ? 'primary' : 'success'}}"
+              variant="light"
+              size="small"
+            >
+              {{orderInfo.statusText}}
+            </t-tag>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 不可编辑的陪人餐和高补餐信息 -->
+    <view class="card" wx:if="{{orderDetails.family_meals || orderDetails.supplement}}">
+      <view class="card-header">
+        <text>以下信息不可修改</text>
+      </view>
+      <view class="card-body">
+        <!-- 陪人餐信息 -->
+        <view wx:if="{{orderDetails.family_meals}}" class="readonly-section">
+          <view class="readonly-title">陪人餐</view>
+          <view class="readonly-content">
+            <view wx:if="{{orderDetails.family_meals.breakfast}}" class="readonly-item">
+              <text class="readonly-label">早餐</text>
+              <text class="readonly-value">{{orderDetails.family_meals.breakfast}} 份</text>
+            </view>
+            <view wx:if="{{orderDetails.family_meals.lunch}}" class="readonly-item">
+              <text class="readonly-label">午餐</text>
+              <text class="readonly-value">{{orderDetails.family_meals.lunch}} 份</text>
+            </view>
+            <view wx:if="{{orderDetails.family_meals.dinner}}" class="readonly-item">
+              <text class="readonly-label">晚餐</text>
+              <text class="readonly-value">{{orderDetails.family_meals.dinner}} 份</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 高补餐信息 -->
+        <view wx:if="{{orderDetails.supplement}}" class="readonly-section">
+          <view class="readonly-title">高补餐</view>
+          <view class="readonly-content">
+            <view class="readonly-item">
+              <text class="readonly-value">{{orderDetails.supplement}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 可编辑的菜品信息 -->
+    <view class="card">
+      <view class="card-header">
+        <text>菜品信息</text>
+      </view>
+      <view class="card-body">
+        <!-- 早餐 -->
+        <view class="textarea-example">
+          <text class="textarea-example__label">早餐</text>
+          <t-input
+            placeholder="请输入早餐菜品名称"
+            value="{{editOrderDetails.breakfast}}"
+            bind:change="onEditBreakfastChange"
+            class="external-class"
+            bordered
+            maxlength="100"
+            disableDefaultPadding="{{true}}"
+            indicator
+          />
+        </view>
+
+        <!-- 午餐 -->
+        <view class="meal-section">
+          <view class="meal-header">
+            <text class="meal-title">午餐</text>
+          </view>
+          <view class="meal-content">
+            <view wx:for="{{editOrderDetails.lunch}}" wx:key="index" class="dish-item">
+              <view class="textarea-example">
+                <text class="textarea-example__label">菜品{{index + 1}}</text>
+                <t-input
+                  placeholder="请输入午餐菜品名称"
+                  value="{{item}}"
+                  bind:change="onEditLunchChange"
+                  data-index="{{index}}"
+                  class="external-class"
+                  bordered
+                  maxlength="100"
+                  disableDefaultPadding="{{true}}"
+                  indicator
+                />
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 晚餐 -->
+        <view class="meal-section">
+          <view class="meal-header">
+            <text class="meal-title">晚餐</text>
+          </view>
+          <view class="meal-content">
+            <view wx:for="{{editOrderDetails.dinner}}" wx:key="index" class="dish-item">
+              <view class="textarea-example">
+                <text class="textarea-example__label">菜品{{index + 1}}</text>
+                <t-input
+                  placeholder="请输入晚餐菜品名称"
+                  value="{{item}}"
+                  bind:change="onEditDinnerChange"
+                  data-index="{{index}}"
+                  class="external-class"
+                  bordered
+                  maxlength="100"
+                  disableDefaultPadding="{{true}}"
+                  indicator
+                />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 特殊需求 -->
+    <view class="card">
+      <view class="card-body">
+        <view class="textarea-example">
+          <text class="textarea-example__label">特殊需求</text>
+          <t-textarea
+            placeholder="请输入特殊需求"
+            value="{{editOrderDetails.special_requirements}}"
+            bind:change="onEditSpecialRequirementsChange"
+            maxlength="200"
+            class="external-class"
+            bordered
+            disableDefaultPadding="{{true}}"
+            indicator
+            style="{{style}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作按钮 -->
+    <view class="bottom-actions">
+      <t-button
+        theme="primary"
+        size="large"
+        bind:tap="saveOrderEdit"
+        loading="{{saving}}"
+        class="save-btn"
+      >
+        {{saving ? '保存中...' : '保存修改'}}
+      </t-button>
+    </view>
+  </view>
+</view>

@@ -27,20 +27,35 @@
       value="{{activeTab}}" 
       bind:change="onTabChange"
       theme="card"
-      space-evenly="{{false}}"
+      space-evenly="{{true}}"
     >
       <t-tab-panel label="订单管理" value="orders">
+        <!-- 筛选器 -->
+        <view class="filter-section">
+          <t-dropdown-menu>
+            <t-dropdown-item 
+              value="{{selectedOrderStore}}" 
+              options="{{storeOptions}}"
+              bind:change="onOrderStoreChange"
+            />              
+          </t-dropdown-menu>
+        </view>
+
         <!-- 日期选择 -->
-        <t-card title="选择日期" class="date-card">
-          <t-date-time-picker
-            title="选择日期"
-            mode="date"
-            value="{{selectedDate}}"
-            bind:change="onDateChange"
-          >
-            <t-cell title="查看日期" note="{{selectedDate}}" arrow />
-          </t-date-time-picker>
-        </t-card>
+        <view class="card date-card">
+          <t-calendar 
+            visible="{{calendarVisible}}" 
+            value="{{calendarValue}}" 
+            bind:confirm="handleCalendarConfirm" 
+            bind:close="onCalendarClose" 
+          />
+          <t-cell 
+            arrow 
+            title="选择日期" 
+            note="{{selectedDate}}" 
+            bind:tap="handleCalendar" 
+          />
+        </view>
 
         <!-- 订单列表 -->
         <view class="order-list">
@@ -50,18 +65,18 @@
             <text class="empty-desc">该日期暂无客户订单</text>
           </view>
 
-          <t-card 
+          <view 
             wx:for="{{orderList}}" 
             wx:key="id"
-            class="order-item-card"
+            class="card order-item-card"
           >
             <view slot="header" class="order-item-header">
               <view class="customer-info">
                 <text class="customer-name">{{item.customerName}} - {{item.room}}</text>
-                <text class="submit-time">提交时间: {{item.submitTime}}</text>
+                <text class="submit-time">提交时间: {{item.submitTime}} | {{getStoreText(item.store)}}</text>
               </view>
               <t-tag 
-                theme="{{item.status === 'submitted' ? 'primary' : 'success'}}"
+                theme="{{item.status === 'pending' ? 'primary' : 'success'}}"
                 variant="light"
                 size="small"
               >
@@ -70,16 +85,8 @@
             </view>
 
             <view class="order-content">
-              <view class="dishes-list">
-                <view 
-                  wx:for="{{item.dishes}}" 
-                  wx:key="type"
-                  wx:for-item="dish"
-                  class="dish-row"
-                >
-                  <text class="dish-type">{{dish.type}}</text>
-                  <text class="dish-names">{{dish.names}}</text>
-                </view>
+              <view class="order-summary">
+                <text class="summary-text">{{item.orderSummary || '暂无订单详情'}}</text>
               </view>
 
               <view wx:if="{{item.specialRequirements}}" class="special-note">
@@ -87,7 +94,7 @@
                 <text class="special-content">{{item.specialRequirements}}</text>
               </view>
 
-              <view class="order-actions" wx:if="{{item.status === 'submitted'}}">
+              <view class="order-actions" wx:if="{{item.status === 'pending'}}">
                 <t-button 
                   theme="primary"
                   size="small"
@@ -107,11 +114,22 @@
                 </t-button>
               </view>
             </view>
-          </t-card>
+          </view>
         </view>
       </t-tab-panel>
 
       <t-tab-panel label="客户管理" value="customers">
+        <!-- 筛选器 -->
+        <view class="filter-section">
+          <t-dropdown-menu>
+            <t-dropdown-item 
+              value="{{selectedCustomerStore}}" 
+              options="{{storeOptions}}"
+              bind:change="onCustomerStoreChange"
+            />
+          </t-dropdown-menu>
+        </view>
+
         <!-- 添加客户按钮 -->
         <t-button
           theme="primary"
@@ -125,15 +143,15 @@
 
         <!-- 客户列表 -->
         <view class="customer-list">
-          <t-card 
+          <view 
             wx:for="{{customerList}}" 
             wx:key="id"
-            class="customer-item-card"
+            class="card customer-item-card"
           >
             <view class="customer-item">
               <view class="customer-main-info">
                 <text class="customer-name">{{item.name}}</text>
-                <text class="customer-details">{{item.phone}} | {{item.room}} | {{item.store}}</text>
+                <text class="customer-details">{{item.phone}} | {{item.room}} | {{getStoreText(item.store)}}</text>
                 <text class="customer-checkin">入住: {{item.checkInDate}} | {{item.totalDays}}</text>
               </view>
               <view class="customer-actions">
@@ -147,89 +165,116 @@
                 </t-button>
               </view>
             </view>
-          </t-card>
+          </view>
         </view>
       </t-tab-panel>
 
-      <t-tab-panel label="数据导出" value="export">
-        <!-- 导出设置 -->
-        <t-card title="导出设置" class="export-card">
+      <t-tab-panel label="个人中心" value="profile">
+        <!-- 管理员信息 -->
+        <view class="card admin-info-card">
+          <view class="card-header">
+            <text class="card-title">管理员信息</text>
+          </view>
+          <view class="card-body">
           <t-cell-group>
-            <t-date-time-picker
-              title="开始日期"
-              mode="date"
-              value="{{exportStartDate}}"
-              bind:change="onExportStartDateChange"
-            >
-              <t-cell title="开始日期" note="{{exportStartDate}}" arrow />
-            </t-date-time-picker>
-            
-            <t-date-time-picker
-              title="结束日期"
-              mode="date"
-              value="{{exportEndDate}}"
-              bind:change="onExportEndDateChange"
-            >
-              <t-cell title="结束日期" note="{{exportEndDate}}" arrow />
-            </t-date-time-picker>
-            
-            <t-picker
-              title="门店选择"
-              value="{{exportStore}}"
-              data-source="{{storeOptions}}"
-              bind:change="onExportStoreChange"
-            >
-              <t-cell title="门店选择" note="{{getStoreText(exportStore)}}" arrow />
-            </t-picker>
+            <t-cell 
+              title="姓名" 
+              note="{{adminInfo.name || '管理员'}}"
+            />
+            <t-cell 
+              title="角色" 
+              note="系统管理员"
+            />
+            <t-cell 
+              title="登录时间" 
+              note="{{adminInfo.loginTime || '刚刚'}}"
+            />
+            <t-cell 
+              title="权限级别" 
+              note="超级管理员"
+            />
           </t-cell-group>
-        </t-card>
+          </view>
+        </view>
 
-        <!-- 导出按钮 -->
-        <view class="export-actions">
-          <t-button
-            theme="primary"
-            size="large"
-            block
-            bind:tap="exportExcel"
-            loading="{{exportingExcel}}"
-            class="admin-button mb-24"
-          >
-            {{exportingExcel ? '导出中...' : '导出Excel'}}
-          </t-button>
+        <!-- 系统功能 -->
+        <view class="card system-functions-card">
+          <view class="card-header">
+            <text class="card-title">系统功能</text>
+          </view>
+          <view class="card-body">
+          <t-cell-group>
+            <t-cell 
+              title="数据导出" 
+              note="导出订单和客户数据"
+              arrow
+              bind:tap="goToDataExport"
+            />
+            <t-cell 
+              title="系统设置" 
+              note="配置系统参数"
+              arrow
+              bind:tap="goToSystemSettings"
+            />
+            <t-cell 
+              title="用户权限管理" 
+              note="管理用户权限"
+              arrow
+              bind:tap="goToUserPermissions"
+            />
+          </t-cell-group>
+          </view>
+        </view>
+
+        <!-- 系统统计 -->
+        <view class="card system-stats-card">
+          <view class="card-header">
+            <text class="card-title">系统统计</text>
+          </view>
+          <view class="card-body">
+          <view class="stats-grid-mini">
+            <view class="stat-item-mini">
+              <text class="stat-number-mini">{{systemStats.totalOrders || 0}}</text>
+              <text class="stat-label-mini">总订单数</text>
+            </view>
+            <view class="stat-item-mini">
+              <text class="stat-number-mini">{{systemStats.totalCustomers || 0}}</text>
+              <text class="stat-label-mini">总客户数</text>
+            </view>
+            <view class="stat-item-mini">
+              <text class="stat-number-mini">{{systemStats.todayOrders || 0}}</text>
+              <text class="stat-label-mini">今日订单</text>
+            </view>
+            <view class="stat-item-mini">
+              <text class="stat-number-mini">{{systemStats.activeCustomers || 0}}</text>
+              <text class="stat-label-mini">活跃客户</text>
+            </view>
+          </view>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="profile-actions">
           <t-button
             theme="light"
             size="large"
             block
-            bind:tap="exportPDF"
-            loading="{{exportingPDF}}"
+            bind:tap="changePassword"
+            class="mb-24"
           >
-            {{exportingPDF ? '导出中...' : '导出PDF'}}
+            修改密码
+          </t-button>
+          <t-button
+            theme="danger"
+            size="large"
+            block
+            bind:tap="logout"
+          >
+            退出登录
           </t-button>
         </view>
-
-        <!-- 导出预览 -->
-        <t-card title="导出预览" class="export-preview">
-          <view class="preview-info">
-            <text class="preview-item">时间范围: {{exportStartDate}} 至 {{exportEndDate}}</text>
-            <text class="preview-item">包含数据: {{exportPreview.orderCount}}条订单记录</text>
-            <text class="preview-item">涉及客户: {{exportPreview.customerCount}}位客户</text>
-            <text class="preview-item">文件大小: 约 {{exportPreview.fileSize}}</text>
-          </view>
-        </t-card>
       </t-tab-panel>
     </t-tabs>
-  </view>
-
-  <!-- 退出登录 -->
-  <view class="logout-section">
-    <t-button
-      theme="light"
-      size="large"
-      block
-      bind:tap="logout"
-    >
-      退出登录
-    </t-button>
   </view>
 </view>
 

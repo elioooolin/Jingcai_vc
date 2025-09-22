@@ -1,0 +1,323 @@
+/* pages/admin/order-edit/order-edit.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120rpx; /* 为底部按钮留出空间 */
+}
+
+/* 页面头部 */
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 32rpx 32rpx 32rpx;
+  color: white;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.header-subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 内容区域 */
+.content {
+  padding: 32rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: white;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 32rpx 32rpx 16rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.card-subtitle {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.card-body {
+  padding: 32rpx;
+}
+
+/* 订单基本信息 */
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #666;
+  min-width: 120rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+  text-align: right;
+}
+
+/* 只读区域样式 */
+.readonly-section {
+  margin-bottom: 32rpx;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  border-left: 4rpx solid #6c757d;
+}
+
+.readonly-section:last-child {
+  margin-bottom: 0;
+}
+
+.readonly-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 16rpx;
+}
+
+.readonly-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.readonly-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.readonly-label {
+  font-size: 26rpx;
+  color: #6c757d;
+  min-width: 80rpx;
+}
+
+.readonly-value {
+  font-size: 26rpx;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* 餐食编辑区域 */
+.meal-section {
+  margin-bottom: 40rpx;
+}
+
+.meal-section:last-child {
+  margin-bottom: 0;
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 2rpx solid #e9ecef;
+}
+
+.meal-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.add-btn {
+  margin-left: 16rpx;
+}
+
+.meal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.meal-input {
+  width: 100%;
+}
+
+/* 菜品行样式 */
+.dish-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.dish-input {
+  flex: 1;
+}
+
+.remove-btn {
+  flex-shrink: 0;
+}
+
+
+/* 特殊需求文本框 */
+.special-requirements-textarea {
+  width: 100%;
+  min-height: 120rpx;
+}
+
+/* 底部操作按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 24rpx;
+  z-index: 100;
+}
+
+.cancel-btn {
+  flex: 1;
+}
+
+.save-btn {
+  flex: 2;
+}
+
+/* TDesign组件样式调整 */
+.t-input {
+  margin-bottom: 0;
+}
+
+.t-textarea {
+  margin-bottom: 0;
+}
+
+.t-button--small {
+  padding: 12rpx 20rpx;
+  font-size: 24rpx;
+}
+
+.t-button--large {
+  height: 88rpx;
+  font-size: 32rpx;
+}
+
+/* 标签样式 */
+.t-tag--primary.t-tag--variant-light {
+  background-color: #e6f2ff;
+  color: #1a5490;
+  border-color: #9cc5f0;
+}
+
+.t-tag--success.t-tag--variant-light {
+  background-color: #e8f5e8;
+  color: #2d5a2d;
+  border-color: #a5c9a5;
+}
+
+/* 标签外置输入框样式 */
+.textarea-example {
+  margin-bottom: 32rpx;
+}
+
+.textarea-example__label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+  line-height: 1.4;
+}
+
+.external-class {
+  border: 2rpx solid #ddd;
+  border-radius: 8rpx;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.external-class:focus-within {
+  border-color: #0052d9;
+  box-shadow: 0 0 0 2rpx rgba(0, 82, 217, 0.1);
+}
+
+/* 菜品项样式 */
+.dish-item {
+  margin-bottom: 24rpx;
+}
+
+.dish-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 调整餐食区域间距 */
+.meal-section {
+  margin-bottom: 48rpx;
+}
+
+.meal-content {
+  margin-top: 24rpx;
+}
+
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .content {
+    padding: 24rpx;
+  }
+  
+  .card-body {
+    padding: 24rpx;
+  }
+  
+  .bottom-actions {
+    padding: 20rpx 24rpx;
+  }
+  
+  .textarea-example__label {
+    font-size: 26rpx;
+  }
+}

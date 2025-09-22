@@ -61,6 +61,7 @@ exports.main = async (event, context) => {
     const orderEntry = {
       userId: orderData.userId,
       phone: user.phone || '',
+      store: user.store || '', // 添加门店信息
       orderDate: new Date(orderData.orderDate),
       order_details: formatOrderDetails(orderData, user),
       status: 'pending',

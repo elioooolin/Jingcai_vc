@@ -164,6 +164,11 @@
           "description": "用户手机号"
         },
         {
+          "name": "store",
+          "type": "string",
+          "description": "门店信息"
+        },
+        {
           "name": "orderDate",
           "type": "date",
           "description": "订单日期"

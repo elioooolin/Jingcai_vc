@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "编辑订单",
+  "navigationBarBackgroundColor": "#667eea",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f5f5",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-textarea": "tdesign-miniprogram/textarea/textarea",
+    "t-tag": "tdesign-miniprogram/tag/tag"
+  }
+}

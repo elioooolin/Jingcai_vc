@@ -8,6 +8,7 @@
     "pages/customer/profile/profile",
     "pages/admin/dashboard/dashboard",
     "pages/admin/customer-manage/customer-manage",
+    "pages/admin/order-edit/order-edit",
     "pages/dish-detail/dish-detail"
   ],
   "window": {
