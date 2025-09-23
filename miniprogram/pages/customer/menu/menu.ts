@@ -47,6 +47,7 @@ Page({
     submitting: false,
     hasSelectedItems: false,
     canSubmit: false,
+    submitButtonText: '提交订单',
     orderSummary: [] as OrderSummaryItem[],
     loading: true,
     menuDay: 0,
@@ -545,16 +546,36 @@ Page({
     const dinnerMainSelected = this.data.dinnerMainMenu.filter(item => item.selected).length;
     const dinnerSoupSelected = this.data.dinnerSoupMenu.filter(item => item.selected).length;
     
-    // 检查是否满足最低要求
+    // 检查是否满足要求
     const breakfastOk = breakfastSelected >= Math.min(this.data.breakfastRequired, 1);
-    const lunchMainOk = lunchMainSelected >= Math.min(this.data.lunchMainRequired, 1);
+    // 午餐和晚餐主菜必须选择2个
+    const lunchMainOk = lunchMainSelected === 2;
     const lunchSoupOk = lunchSoupSelected >= Math.min(this.data.lunchSoupRequired, 1);
-    const dinnerMainOk = dinnerMainSelected >= Math.min(this.data.dinnerMainRequired, 1);
+    const dinnerMainOk = dinnerMainSelected === 2;
     const dinnerSoupOk = dinnerSoupSelected >= Math.min(this.data.dinnerSoupRequired, 1);
     
     const canSubmit = breakfastOk && lunchMainOk && lunchSoupOk && dinnerMainOk && dinnerSoupOk;
     
-    this.setData({ canSubmit });
+    // 更新提交按钮的状态和提示文本
+    let submitButtonText = '提交订单';
+    if (!canSubmit) {
+      if (!breakfastOk) {
+        submitButtonText = '请选择早餐';
+      } else if (!lunchMainOk) {
+        submitButtonText = `午餐主菜需选择2个 (已选${lunchMainSelected}个)`;
+      } else if (!lunchSoupOk) {
+        submitButtonText = '请选择午餐汤品';
+      } else if (!dinnerMainOk) {
+        submitButtonText = `晚餐主菜需选择2个 (已选${dinnerMainSelected}个)`;
+      } else if (!dinnerSoupOk) {
+        submitButtonText = '请选择晚餐汤品';
+      }
+    }
+    
+    this.setData({ 
+      canSubmit,
+      submitButtonText 
+    });
   },
 
   // 特殊需求输入

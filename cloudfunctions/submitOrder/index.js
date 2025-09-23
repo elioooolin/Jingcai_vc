@@ -89,7 +89,7 @@ exports.main = async (event, context) => {
     if (orderData.supplement && Array.isArray(orderData.supplement) && orderData.supplement.length > 0 && orderData.supplement[0].name.trim() !== '') {
       supplementCountUpdated = true;
       const currentSupplementCount = user.supplementCount || 0;
-      newSupplementCount = currentSupplementCount + 1;
+      newSupplementCount = currentSupplementCount - 1;
       needsUserUpdate = true;
       console.log(`✅ 需要更新高补餐次数: ${currentSupplementCount} -> ${newSupplementCount}`);
     }
@@ -195,8 +195,17 @@ function formatOrderDetails(orderData, user) {
     }
   }
   
-  // 午餐 - 合并lunch和lunchSoup数组，提取name字段
+  // 午餐 - 合并lunchMain、lunch和lunchSoup数组，提取name字段
   const lunchItems = [];
+  // 处理lunchMain字段（主菜）
+  if (orderData.lunchMain && Array.isArray(orderData.lunchMain)) {
+    orderData.lunchMain.forEach(item => {
+      if (item && item.name && item.name.trim() !== '') {
+        lunchItems.push(item.name.trim());
+      }
+    });
+  }
+  // 处理lunch字段（兼容旧版本）
   if (orderData.lunch && Array.isArray(orderData.lunch)) {
     orderData.lunch.forEach(item => {
       if (item && item.name && item.name.trim() !== '') {
@@ -204,6 +213,7 @@ function formatOrderDetails(orderData, user) {
       }
     });
   }
+  // 处理lunchSoup字段（汤品）
   if (orderData.lunchSoup && Array.isArray(orderData.lunchSoup)) {
     orderData.lunchSoup.forEach(item => {
       if (item && item.name && item.name.trim() !== '') {
@@ -261,9 +271,22 @@ function formatOrderDetails(orderData, user) {
     }
   }
   
-  // 特殊需求
+  // 特殊需求 - 合并用户饮食偏好和订单特殊需求
+  const specialRequirements = [];
+  
+  // 添加用户饮食偏好
+  if (user.dietPreference && user.dietPreference.trim() !== '') {
+    specialRequirements.push(user.dietPreference.trim());
+  }
+  
+  // 添加订单特殊需求
   if (orderData.specialRequirements && orderData.specialRequirements.trim() !== '') {
-    details.special_requirements = orderData.specialRequirements.trim();
+    specialRequirements.push(orderData.specialRequirements.trim());
+  }
+  
+  // 如果有特殊需求，合并为一个字符串
+  if (specialRequirements.length > 0) {
+    details.special_requirements = specialRequirements.join('；');
   }
   
   console.log('格式化后的订单详情:', details);
