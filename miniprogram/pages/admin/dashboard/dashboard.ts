@@ -33,6 +33,11 @@ Page({
     calendarVisible: false, // 控制calendar显示/隐藏
     selectedOrderStore: 'all', // 订单管理页面选中的门店
     selectedCustomerStore: 'all', // 客户管理页面选中的门店
+    
+    // 添加测试客户对话框相关数据
+    addTestCustomerVisible: false,
+    testCustomerName: '',
+    testCustomerPhone: '',
     exportStartDate: '2024-01-01',
     exportEndDate: '2024-01-05',
     exportStore: 'all',
@@ -779,6 +784,119 @@ Page({
     wx.navigateTo({
       url: '/pages/admin/customer-manage/customer-manage?action=add'
     });
+  },
+
+  // 添加测试客户
+  addTestCustomer() {
+    this.setData({
+      addTestCustomerVisible: true,
+      testCustomerName: '',
+      testCustomerPhone: ''
+    });
+  },
+
+  // 关闭添加测试客户对话框
+  closeAddTestCustomerDialog() {
+    this.setData({
+      addTestCustomerVisible: false,
+      testCustomerName: '',
+      testCustomerPhone: ''
+    });
+  },
+
+  // 测试客户姓名输入变化
+  onTestCustomerNameChange(e: any) {
+    this.setData({
+      testCustomerName: e.detail.value
+    });
+  },
+
+  // 测试客户手机号输入变化
+  onTestCustomerPhoneChange(e: any) {
+    this.setData({
+      testCustomerPhone: e.detail.value
+    });
+  },
+
+  // 确认添加测试客户
+  async confirmAddTestCustomer() {
+    const { testCustomerName, testCustomerPhone } = this.data;
+    
+    // 验证输入
+    if (!testCustomerName.trim()) {
+      wx.showToast({
+        title: '请输入客户姓名',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    if (!testCustomerPhone.trim()) {
+      wx.showToast({
+        title: '请输入手机号',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    // 验证手机号格式
+    const phoneRegex = /^1[3-9]\d{9}$/;
+    if (!phoneRegex.test(testCustomerPhone.trim())) {
+      wx.showToast({
+        title: '手机号格式不正确',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    // 关闭对话框并显示加载
+    this.closeAddTestCustomerDialog();
+    wx.showLoading({
+      title: '创建中...',
+      mask: true
+    });
+
+    try {
+      console.log('开始创建测试客户:', testCustomerName, testCustomerPhone);
+      
+      const result = await wx.cloud.callFunction({
+        name: 'createTestCustomer',
+        data: {
+          name: testCustomerName.trim(),
+          phone: testCustomerPhone.trim()
+        }
+      });
+
+      console.log('创建测试客户结果:', result);
+
+      if (result.result && (result.result as any).success) {
+        wx.showToast({
+          title: '创建成功',
+          icon: 'success',
+          duration: 2000
+        });
+        
+        // 重新加载客户列表
+        this.loadCustomerList();
+        
+        // 刷新统计数据
+        this.refreshStats();
+      } else {
+        throw new Error((result.result as any)?.message || '创建失败');
+      }
+    } catch (error) {
+      console.error('创建测试客户失败:', error);
+      wx.showToast({
+        title: '创建失败，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+    } finally {
+      wx.hideLoading();
+    }
   },
 
   // 编辑客户

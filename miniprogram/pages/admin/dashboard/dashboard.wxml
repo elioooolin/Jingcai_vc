@@ -233,4 +233,35 @@
   </view>
 </view>
 
+<!-- 添加测试客户弹窗 -->
+<t-dialog
+  visible="{{addTestCustomerVisible}}"
+  title="添加测试客户"
+  confirm-btn="创建客户"
+  cancel-btn="取消"
+  bind:confirm="confirmAddTestCustomer"
+  bind:cancel="closeAddTestCustomerDialog"
+>
+  <view slot="content" class="add-test-customer-content">
+    <view class="test-customer-input-wrapper">
+      <input
+        type="text"
+        placeholder="请输入客户姓名"
+        value="{{testCustomerName}}"
+        bindinput="onTestCustomerNameChange"
+        class="test-customer-input"
+      />
+    </view>
+    <view class="test-customer-input-wrapper">
+      <input
+        type="number"
+        placeholder="请输入手机号"
+        value="{{testCustomerPhone}}"
+        bindinput="onTestCustomerPhoneChange"
+        class="test-customer-input"
+      />
+    </view>
+  </view>
+</t-dialog>
+
 <t-toast id="t-toast" />

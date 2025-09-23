@@ -16,6 +16,7 @@
     "t-toast": "tdesign-miniprogram/toast/toast",
     "t-dropdown-menu": "tdesign-miniprogram/dropdown-menu/dropdown-menu",
     "t-dropdown-item": "tdesign-miniprogram/dropdown-item/dropdown-item",
-    "t-calendar": "tdesign-miniprogram/calendar/calendar"
+    "t-calendar": "tdesign-miniprogram/calendar/calendar",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
   }
 }
