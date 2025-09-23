@@ -54,7 +54,7 @@ exports.main = async (event, context) => {
     
     for (const customer of customersResult.data) {
 
-      if (customer.isMock === true) continue;
+      if (customer.isMock === true || customer.status === 'inactive') continue;
 
       try {
         // 计算退房日期

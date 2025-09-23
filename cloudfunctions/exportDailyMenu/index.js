@@ -120,11 +120,17 @@ exports.main = async (event, context) => {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(excelData);
     
-    // 设置列宽
-    worksheet['!cols'] = [
-      { wch: 15 }, // 第一列（标题列）
-      { wch: 30 }  // 第二列（内容列）
+    // 设置列宽 - 第一列是标题，后续列是客户数据
+    const colWidths = [
+      { wch: 20 } // 第一列（标题列）稍微宽一些
     ];
+    
+    // 为每个客户添加列宽设置
+    for (let i = 0; i < confirmedOrders.length; i++) {
+      colWidths.push({ wch: 15 }); // 客户数据列
+    }
+    
+    worksheet['!cols'] = colWidths;
     
     XLSX.utils.book_append_sheet(workbook, worksheet, '餐单');
     
@@ -212,59 +218,137 @@ function generateExcelData(orders, usersMap, store, date) {
   excelData.push(['日期', date]);
   excelData.push(['']); // 空行
   
-  // 为每个订单生成数据
-  orders.forEach((order, index) => {
+  // 如果没有订单，返回基本信息
+  if (orders.length === 0) {
+    return excelData;
+  }
+  
+  // 构建横向表格数据
+  // 第一列是字段标题，后续列是每个客户的数据
+  
+  // 1. 构建表头行（客户姓名行）
+  const customerNameRow = ['客户姓名'];
+  orders.forEach(order => {
     const user = usersMap[order.userId] || {};
-    const orderDetails = order.order_details || {};
-    
-    // 客户基本信息
-    excelData.push(['客户姓名', user.name || '未知']);
-    excelData.push(['房间号', user.room || '']);
-    
-    // 早餐信息
-    const breakfast = orderDetails.breakfast || '';
-    excelData.push(['早餐', breakfast]);
-    
-    const breakfastFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.breakfast) || 0;
-    excelData.push(['早餐陪人餐数量', breakfastFamilyMeals]);
-    
-    // 午餐信息 - 预留3个单元格（2菜1汤）
-    const lunch = orderDetails.lunch || [];
-    excelData.push(['午餐菜品1', lunch[0] || '']);
-    excelData.push(['午餐菜品2', lunch[1] || '']);
-    excelData.push(['午餐汤品', lunch[2] || '']);
-    
-    const lunchFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.lunch) || 0;
-    excelData.push(['午餐陪人餐数量', lunchFamilyMeals]);
-    
-    // 晚餐信息 - 预留3个单元格（2菜1汤）
-    const dinner = orderDetails.dinner || [];
-    excelData.push(['晚餐菜品1', dinner[0] || '']);
-    excelData.push(['晚餐菜品2', dinner[1] || '']);
-    excelData.push(['晚餐汤品', dinner[2] || '']);
-    
-    const dinnerFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.dinner) || 0;
-    excelData.push(['晚餐陪人餐数量', dinnerFamilyMeals]);
-    
-    // 高补餐
-    const supplement = orderDetails.supplement || '';
-    if (supplement) {
-      excelData.push(['高补餐', supplement]);
-    }
-    
-    // 特殊备注
-    const specialRequirements = orderDetails.special_requirements || '';
-    if (specialRequirements) {
-      excelData.push(['特殊备注', specialRequirements]);
-    }
-    
-    // 如果不是最后一个订单，添加分隔行
-    if (index < orders.length - 1) {
-      excelData.push(['']); // 空行分隔
-      excelData.push(['---', '---']); // 分隔线
-      excelData.push(['']); // 空行
-    }
+    customerNameRow.push(user.name || '未知');
   });
+  excelData.push(customerNameRow);
+  
+  // 2. 房间号行
+  const roomRow = ['房间号'];
+  orders.forEach(order => {
+    const user = usersMap[order.userId] || {};
+    roomRow.push(user.room || '');
+  });
+  excelData.push(roomRow);
+  
+  // 3. 早餐行
+  const breakfastRow = ['早餐'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const breakfast = orderDetails.breakfast || '';
+    breakfastRow.push(breakfast);
+  });
+  excelData.push(breakfastRow);
+  
+  // 4. 早餐陪人餐数量行
+  const breakfastFamilyRow = ['早餐陪人餐数量'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const breakfastFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.breakfast) || 0;
+    breakfastFamilyRow.push(breakfastFamilyMeals);
+  });
+  excelData.push(breakfastFamilyRow);
+  
+  // 5. 午餐菜品1行
+  const lunchDish1Row = ['午餐菜品1'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const lunch = orderDetails.lunch || [];
+    lunchDish1Row.push(lunch[0] || '');
+  });
+  excelData.push(lunchDish1Row);
+  
+  // 6. 午餐菜品2行
+  const lunchDish2Row = ['午餐菜品2'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const lunch = orderDetails.lunch || [];
+    lunchDish2Row.push(lunch[1] || '');
+  });
+  excelData.push(lunchDish2Row);
+  
+  // 7. 午餐汤品行
+  const lunchSoupRow = ['午餐汤品'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const lunch = orderDetails.lunch || [];
+    lunchSoupRow.push(lunch[2] || '');
+  });
+  excelData.push(lunchSoupRow);
+  
+  // 8. 午餐陪人餐数量行
+  const lunchFamilyRow = ['午餐陪人餐数量'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const lunchFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.lunch) || 0;
+    lunchFamilyRow.push(lunchFamilyMeals);
+  });
+  excelData.push(lunchFamilyRow);
+  
+  // 9. 晚餐菜品1行
+  const dinnerDish1Row = ['晚餐菜品1'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const dinner = orderDetails.dinner || [];
+    dinnerDish1Row.push(dinner[0] || '');
+  });
+  excelData.push(dinnerDish1Row);
+  
+  // 10. 晚餐菜品2行
+  const dinnerDish2Row = ['晚餐菜品2'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const dinner = orderDetails.dinner || [];
+    dinnerDish2Row.push(dinner[1] || '');
+  });
+  excelData.push(dinnerDish2Row);
+  
+  // 11. 晚餐汤品行
+  const dinnerSoupRow = ['晚餐汤品'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const dinner = orderDetails.dinner || [];
+    dinnerSoupRow.push(dinner[2] || '');
+  });
+  excelData.push(dinnerSoupRow);
+  
+  // 12. 晚餐陪人餐数量行
+  const dinnerFamilyRow = ['晚餐陪人餐数量'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const dinnerFamilyMeals = (orderDetails.family_meals && orderDetails.family_meals.dinner) || 0;
+    dinnerFamilyRow.push(dinnerFamilyMeals);
+  });
+  excelData.push(dinnerFamilyRow);
+  
+  // 13. 高补餐行
+  const supplementRow = ['高补餐'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const supplement = orderDetails.supplement || '';
+    supplementRow.push(supplement);
+  });
+  excelData.push(supplementRow);
+  
+  // 14. 特殊备注行
+  const specialRequirementsRow = ['特殊备注'];
+  orders.forEach(order => {
+    const orderDetails = order.order_details || {};
+    const specialRequirements = orderDetails.special_requirements || '';
+    specialRequirementsRow.push(specialRequirements);
+  });
+  excelData.push(specialRequirementsRow);
   
   return excelData;
 }
