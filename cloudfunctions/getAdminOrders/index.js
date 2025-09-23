@@ -52,8 +52,10 @@ exports.main = async (event, context) => {
     
     console.log('获取到的订单数据:', ordersResult.data.length);
     
-    // 手动过滤掉isMock为true的订单
-    const filteredOrders = ordersResult.data.filter(order => order.isMock !== true);
+    // 手动过滤掉isMock为true和isActive为false的订单
+    const filteredOrders = ordersResult.data.filter(order => 
+      order.isMock !== true && order.isActive !== false
+    );
     
     console.log('过滤后的订单数据:', filteredOrders.length);
     

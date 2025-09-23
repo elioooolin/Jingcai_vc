@@ -789,6 +789,71 @@ Page({
     });
   },
 
+  // 删除客户
+  deleteCustomer(e: any) {
+    const customerId = e.currentTarget.dataset.id;
+    const customerName = e.currentTarget.dataset.name;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: `删除该客户会删除其账号及其所有关联订单，确认删除客户"${customerName}"吗？`,
+      confirmText: '确认删除',
+      confirmColor: '#ff4757',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.performDeleteCustomer(customerId, customerName);
+        }
+      }
+    });
+  },
+
+  // 执行删除客户操作
+  async performDeleteCustomer(customerId: string, customerName: string) {
+    wx.showLoading({
+      title: '删除中...',
+      mask: true
+    });
+
+    try {
+      console.log('开始删除客户:', customerId, customerName);
+      
+      const result = await wx.cloud.callFunction({
+        name: 'deleteCustomer',
+        data: {
+          customerId: customerId
+        }
+      });
+
+      console.log('删除客户结果:', result);
+
+      if (result.result && (result.result as any).success) {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success',
+          duration: 2000
+        });
+        
+        // 重新加载客户列表
+        this.loadCustomerList();
+        
+        // 刷新统计数据
+        this.refreshStats();
+      } else {
+        throw new Error((result.result as any)?.message || '删除失败');
+      }
+    } catch (error) {
+      console.error('删除客户失败:', error);
+      wx.showToast({
+        title: '删除失败，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
   // 导出开始日期变化
   onExportStartDateChange(e: any) {
     this.setData({ exportStartDate: e.detail.value });

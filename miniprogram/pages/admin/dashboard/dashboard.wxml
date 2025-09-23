@@ -131,15 +131,27 @@
         </view>
 
         <!-- 添加客户按钮 -->
-        <t-button
-          theme="primary"
-          size="large"
-          block
-          bind:tap="addCustomer"
-          class="add-customer-btn admin-button"
-        >
-          添加新客户
-        </t-button>
+        <view class="customer-actions">
+          <t-button
+            theme="primary"
+            size="large"
+            block
+            bind:tap="addCustomer"
+            class="add-customer-btn admin-button"
+          >
+            添加新客户
+          </t-button>
+          
+          <t-button
+            theme="light"
+            size="large"
+            block
+            bind:tap="addTestCustomer"
+            class="admin-button"
+          >
+            添加测试客户
+          </t-button>
+        </view>
 
         <!-- 客户列表 -->
         <view class="customer-list">
@@ -162,6 +174,16 @@
                   data-id="{{item.id}}"
                 >
                   编辑
+                </t-button>
+                <t-button 
+                  theme="danger"
+                  size="small"
+                  bind:tap="deleteCustomer"
+                  data-id="{{item.id}}"
+                  data-name="{{item.name}}"
+                  class="delete-customer-btn"
+                >
+                  删除
                 </t-button>
               </view>
             </view>

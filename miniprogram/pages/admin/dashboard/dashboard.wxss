@@ -254,6 +254,15 @@
 
 .customer-actions {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.delete-customer-btn {
+  background-color: #ff4757 !important;
+  border-color: #ff4757 !important;
+  color: white !important;
 }
 
 /* 数据导出 */
