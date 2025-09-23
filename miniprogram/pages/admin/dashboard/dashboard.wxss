@@ -458,3 +458,19 @@
   font-size: 28rpx;
 }
 
+/* 导出餐单按钮样式 */
+.export-menu-card {
+  margin-bottom: 24rpx;
+}
+
+.export-menu-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+.export-menu-btn[loading] {
+  background: #6c757d;
+}
+

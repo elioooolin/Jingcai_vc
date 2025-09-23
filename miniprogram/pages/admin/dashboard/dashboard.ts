@@ -43,6 +43,7 @@ Page({
     exportStore: 'all',
     exportingExcel: false,
     exportingPDF: false,
+    exportingMenu: false,
     
     
     stats: {
@@ -1056,6 +1057,156 @@ Page({
       
       // 实际应用中这里会调用下载文件的API
     }, 2000);
+  },
+
+  // 导出当日Excel餐单
+  async exportDailyMenu() {
+    const { selectedOrderStore, selectedDate } = this.data;
+    
+    // 验证是否选择了具体门店
+    if (selectedOrderStore === 'all') {
+      wx.showToast({
+        title: '请先选择具体门店',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    // 验证是否选择了日期
+    if (!selectedDate) {
+      wx.showToast({
+        title: '请先选择日期',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    this.setData({ exportingMenu: true });
+    
+    try {
+      console.log('开始导出餐单:', selectedOrderStore, selectedDate);
+      
+      const result = await wx.cloud.callFunction({
+        name: 'exportDailyMenu',
+        data: {
+          store: selectedOrderStore,
+          date: selectedDate
+        }
+      });
+      
+      console.log('导出餐单结果:', result);
+      
+      if (result.result && (result.result as any).success) {
+        const { fileUrl } = (result.result as any);
+        
+        // 检查是否在开发者工具中运行
+        const systemInfo = wx.getSystemInfoSync();
+        const isDevTool = systemInfo.platform === 'devtools';
+        
+        if (isDevTool) {
+          // 在开发者工具中，直接显示成功并提供下载链接
+          wx.showModal({
+            title: '餐单导出成功',
+            content: `文件已生成并上传到云存储。\n\n由于开发者工具限制，请在真机上测试文件下载功能。\n\n您也可以复制下载链接在浏览器中下载：\n${fileUrl}`,
+            showCancel: true,
+            cancelText: '知道了',
+            confirmText: '复制链接',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                // 复制下载链接到剪贴板
+                wx.setClipboardData({
+                  data: fileUrl,
+                  success: () => {
+                    wx.showToast({
+                      title: '链接已复制',
+                      icon: 'success',
+                      duration: 2000
+                    });
+                  }
+                });
+              }
+            }
+          });
+        } else {
+          // 在真机上正常下载文件
+          wx.downloadFile({
+            url: fileUrl,
+            success: (res) => {
+              if (res.statusCode === 200) {
+                // 保存文件到相册或文件管理器
+                wx.saveFile({
+                  tempFilePath: res.tempFilePath,
+                  success: (saveRes) => {
+                    wx.showToast({
+                      title: '餐单导出成功',
+                      icon: 'success',
+                      duration: 2000
+                    });
+                    console.log('文件保存成功:', saveRes.savedFilePath);
+                  },
+                  fail: (saveError) => {
+                    console.error('文件保存失败:', saveError);
+                    wx.showToast({
+                      title: '文件保存失败，请检查存储权限',
+                      icon: 'none',
+                      duration: 3000
+                    });
+                  }
+                });
+              } else {
+                wx.showToast({
+                  title: `下载失败，状态码：${res.statusCode}`,
+                  icon: 'none',
+                  duration: 3000
+                });
+              }
+            },
+            fail: (downloadError) => {
+              console.error('文件下载失败:', downloadError);
+              wx.showModal({
+                title: '下载失败',
+                content: `文件下载失败，可能是网络问题。\n\n您可以复制下载链接在浏览器中下载：\n${fileUrl}`,
+                showCancel: true,
+                cancelText: '取消',
+                confirmText: '复制链接',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    wx.setClipboardData({
+                      data: fileUrl,
+                      success: () => {
+                        wx.showToast({
+                          title: '链接已复制',
+                          icon: 'success',
+                          duration: 2000
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }
+          });
+        }
+      } else {
+        const errorMessage = (result.result as any)?.message || '导出失败';
+        wx.showToast({
+          title: errorMessage,
+          icon: 'none',
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('导出餐单失败:', error);
+      wx.showToast({
+        title: '导出失败，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+    } finally {
+      this.setData({ exportingMenu: false });
+    }
   },
 
   // 初始化管理员信息

@@ -57,6 +57,21 @@
           />
         </view>
 
+        <!-- 导出餐单按钮 -->
+        <view class="card export-menu-card">
+          <t-button
+            theme="primary"
+            size="large"
+            block
+            bind:tap="exportDailyMenu"
+            class="export-menu-btn"
+            loading="{{exportingMenu}}"
+          >
+            <text wx:if="{{!exportingMenu}}">导出当日Excel餐单</text>
+            <text wx:else>导出中...</text>
+          </t-button>
+        </view>
+
         <!-- 订单列表 -->
         <view class="order-list">
           <view wx:if="{{orderList.length === 0}}" class="empty-state">
