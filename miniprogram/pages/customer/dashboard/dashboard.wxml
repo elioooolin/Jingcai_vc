@@ -83,6 +83,7 @@
                     data-order-id="{{item.id}}"
                     data-order-date="{{item.date}}"
                     disabled="{{cancellingOrderId === item.id}}"
+                    wx:if="{{item.isCancelable}}"
                   >
                     {{cancellingOrderId === item.id ? '取消中...' : '取消订单'}}
                   </button>

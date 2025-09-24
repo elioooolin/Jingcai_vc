@@ -488,6 +488,7 @@ Page({
             id: order.orderId,
             uniqueKey: `${order.orderId}_${Date.now()}_${index}`, // 添加唯一标识
             date: this.formatOrderDate(order.orderDate || order.orderDateString),
+            isCancelable: this.calculateIsCancelable(order.orderDate || order.orderDateString),
             status: order.status,
             statusText: '待确认',
             items: this.formatOrderItems(order.orderSummary)
@@ -539,6 +540,35 @@ Page({
     const day = date.getDate();
     
     return `${year}年${month}月${day}日`;
+  },
+
+  // 计算订单是否可取消
+  calculateIsCancelable(orderDateString: string): boolean {
+    try {
+      const orderDate = new Date(orderDateString);
+      const today = new Date();
+      
+      // 设置时间为0点，只比较日期
+      orderDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      
+      // 计算日期差（毫秒）
+      const timeDiff = orderDate.getTime() - today.getTime();
+      
+      // 转换为天数
+      const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      
+      console.log(`订单日期: ${orderDateString}, 今天: ${today.toISOString().split('T')[0]}, 相差天数: ${daysDiff}`);
+      
+      // 如果订单日期与当日日期间隔小于3天，则不可取消
+      // 例如：订单日期为1月8日，如果今天是1月6日或之后，则不可取消
+      return daysDiff >= 3;
+      
+    } catch (error) {
+      console.error('计算订单可取消状态失败:', error);
+      // 出错时默认不可取消，保证安全
+      return false;
+    }
   },
 
   // 格式化订单项目显示
@@ -609,6 +639,18 @@ Page({
     
     if (!orderId) {
       wx.showToast({ title: '订单信息错误', icon: 'error' });
+      return;
+    }
+
+    // 检查订单是否可取消
+    const isCancelable = this.calculateIsCancelable(orderDate);
+    
+    if (!isCancelable) {
+      wx.showToast({
+        title: '订单已临近，无法取消',
+        icon: 'none',
+        duration: 2000
+      });
       return;
     }
 
