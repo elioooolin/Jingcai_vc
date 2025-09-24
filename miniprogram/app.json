@@ -4,7 +4,7 @@
     "pages/phone-binding/phone-binding",
     "pages/customer/dashboard/dashboard",
     "pages/customer/menu/menu",
-    "pages/customer/history/history",
+    "pages/customer/health/health",
     "pages/customer/profile/profile",
     "pages/admin/dashboard/dashboard",
     "pages/admin/customer-manage/customer-manage",
@@ -25,15 +25,15 @@
     "list": [
       {
         "pagePath": "pages/customer/dashboard/dashboard",
-        "text": "现在点餐",
+        "text": "点餐记录",
         "iconPath": "assets/icons/veggie_basket_lm.png",
         "selectedIconPath": "assets/icons/veggie_basket_lm.png"
       },
       {
-        "pagePath": "pages/customer/history/history",
-        "text": "历史订单",
-        "iconPath": "assets/icons/food.png",
-        "selectedIconPath": "assets/icons/food.png"
+        "pagePath": "pages/customer/health/health",
+        "text": "健康档案",
+        "iconPath": "assets/icons/heart_lm.png",
+        "selectedIconPath": "assets/icons/heart_lm.png"
       },
       {
         "pagePath": "pages/customer/profile/profile",

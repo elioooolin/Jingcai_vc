@@ -10,7 +10,7 @@ Page({
     // 用户订单相关数据
     userOrders: [] as any[],
     orderedDates: [] as string[],  // 已订餐的日期数组
-    pendingOrders: [] as any[],  // 待确认的订单
+    sortedOrders: [] as any[],  // 所有订单
     refreshingOrders: false,  // 是否正在刷新订单数据
     showOrderSubmitSuccess: false,  // 是否显示订单提交成功提示
     cancellingOrderId: ''  // 正在取消的订单ID
@@ -52,6 +52,10 @@ Page({
   onShow() {
     this.refreshOrderData();
     this.refreshUserInfo();
+  },
+
+  onPullDownRefresh() {
+    console.log('下拉刷新');
   },
 
   // 检查登录状态
@@ -461,9 +465,8 @@ Page({
           
           const allOrders = res.result.orders || [];
           
-          // 筛选出 pending 状态的订单并按订单日期降序排列（越晚的日期在前）
-          const pendingOrders = allOrders
-            .filter((order: any) => order.status === 'pending')
+          // 按订单日期降序排列（越晚的日期在前）
+          const sortedOrders = allOrders
             .sort((a: any, b: any) => {
               const dateA = new Date(a.orderDate || a.orderDateString);
               const dateB = new Date(b.orderDate || b.orderDateString);
@@ -479,35 +482,32 @@ Page({
           
           // 调试：显示排序后的订单顺序
           console.log('📋 排序后的订单顺序:');
-          pendingOrders.forEach((order: any, index: number) => {
+          sortedOrders.forEach((order: any, index: number) => {
             console.log(`  ${index + 1}. ${order.orderId} - ${order.orderDate || order.orderDateString}`);
           });
           
-          // 转换 pending 订单格式以适配 UI 显示
-          const formattedPendingOrders = pendingOrders.map((order: any, index: number) => ({
+          // 转换订单格式以适配 UI 显示
+          const formattedSortedOrders = sortedOrders.map((order: any, index: number) => ({
             id: order.orderId,
             uniqueKey: `${order.orderId}_${Date.now()}_${index}`, // 添加唯一标识
             date: this.formatOrderDate(order.orderDate || order.orderDateString),
-            isCancelable: this.calculateIsCancelable(order.orderDate || order.orderDateString),
+            isCancelable: order.status === 'pending' && this.calculateIsCancelable(order.orderDate || order.orderDateString),
             status: order.status,
-            statusText: '待确认',
+            statusText: this.getStatusText(order.status, order.orderDate || order.orderDateString),
             items: this.formatOrderItems(order.orderSummary)
           }));
           
           this.setData({
             userOrders: allOrders,
             orderedDates: res.result.orderedDates || [],
-            pendingOrders: formattedPendingOrders,
+            sortedOrders: formattedSortedOrders,
             refreshingOrders: false,  // 清除刷新状态
             showOrderSubmitSuccess: false  // 清除成功提示
           });
           
-          console.log('✅ 订单数据加载完成:');
+          console.log('✅ 订单数据加载完成:', allOrders.length);
           console.log('  - 总订单数:', allOrders.length);
-          console.log('  - 待确认订单数:', formattedPendingOrders.length);
-          
           console.log('已订餐的日期:', res.result.orderedDates);
-          console.log('待确认订单:', formattedPendingOrders);
           
           // 重新初始化日期列表，应用订单限制
           this.initDateList();
@@ -620,17 +620,30 @@ Page({
     return items;
   },
 
-  // 获取订单状态文本
-  getStatusText(status: string): string {
-    const statusMap: Record<string, string> = {
-      'pending': '待确认',
-      'confirmed': '已确认',
-      'preparing': '准备中',
-      'completed': '已完成',
-      'cancelled': '已取消'
-    };
-    
-    return statusMap[status] || status;
+  // 根据订单状态和日期获取状态文本
+  getStatusText(status: string, orderDate: string): string {
+    if (status === 'pending') {
+      return '待确认';
+    } else if (status === 'cancelled') {
+      return '已取消';
+    } else {
+      // 对于其他状态（confirmed等），根据日期判断
+      try {
+        const orderDateObj = new Date(orderDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        orderDateObj.setHours(0, 0, 0, 0);
+        
+        if (orderDateObj.getTime() < today.getTime()) {
+          return '已上餐';
+        } else {
+          return '已确认';
+        }
+      } catch (error) {
+        console.error('日期比较失败:', error);
+        return '已确认';
+      }
+    }
   },
 
   // 取消订单

@@ -1,0 +1,6 @@
+/* 页面容器 */
+.page-container {
+  padding: 32rpx;
+  background: #faf8f5;
+  min-height: 100vh;
+}

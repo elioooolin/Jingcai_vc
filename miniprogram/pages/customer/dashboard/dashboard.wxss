@@ -318,13 +318,13 @@
   opacity: 0.8;
 }
 
-.pending-orders-list {
+.sorted-orders-list {
   display: flex;
   flex-direction: column;
   gap: 24rpx;
 }
 
-.pending-order-item {
+.sorted-order-item {
   background: #fff;
   border-radius: 16rpx;
   padding: 32rpx;
@@ -405,7 +405,7 @@
 }
 
 /* 空状态样式 */
-.no-pending-orders {
+.no-sorted-orders {
   text-align: center;
   padding: 60rpx 32rpx;
 }
