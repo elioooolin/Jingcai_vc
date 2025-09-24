@@ -68,14 +68,6 @@ Page({
     showSupplementSection: false,
     userSupplementCount: 0,
     
-    // 陪人餐数量
-    breakfastFamilyMealCount: 0,
-    lunchFamilyMealCount: 0,
-    dinnerFamilyMealCount: 0,
-    userFreeFamilyMealCount: 0, // 用户剩余免费陪人餐次数
-    userFamilyBreakfastCnt: 0, // 用户累计早餐陪人餐次数
-    userFamilyMainMealCnt: 0, // 用户累计午晚餐陪人餐次数
-    
     // 选择规则
     breakfastRule: '',
     lunchMainRule: '',
@@ -106,7 +98,6 @@ Page({
     // 并行执行权限检查和菜单数据加载
     await Promise.all([
       this.checkSupplementPermission(),
-      this.checkFamilyMealPermission(),
       this.loadMenuData()
     ]);
   },
@@ -437,28 +428,6 @@ Page({
     return rules[meal] || 1;
   },
 
-  // 陪人餐数量变更
-  changeFamilyMealCount(e: any) {
-    const { meal, action } = e.currentTarget.dataset;
-    const countKey = `${meal}FamilyMealCount`;
-    const currentCount = this.data[countKey as keyof typeof this.data] as number;
-    
-    let newCount = currentCount;
-    if (action === 'plus') {
-      newCount = currentCount + 1;
-    } else if (action === 'minus' && currentCount > 0) {
-      newCount = currentCount - 1;
-    }
-    
-    console.log(`${meal}陪人餐数量变更: ${currentCount} -> ${newCount}`);
-    
-    this.setData({
-      [countKey]: newCount
-    });
-    
-    this.updateOrderSummary();
-    this.checkCanSubmit();
-  },
 
   // 更新订单摘要
   updateOrderSummary() {
@@ -501,26 +470,6 @@ Page({
       summary.push({
         type: '高补餐',
         dishes: supplementSelected.map(item => item.name).join(' + ')
-      });
-    }
-    
-    // 陪人餐
-    const totalFamilyMeals = this.data.breakfastFamilyMealCount + this.data.lunchFamilyMealCount + this.data.dinnerFamilyMealCount;
-    if (totalFamilyMeals > 0) {
-      const familyMealDetails = [];
-      if (this.data.breakfastFamilyMealCount > 0) {
-        familyMealDetails.push(`早餐 ${this.data.breakfastFamilyMealCount} 份`);
-      }
-      if (this.data.lunchFamilyMealCount > 0) {
-        familyMealDetails.push(`午餐 ${this.data.lunchFamilyMealCount} 份`);
-      }
-      if (this.data.dinnerFamilyMealCount > 0) {
-        familyMealDetails.push(`晚餐 ${this.data.dinnerFamilyMealCount} 份`);
-      }
-      
-      summary.push({
-        type: '陪人餐',
-        dishes: familyMealDetails.join('、')
       });
     }
     
@@ -596,57 +545,6 @@ Page({
       return;
     }
 
-    // 检查陪人餐数量
-    const totalFamilyMeals = this.data.breakfastFamilyMealCount + this.data.lunchFamilyMealCount + this.data.dinnerFamilyMealCount;
-    if (totalFamilyMeals > 0) {
-      // 计算超出的陪人餐数量
-      // 超出数量 = familyBreakfastCnt + familyMainMealCnt + 本次订单新增的陪人餐次数 - freeFamilyMealCount
-      const currentTotalFamilyMeals = this.data.userFamilyBreakfastCnt + this.data.userFamilyMainMealCnt;
-      const newTotalFamilyMeals = currentTotalFamilyMeals + totalFamilyMeals;
-      const excessMeals = newTotalFamilyMeals - this.data.userFreeFamilyMealCount;
-      
-      if (excessMeals > 0) {
-        // 有超出的陪人餐
-        const confirmResult = await new Promise<boolean>((resolve) => {
-          wx.showModal({
-            title: '陪人餐数量确认',
-            content: `您本次点了 ${totalFamilyMeals} 份陪人餐。\n\n当前累计陪人餐：${currentTotalFamilyMeals} 份\n本次新增：${totalFamilyMeals} 份\n免费额度：${this.data.userFreeFamilyMealCount} 份\n\n超出免费额度：${excessMeals} 份\n\n确认提交订单吗？`,
-            confirmText: '确认提交',
-            cancelText: '取消',
-            success: (res) => {
-              resolve(res.confirm);
-            },
-            fail: () => {
-              resolve(false);
-            }
-          });
-        });
-        
-        if (!confirmResult) {
-          return; // 用户取消了订单提交
-        }
-      } else {
-        // 在免费额度内
-        const confirmResult = await new Promise<boolean>((resolve) => {
-          wx.showModal({
-            title: '陪人餐数量确认',
-            content: `您本次点了 ${totalFamilyMeals} 份陪人餐。\n\n当前累计陪人餐：${currentTotalFamilyMeals} 份\n本次新增：${totalFamilyMeals} 份\n免费额度：${this.data.userFreeFamilyMealCount} 份\n\n仍在免费额度内。\n\n确认提交订单吗？`,
-            confirmText: '确认提交',
-            cancelText: '取消',
-            success: (res) => {
-              resolve(res.confirm);
-            },
-            fail: () => {
-              resolve(false);
-            }
-          });
-        });
-        
-        if (!confirmResult) {
-          return; // 用户取消了订单提交
-        }
-      }
-    }
 
     // 获取用户信息
     const userInfo = wx.getStorageSync('userInfo');
@@ -691,11 +589,6 @@ Page({
           id: item.id || item._id,
           name: item.name
         })),
-        familyMeals: {
-          breakfast: this.data.breakfastFamilyMealCount,
-          lunch: this.data.lunchFamilyMealCount,
-          dinner: this.data.dinnerFamilyMealCount
-        },
         specialRequirements: this.data.specialRequirements
       };
 
@@ -843,59 +736,6 @@ Page({
     }
   },
 
-  // 检查用户陪人餐权限（从云数据库实时获取）
-  async checkFamilyMealPermission() {
-    console.log('从云数据库检查用户陪人餐权限...');
-    
-    const userInfo = wx.getStorageSync('userInfo');
-    if (!userInfo || !userInfo._id) {
-      console.log('用户信息不存在或缺少ID，设置陪人餐次数为0');
-      this.setData({ 
-        userFreeFamilyMealCount: 0,
-        userFamilyBreakfastCnt: 0,
-        userFamilyMainMealCnt: 0
-      });
-      return;
-    }
-
-    try {
-      const result = await wx.cloud.callFunction({
-        name: 'getUserInfo',
-        data: {
-          userId: userInfo._id
-        }
-      });
-
-      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
-        const userData = result.result.userInfo;
-        const freeFamilyMealCount = userData.freeFamilyMealCount || 0;
-        const familyBreakfastCnt = userData.familyBreakfastCnt || 0;
-        const familyMainMealCnt = userData.familyMainMealCnt || 0;
-        
-        console.log(`用户免费陪人餐次数: ${freeFamilyMealCount}, 累计早餐: ${familyBreakfastCnt}, 累计午晚餐: ${familyMainMealCnt}`);
-        
-        this.setData({
-          userFreeFamilyMealCount: freeFamilyMealCount,
-          userFamilyBreakfastCnt: familyBreakfastCnt,
-          userFamilyMainMealCnt: familyMainMealCnt
-        });
-      } else {
-        console.log('获取用户陪人餐权限失败，设置为0');
-        this.setData({ 
-          userFreeFamilyMealCount: 0,
-          userFamilyBreakfastCnt: 0,
-          userFamilyMainMealCnt: 0
-        });
-      }
-    } catch (error) {
-      console.error('检查用户陪人餐权限时出错:', error);
-      this.setData({ 
-        userFreeFamilyMealCount: 0,
-        userFamilyBreakfastCnt: 0,
-        userFamilyMainMealCnt: 0
-      });
-    }
-  },
 
   // 检查用户高补餐权限（从云数据库实时获取）
   async checkSupplementPermission() {

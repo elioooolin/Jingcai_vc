@@ -80,7 +80,7 @@ exports.main = async (event, context) => {
     console.log('订单保存成功，订单ID:', result._id);
     
     // 处理用户次数更新
-    let updateErrors = [];
+    let updateError = null;
     let needsUserUpdate = false;
     let supplementCountUpdated = false;
     let newSupplementCount = 0;
@@ -94,21 +94,6 @@ exports.main = async (event, context) => {
       console.log(`✅ 需要更新高补餐次数: ${currentSupplementCount} -> ${newSupplementCount}`);
     }
     
-    // 计算陪人餐次数
-    let familyBreakfastCnt = 0;
-    let familyMainMealCnt = 0;
-    
-    if (orderData.familyMeals) {
-      familyBreakfastCnt = orderData.familyMeals.breakfast || 0;
-      const familyLunchCnt = orderData.familyMeals.lunch || 0;
-      const familyDinnerCnt = orderData.familyMeals.dinner || 0;
-      familyMainMealCnt = familyLunchCnt + familyDinnerCnt;
-      
-      if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
-        needsUserUpdate = true;
-        console.log(`✅ 需要累加陪人餐次数: 早餐 ${familyBreakfastCnt} 份，午晚餐 ${familyMainMealCnt} 份`);
-      }
-    }
     
     // 更新用户次数
     if (needsUserUpdate) {
@@ -117,59 +102,26 @@ exports.main = async (event, context) => {
         if (supplementCountUpdated) {
           updateData.supplementCount = newSupplementCount;
         }
-        // 累加陪人餐次数到用户记录中
-        if (familyBreakfastCnt > 0) {
-          const currentFamilyBreakfast = user.familyBreakfastCnt || 0;
-          updateData.familyBreakfastCnt = currentFamilyBreakfast + familyBreakfastCnt;
-        }
-        if (familyMainMealCnt > 0) {
-          const currentFamilyMainMeal = user.familyMainMealCnt || 0;
-          updateData.familyMainMealCnt = currentFamilyMainMeal + familyMainMealCnt;
-        }
-        
         await db.collection('users')
           .doc(orderData.userId)
           .update({
             data: updateData
           });
-        
-        console.log('✅ 用户次数更新成功:', updateData);
-      } catch (updateError) {
-        console.error('❌ 更新用户次数失败:', updateError);
-        updateErrors.push('数据库更新失败: ' + updateError.message);
-      }
-    }
-    
-    // 更新订单的陪人餐信息
-    if (familyBreakfastCnt > 0 || familyMainMealCnt > 0) {
-      try {
-        await db.collection('orders')
-          .doc(result._id)
-          .update({
-            data: {
-              familyBreakfastCnt: familyBreakfastCnt,
-              familyMainMealCnt: familyMainMealCnt,
-              updatedAt: new Date()
-            }
-          });
-        
-        console.log('✅ 订单陪人餐信息更新成功');
-      } catch (updateError) {
-        console.error('❌ 更新订单陪人餐信息失败:', updateError);
-        updateErrors.push('订单陪人餐信息更新失败: ' + updateError.message);
+        console.log('✅ 用户高补餐次数更新成功:', updateData);
+      } catch (error) {
+        console.error('❌ 更新用户次数失败:', error);
+        updateError = error;
       }
     }
     
     return {
       success: true,
-      message: updateErrors.length > 0 ? '订单提交成功，但部分次数更新失败' : '订单提交成功',
+      message: updateError ? '订单提交成功，但高补餐次数更新失败' : '订单提交成功',
       orderId: result._id,
       orderData: orderEntry,
       supplementCountUpdated: supplementCountUpdated,
       newSupplementCount: newSupplementCount,
-      familyBreakfastCnt: familyBreakfastCnt,
-      familyMainMealCnt: familyMainMealCnt,
-      errors: updateErrors.length > 0 ? updateErrors : undefined
+      error: updateError
     };
     
   } catch (error) {
@@ -200,14 +152,6 @@ function formatOrderDetails(orderData, user) {
   // 处理lunchMain字段（主菜）
   if (orderData.lunchMain && Array.isArray(orderData.lunchMain)) {
     orderData.lunchMain.forEach(item => {
-      if (item && item.name && item.name.trim() !== '') {
-        lunchItems.push(item.name.trim());
-      }
-    });
-  }
-  // 处理lunch字段（兼容旧版本）
-  if (orderData.lunch && Array.isArray(orderData.lunch)) {
-    orderData.lunch.forEach(item => {
       if (item && item.name && item.name.trim() !== '') {
         lunchItems.push(item.name.trim());
       }
@@ -250,24 +194,6 @@ function formatOrderDetails(orderData, user) {
     const supplementItem = orderData.supplement[0];
     if (supplementItem && supplementItem.name && supplementItem.name.trim() !== '') {
       details.supplement = supplementItem.name.trim();
-    }
-  }
-  
-  // 陪人餐
-  if (orderData.familyMeals) {
-    const familyMeals = {};
-    if (orderData.familyMeals.breakfast && orderData.familyMeals.breakfast > 0) {
-      familyMeals.breakfast = orderData.familyMeals.breakfast;
-    }
-    if (orderData.familyMeals.lunch && orderData.familyMeals.lunch > 0) {
-      familyMeals.lunch = orderData.familyMeals.lunch;
-    }
-    if (orderData.familyMeals.dinner && orderData.familyMeals.dinner > 0) {
-      familyMeals.dinner = orderData.familyMeals.dinner;
-    }
-    
-    if (Object.keys(familyMeals).length > 0) {
-      details.family_meals = familyMeals;
     }
   }
   

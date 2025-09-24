@@ -217,14 +217,6 @@ Page({
       });
     }
     
-    // 陪人餐
-    if (orderSummary.family_meals) {
-      items.push({
-        type: '陪人餐',
-        dishes: orderSummary.family_meals
-      });
-    }
-    
     return items;
   }
 });

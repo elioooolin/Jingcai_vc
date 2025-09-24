@@ -57,11 +57,6 @@
   color: var(--brand-text-secondary);
 }
 
-/* 订单内容 */
-.order-content {
-  /* 无需额外padding，已在submit-time中处理 */
-}
-
 .summary-item {
   display: flex;
   justify-content: space-between;

@@ -15,11 +15,6 @@ interface OrderDetails {
   lunch?: string[];
   dinner?: string[];
   special_requirements?: string;
-  family_meals?: {
-    breakfast?: number;
-    lunch?: number;
-    dinner?: number;
-  };
   supplement?: string;
 }
 
@@ -46,10 +41,6 @@ Page({
     
     storeOptions: [
       { label: '全部门店', value: 'all' },
-      { label: '朝阳店', value: 'store1' },
-      { label: '海淀店', value: 'store2' },
-      { label: '西城店', value: 'store3' },
-      { label: '丰台店', value: 'store4' }
     ],
     
     // 用于textarea的样式
@@ -397,23 +388,6 @@ Page({
     // 高补餐
     if (orderDetails.supplement) {
       summaryParts.push(`高补餐: ${orderDetails.supplement}`);
-    }
-    
-    // 陪人餐
-    if (orderDetails.family_meals) {
-      const familyMealParts = [];
-      if (orderDetails.family_meals.breakfast > 0) {
-        familyMealParts.push(`早餐${orderDetails.family_meals.breakfast}份`);
-      }
-      if (orderDetails.family_meals.lunch > 0) {
-        familyMealParts.push(`午餐${orderDetails.family_meals.lunch}份`);
-      }
-      if (orderDetails.family_meals.dinner > 0) {
-        familyMealParts.push(`晚餐${orderDetails.family_meals.dinner}份`);
-      }
-      if (familyMealParts.length > 0) {
-        summaryParts.push(`陪人餐: ${familyMealParts.join('、')}`);
-      }
     }
     
     return summaryParts.join(' | ');

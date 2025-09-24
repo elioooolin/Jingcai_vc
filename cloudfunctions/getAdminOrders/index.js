@@ -96,7 +96,6 @@ exports.main = async (event, context) => {
         orderDetails: order.order_details, // 返回原始订单详情结构
         orderSummary: generateOrderSummary(order.order_details), // 保留摘要用于显示
         specialRequirements: order.order_details?.special_requirements || '',
-        familyMeals: order.order_details?.family_meals || null,
         supplement: order.order_details?.supplement || null
       };
     });
@@ -195,23 +194,6 @@ function generateOrderSummary(orderDetails) {
       summaryParts.push(`高补餐: ${orderDetails.supplement}`);
     } else if (Array.isArray(orderDetails.supplement)) {
       summaryParts.push(`高补餐: ${orderDetails.supplement.join('、')}`);
-    }
-  }
-  
-  // 陪人餐
-  if (orderDetails.family_meals) {
-    const familyMealParts = [];
-    if (orderDetails.family_meals.breakfast > 0) {
-      familyMealParts.push(`早餐${orderDetails.family_meals.breakfast}份`);
-    }
-    if (orderDetails.family_meals.lunch > 0) {
-      familyMealParts.push(`午餐${orderDetails.family_meals.lunch}份`);
-    }
-    if (orderDetails.family_meals.dinner > 0) {
-      familyMealParts.push(`晚餐${orderDetails.family_meals.dinner}份`);
-    }
-    if (familyMealParts.length > 0) {
-      summaryParts.push(`陪人餐: ${familyMealParts.join('、')}`);
     }
   }
   

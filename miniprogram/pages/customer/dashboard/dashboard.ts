@@ -579,14 +579,6 @@ Page({
       });
     }
     
-    // 陪人餐
-    if (orderSummary.family_meals) {
-      items.push({
-        type: '陪人餐',
-        dishes: orderSummary.family_meals
-      });
-    }
-    
     // 特殊需求
     if (orderSummary.special_requirements && orderSummary.special_requirements.trim()) {
       items.push({
@@ -623,7 +615,7 @@ Page({
     // 显示确认弹窗
     wx.showModal({
       title: '确认取消订单',
-      content: `确定要取消 ${orderDate} 的订单吗？\n\n取消后如果订单包含高补餐或陪人餐，相应次数将会恢复。`,
+      content: `确定要取消 ${orderDate} 的订单吗？\n\n取消后如果订单包含高补餐，相应次数将会恢复。`,
       confirmText: '确认取消',
       confirmColor: '#ff6b6b',
       cancelText: '我再想想',

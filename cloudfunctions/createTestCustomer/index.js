@@ -97,8 +97,6 @@ exports.main = async (event, context) => {
       dietPreference: '要退奶',
       supplementCount: 4,
       isMock: false,
-      familyBreakfastCnt: 0,
-      familyMainMealCnt: 0,
       freeFamilyMealCount: 10,
       createdBy: adminName,
       createdAt: new Date(),

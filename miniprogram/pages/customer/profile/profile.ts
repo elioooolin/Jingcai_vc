@@ -4,8 +4,6 @@ Page({
   data: {
     userInfo: {} as any,
     loading: false,
-    extraFamilyMealCost: 0,  // 额外陪人餐总费用
-    extraFamilyMealFormula: '' // 费用计算公式
   },
 
   onLoad() {
@@ -72,9 +70,6 @@ Page({
           loading: false
         });
         
-        // 计算额外陪人餐费用
-        this.calculateExtraFamilyMealCost(fullUserInfo);
-        
         console.log('✅ 用户信息加载完成', this.data.userInfo);
         
       } else {
@@ -88,9 +83,6 @@ Page({
             userInfo: localUserInfo,
             loading: false
           });
-          
-          // 计算额外陪人餐费用
-          this.calculateExtraFamilyMealCost(localUserInfo);
           
           console.log('📱 使用本地存储的用户信息:', localUserInfo);
         } else {
@@ -138,80 +130,6 @@ Page({
       console.error('计算入住天数失败:', error);
       return 1;
     }
-  },
-
-  // 计算额外陪人餐费用
-  calculateExtraFamilyMealCost(userInfo: any) {
-    if (!userInfo) {
-      this.setData({
-        extraFamilyMealCost: 0,
-        extraFamilyMealFormula: ''
-      });
-      return;
-    }
-
-    const freeFamilyMealCount = userInfo.freeFamilyMealCount || 0;
-    const familyBreakfastCnt = userInfo.familyBreakfastCnt || 0;
-    const familyMainMealCnt = userInfo.familyMainMealCnt || 0;
-    
-    // 价格常量
-    const BREAKFAST_PRICE = 28; // 早餐陪人餐价格
-    const MAIN_MEAL_PRICE = 38; // 午晚餐陪人餐价格
-    
-    // 计算需要付费的陪人餐数量
-    // freeFamilyMealCount 优先抵扣 familyMainMealCnt，其次抵扣 familyBreakfastCnt
-    let remainingFreeMeals = freeFamilyMealCount;
-    
-    // 优先抵扣午晚餐（更贵）
-    const freeMainMeals = Math.min(familyMainMealCnt, remainingFreeMeals);
-    const paidMainMeals = familyMainMealCnt - freeMainMeals;
-    remainingFreeMeals -= freeMainMeals;
-    
-    // 剩余免费次数抵扣早餐
-    const freeBreakfastMeals = Math.min(familyBreakfastCnt, remainingFreeMeals);
-    const paidBreakfastMeals = familyBreakfastCnt - freeBreakfastMeals;
-    
-    // 计算费用
-    const breakfastCost = paidBreakfastMeals * BREAKFAST_PRICE;
-    const mainMealCost = paidMainMeals * MAIN_MEAL_PRICE;
-    const totalCost = breakfastCost + mainMealCost;
-    
-    // 生成计算公式
-    let formula = '';
-    const formulaParts = [];
-    
-    if (paidBreakfastMeals > 0) {
-      formulaParts.push(`早餐 ${paidBreakfastMeals}份 × ${BREAKFAST_PRICE}元/份 = ${breakfastCost}元`);
-    }
-    
-    if (paidMainMeals > 0) {
-      formulaParts.push(`午晚餐 ${paidMainMeals}份 × ${MAIN_MEAL_PRICE}元/份 = ${mainMealCost}元`);
-    }
-    
-    if (formulaParts.length > 0) {
-      formula = formulaParts.join('\n'); // 使用换行符分隔
-    } else {
-      formula = ''; // 无额外费用时公式为空
-    }
-    
-    console.log('💰 陪人餐费用计算:', {
-      freeFamilyMealCount,
-      familyBreakfastCnt,
-      familyMainMealCnt,
-      freeMainMeals,
-      paidMainMeals,
-      freeBreakfastMeals,
-      paidBreakfastMeals,
-      breakfastCost,
-      mainMealCost,
-      totalCost,
-      formula
-    });
-    
-    this.setData({
-      extraFamilyMealCost: totalCost,
-      extraFamilyMealFormula: formula
-    });
   },
 
   // 退出登录

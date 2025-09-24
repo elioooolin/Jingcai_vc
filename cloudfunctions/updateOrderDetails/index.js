@@ -1,6 +1,6 @@
 /**
  * 更新订单详情的云函数
- * 功能：允许管理员修改订单中的菜品名称和特殊需求，但不能修改陪人餐和高补餐
+ * 功能：允许管理员修改订单中的菜品名称和特殊需求，但不能修改高补餐
  */
 
 const cloud = require('wx-server-sdk');
@@ -55,10 +55,8 @@ exports.main = async (event, context) => {
     
     console.log('原始订单详情:', JSON.stringify(originalOrderDetails, null, 2));
     
-    // 2. 构建新的订单详情，保留陪人餐和高补餐信息
+    // 2. 构建新的订单详情，保留高补餐信息
     const newOrderDetails = {
-      // 保留原始的陪人餐信息（不允许修改）
-      family_meals: originalOrderDetails.family_meals,
       
       // 保留原始的高补餐信息（不允许修改）
       supplement: originalOrderDetails.supplement,

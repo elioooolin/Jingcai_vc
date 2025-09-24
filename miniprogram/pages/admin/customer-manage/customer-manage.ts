@@ -283,7 +283,8 @@ Page({
       { field: 'totalDays', name: '入住天数' },
       { field: 'store', name: '入住门店' },
       { field: 'room', name: '房间号码' },
-      { field: 'supplementCount', name: '高补餐次数' }
+      { field: 'supplementCount', name: '高补餐次数' },
+      { field: 'freeFamilyMealCount', name: '陪人餐次数' }
     ];
 
     for (const { field, name } of requiredFields) {

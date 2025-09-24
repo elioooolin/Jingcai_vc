@@ -112,16 +112,6 @@
           "description": "免费陪人餐次数"
         },
         {
-          "name": "familyBreakfastCnt",
-          "type": "number",
-          "description": "累计早餐陪人餐次数"
-        },
-        {
-          "name": "familyMainMealCnt",
-          "type": "number",
-          "description": "累计午晚餐陪人餐次数"
-        },
-        {
           "name": "createdBy",
           "type": "string",
           "description": "创建者（管理员ID）"
@@ -176,16 +166,6 @@
         {
           "name": "order_details",
           "type": "object"
-        },
-        {
-          "name": "familyBreakfastCnt",
-          "type": "number",
-          "description": "本订单早餐陪人餐次数"
-        },
-        {
-          "name": "familyMainMealCnt",
-          "type": "number",
-          "description": "本订单午晚餐陪人餐次数"
         },
         {
           "name": "status",

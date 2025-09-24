@@ -14,7 +14,7 @@
     <!-- 订单基本信息 -->
     <view class="card">
       <view class="card-header">
-        <text class="card-title">订单信息</text>
+        订单信息
       </view>
       <view class="card-body">
         <view class="order-info">
@@ -48,31 +48,12 @@
       </view>
     </view>
 
-    <!-- 不可编辑的陪人餐和高补餐信息 -->
-    <view class="card" wx:if="{{orderDetails.family_meals || orderDetails.supplement}}">
+    <!-- 不可编辑的高补餐信息 -->
+    <view class="card" wx:if="{{orderDetails.supplement}}">
       <view class="card-header">
         <text>以下信息不可修改</text>
       </view>
       <view class="card-body">
-        <!-- 陪人餐信息 -->
-        <view wx:if="{{orderDetails.family_meals}}" class="readonly-section">
-          <view class="readonly-title">陪人餐</view>
-          <view class="readonly-content">
-            <view wx:if="{{orderDetails.family_meals.breakfast}}" class="readonly-item">
-              <text class="readonly-label">早餐</text>
-              <text class="readonly-value">{{orderDetails.family_meals.breakfast}} 份</text>
-            </view>
-            <view wx:if="{{orderDetails.family_meals.lunch}}" class="readonly-item">
-              <text class="readonly-label">午餐</text>
-              <text class="readonly-value">{{orderDetails.family_meals.lunch}} 份</text>
-            </view>
-            <view wx:if="{{orderDetails.family_meals.dinner}}" class="readonly-item">
-              <text class="readonly-label">晚餐</text>
-              <text class="readonly-value">{{orderDetails.family_meals.dinner}} 份</text>
-            </view>
-          </view>
-        </view>
-
         <!-- 高补餐信息 -->
         <view wx:if="{{orderDetails.supplement}}" class="readonly-section">
           <view class="readonly-title">高补餐</view>
@@ -88,7 +69,7 @@
     <!-- 可编辑的菜品信息 -->
     <view class="card">
       <view class="card-header">
-        <text>菜品信息</text>
+        <text>修改菜品</text>
       </view>
       <view class="card-body">
         <!-- 早餐 -->

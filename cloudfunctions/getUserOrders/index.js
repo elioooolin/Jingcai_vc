@@ -122,26 +122,6 @@ function generateOrderSummary(orderDetails) {
     summary.supplement = orderDetails.supplement;
   }
   
-  // 陪人餐
-  if (orderDetails.family_meals) {
-    const familyMeals = orderDetails.family_meals;
-    const familyMealDetails = [];
-    
-    if (familyMeals.breakfast && familyMeals.breakfast > 0) {
-      familyMealDetails.push(`早餐 ${familyMeals.breakfast} 份`);
-    }
-    if (familyMeals.lunch && familyMeals.lunch > 0) {
-      familyMealDetails.push(`午餐 ${familyMeals.lunch} 份`);
-    }
-    if (familyMeals.dinner && familyMeals.dinner > 0) {
-      familyMealDetails.push(`晚餐 ${familyMeals.dinner} 份`);
-    }
-    
-    if (familyMealDetails.length > 0) {
-      summary.family_meals = familyMealDetails.join('、');
-    }
-  }
-  
   // 特殊需求
   if (orderDetails.special_requirements) {
     summary.special_requirements = orderDetails.special_requirements;
