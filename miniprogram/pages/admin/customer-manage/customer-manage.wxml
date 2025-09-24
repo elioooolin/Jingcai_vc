@@ -2,7 +2,7 @@
   <!-- 页面标题 -->
   <view class="page-header admin-gradient">
     <text class="page-title">{{isEdit ? '编辑客户' : '添加新客户'}}</text>
-    <text class="page-subtitle">爱睦月子餐 · 用心服务每一位客户</text>
+    <text class="page-subtitle">爱睦 · 用心服务每一位客户</text>
   </view>
 
   <!-- 表单内容 -->

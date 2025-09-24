@@ -223,7 +223,7 @@ Page({
   onShareAppMessage() {
     const { dishInfo } = this.data;
     return {
-      title: `${dishInfo.name} - 爱睦月子餐`,
+      title: `${dishInfo.name} - 爱睦 Love Moon`,
       path: `/pages/dish-detail/dish-detail?id=${dishInfo.id}`,
       imageUrl: '' // 可以设置分享图片
     };

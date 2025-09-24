@@ -2,8 +2,8 @@
   <!-- 管理员欢迎区域 -->
   <view class="admin-header">
     <view class="admin-welcome admin-gradient">
-      <text class="welcome-title">爱睦月子餐 · 管理后台</text>
-      <text class="welcome-subtitle">专业月子餐服务管理系统</text>
+      <text class="welcome-title">爱睦 · 管理后台</text>
+      <text class="welcome-subtitle">专业月子服务管理系统</text>
     </view>
   </view>
 
