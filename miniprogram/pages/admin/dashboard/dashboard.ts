@@ -2,6 +2,7 @@
 
 interface AdminOrderItem {
   id: string;
+  customerId?: string;
   customerName: string;
   customerPhone?: string;
   room: string;
@@ -47,10 +48,8 @@ Page({
     
     
     stats: {
-      todayOrders: 28,
-      pendingOrders: 5,
-      totalCustomers: 156,
-      confirmedOrders: 23
+      pendingOrders: 0,
+      totalCustomers: 0,
     },
     
     orderList: [] as AdminOrderItem[],
@@ -75,6 +74,13 @@ Page({
       role: '系统管理员',
       permissions: '超级管理员'
     },
+
+    inhouseCustomers: [] as any[],
+    orderStats: {
+      inhouseCount: 0,
+      submittedCount: 0,
+      unsubmittedCustomers: [] as any[]
+    }
   },
 
   onLoad() {
@@ -149,8 +155,6 @@ Page({
           stats: {
             totalCustomers: stats.totalCustomers,
             pendingOrders: stats.pendingOrders,
-            todayOrders: 0, // 暂时保留，后续可以添加今日订单统计
-            confirmedOrders: 0 // 暂时保留，后续可以添加已确认订单统计
           }
         });
         
@@ -532,6 +536,8 @@ Page({
       const cachedOrders = this.getOrdersFromLocal();
       if (cachedOrders) {
         this.setData({ orderList: cachedOrders });
+        await this.loadInhouseCustomers();
+        this.calculateOrderStats();
         console.log('✅ 从本地缓存加载订单列表完成，共', cachedOrders.length, '条订单');
         return;
       }
@@ -554,6 +560,7 @@ Page({
         // 转换为AdminOrderItem格式
         const formattedOrders: AdminOrderItem[] = orders.map((order: any) => ({
           id: order.orderId,
+          customerId: order.customerId,
           customerName: order.customerName,
           customerPhone: order.customerPhone,
           room: order.room,
@@ -573,6 +580,9 @@ Page({
         this.setData({ 
           orderList: formattedOrders 
         });
+
+        await this.loadInhouseCustomers();
+        this.calculateOrderStats();
         
         console.log(`✅ 订单列表加载成功，共 ${formattedOrders.length} 条记录`);
         
@@ -586,8 +596,9 @@ Page({
           duration: 2000
         });
         
-        // 设置空列表
         this.setData({ orderList: [] });
+        await this.loadInhouseCustomers();
+        this.calculateOrderStats();
       }
       
     } catch (error) {
@@ -599,9 +610,88 @@ Page({
         duration: 2000
       });
       
-      // 设置空列表
       this.setData({ orderList: [] });
+      await this.loadInhouseCustomers();
+      this.calculateOrderStats();
     }
+  },
+
+  async loadInhouseCustomers() {
+    const { selectedOrderStore, selectedDate } = this.data;
+
+    if (!selectedOrderStore || selectedOrderStore === 'all' || !selectedDate) {
+      this.setData({ inhouseCustomers: [] });
+      return;
+    }
+
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'getAdminCustomers',
+        data: {
+          store: selectedOrderStore
+        }
+      });
+
+      if (result.result && result.result.success) {
+        const customers = (result.result.customers || []).map((item: any) => ({
+          ...item,
+          checkOutDateRaw: new Date(item.checkOutDate)
+        }));
+
+        const targetDate = new Date(selectedDate);
+        targetDate.setHours(0, 0, 0, 0);
+
+        const inhouseCustomers = customers.filter((customer: any) => {
+          const checkIn = new Date(customer.checkInDate);
+          checkIn.setHours(0, 0, 0, 0);
+          const checkOut = new Date(customer.checkOutDate);
+          checkOut.setHours(0, 0, 0, 0);
+          return targetDate.getTime() >= checkIn.getTime() && targetDate.getTime() < checkOut.getTime();
+        }).map((customer: any) => {
+          const checkIn = new Date(customer.checkInDate);
+          checkIn.setHours(0, 0, 0, 0);
+          const orderStart = new Date(checkIn);
+          orderStart.setDate(orderStart.getDate() + 7);
+          orderStart.setHours(0, 0, 0, 0);
+          const tooEarly = targetDate.getTime() < orderStart.getTime();
+          return {
+            ...customer,
+            tooEarly
+          };
+        });
+
+        this.setData({ inhouseCustomers });
+      } else {
+        this.setData({ inhouseCustomers: [] });
+      }
+    } catch (error) {
+      console.error('加载在住客户失败:', error);
+      this.setData({ inhouseCustomers: [] });
+    }
+  },
+
+  calculateOrderStats() {
+    const { inhouseCustomers = [], orderList = [] } = this.data as any;
+
+    const totalInhouseCustomers = inhouseCustomers.length;
+    const submittedOrders = orderList.length;
+
+    const submittedKeys = new Set(orderList.map((order: any) => {
+      return `${order.customerName || ''}|${order.room || ''}`;
+    }));
+
+    const unsubmittedCustomers = inhouseCustomers.filter((customer: any) => {
+      const key = `${customer.name || ''}|${customer.room || ''}`;
+      return !submittedKeys.has(key);
+    });
+
+    this.setData({
+      orderStats: {
+        inhouseCount: totalInhouseCustomers,
+        submittedCount: submittedOrders,
+        unsubmittedCustomers
+      }
+    });
   },
 
   // 加载客户列表
@@ -1177,7 +1267,6 @@ Page({
           systemStats: {
             totalOrders: stats.totalOrders || 0,
             totalCustomers: stats.totalCustomers || 0,
-            todayOrders: stats.todayOrders || 0,
             activeCustomers: stats.totalCustomers || 0
           }
         });

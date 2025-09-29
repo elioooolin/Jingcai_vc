@@ -70,6 +70,21 @@
             <text wx:if="{{!exportingMenu}}">导出当日Excel餐单</text>
             <text wx:else>导出中...</text>
           </t-button>
+
+          <view class="order-stats" wx:if="{{orderStats.inhouseCount > 0}}">
+            <text class="stats-summary">
+              在住客户 {{orderStats.inhouseCount}} 人 · 已提交订单 {{orderStats.submittedCount}} 单
+            </text>
+            <view class="unsubmitted-list" wx:if="{{orderStats.unsubmittedCustomers.length > 0}}">
+              <text class="unsubmitted-title">未提交订单客户：</text>
+              <block wx:for="{{orderStats.unsubmittedCustomers}}" wx:key="id">
+                <view class="unsubmitted-item {{item.tooEarly ? 'too-early' : ''}}">
+                  <text class="unsubmitted-name">{{item.name}}（{{item.room}}）</text>
+                  <text wx:if="{{item.tooEarly}}" class="too-early-tag">入住未满7天</text>
+                </view>
+              </block>
+            </view>
+          </view>
         </view>
 
         <!-- 订单列表 -->
@@ -163,6 +178,7 @@
             block
             bind:tap="addTestCustomer"
             class="admin-button"
+            wx:if="{{false}}"
           >
             添加测试客户
           </t-button>

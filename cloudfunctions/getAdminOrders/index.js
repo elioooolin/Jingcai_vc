@@ -96,7 +96,8 @@ exports.main = async (event, context) => {
         orderDetails: order.order_details, // 返回原始订单详情结构
         orderSummary: generateOrderSummary(order.order_details), // 保留摘要用于显示
         specialRequirements: order.order_details?.special_requirements || '',
-        supplement: order.order_details?.supplement || null
+        supplement: order.order_details?.supplement || null,
+        customerId: order.userId || ''
       };
     });
     

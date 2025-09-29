@@ -474,3 +474,57 @@
   background: #6c757d;
 }
 
+.order-stats {
+  margin-top: 20rpx;
+  padding: 24rpx;
+  background: #f9f7f4;
+  border-radius: 16rpx;
+  color: #5c4630;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.order-stats .stats-summary {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.unsubmitted-list {
+  border-top: 1rpx dashed rgba(92, 70, 48, 0.2);
+  padding-top: 12rpx;
+}
+
+.unsubmitted-title {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.unsubmitted-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22rpx;
+  color: #7b5d3f;
+  margin-bottom: 6rpx;
+  line-height: 1.4;
+}
+
+.unsubmitted-item.too-early {
+  color: #b07a2d;
+}
+
+.unsubmitted-name {
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.too-early-tag {
+  font-size: 20rpx;
+  color: #d47b00;
+  padding: 2rpx 8rpx;
+  background: rgba(212, 123, 0, 0.12);
+  border-radius: 8rpx;
+}
+
