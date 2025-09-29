@@ -118,12 +118,12 @@ Page({
    */
   initDateList() {
     const userInfo: { checkInDate?: string; totalDays?: number } = this.data.userInfo || {};
-    
+
     console.log('初始化日期列表，用户信息:', {
       checkInDate: userInfo.checkInDate,
       totalDays: userInfo.totalDays
     });
-    
+
     if (
       typeof userInfo.checkInDate !== 'string' ||
       typeof userInfo.totalDays !== 'number' ||
@@ -135,162 +135,209 @@ Page({
       return;
     }
 
-    const checkInDate = new Date(userInfo.checkInDate);
     const today = new Date();
-    const dateList = [];
-    
-    // 计算可点餐的开始日期（入住第8天）
+    today.setHours(0, 0, 0, 0);
+
+    const checkInDate = new Date(userInfo.checkInDate);
+    checkInDate.setHours(0, 0, 0, 0);
+
     const orderStartDate = new Date(checkInDate);
-    orderStartDate.setDate(checkInDate.getDate() + 7); // 入住第8天
-    
-    // 计算可点餐的结束日期（出所当日）
+    orderStartDate.setDate(checkInDate.getDate() + 7);
+    orderStartDate.setHours(0, 0, 0, 0);
+
     const checkOutDate = new Date(checkInDate);
-    checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays - 1);
-    
-    // 计算并设置可点餐日期范围文字
-    const orderDateRange = `${this.formatDateChinese(orderStartDate)}-${this.formatDateChinese(checkOutDate)}`;
-    this.setData({ orderDateRange });
-    
-    console.log('日期计算结果：', {
-      checkInDate: userInfo.checkInDate,
-      totalDays: userInfo.totalDays,
-      orderStartDate: this.formatDate(orderStartDate),
-      checkOutDate: this.formatDate(checkOutDate),
-      orderDateRange
-    });
-    
-    // 计算提前3天的最早可点餐日期（今天+3天）
-    const earliestOrderDate = new Date(today);
-    earliestOrderDate.setDate(today.getDate() + 3);
-    
-    // 确定日期范围的开始和结束
-    // 开始日期：入住第8天和今天中的较晚者
-    const rangeStartDate = new Date(Math.max(orderStartDate.getTime(), today.getTime()));
-    
-    // 结束日期：出所当日
-    const rangeEndDate = new Date(checkOutDate);
-    
-    // 计算日期范围的天数
-    const rangeDays = Math.ceil((rangeEndDate.getTime() - rangeStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    
-    // 限制最大显示天数为21天，避免界面过长
-    const displayDays = Math.min(rangeDays, 21);
-    
-    let selectedIndex = -1;
-    
-    for (let i = 0; i < displayDays; i++) {
-      const currentDate = new Date(rangeStartDate);
-      currentDate.setDate(rangeStartDate.getDate() + i);
-      
-      // 如果当前日期超出了实际的入住期间，停止生成
-      if (currentDate > checkOutDate) {
+    checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays);
+    checkOutDate.setHours(0, 0, 0, 0);
+
+    const nextWeekStart = this.getNextWeekStart(today);
+    const nextWeekEnd = this.getNextWeekEnd(nextWeekStart);
+
+    if (nextWeekStart.getTime() > checkOutDate.getTime()) {
+      console.log('入住结束时间早于下周，暂无可用日期');
+      this.setData({
+        orderDateRange: '暂无可点餐日期',
+        dateList: [],
+        selectedDate: ''
+      });
+      return;
+    }
+
+    const effectiveStart = new Date(Math.max(nextWeekStart.getTime(), orderStartDate.getTime()));
+    effectiveStart.setHours(0, 0, 0, 0);
+
+    const earliestOrderDate = this.getEarliestOrderDate(today, orderStartDate);
+
+    const dateList: any[] = [];
+    let firstSelectableDate = '';
+    let firstSelectableIndex = -1;
+    let lastDateInRange: Date | null = null;
+
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(nextWeekStart);
+      currentDate.setDate(nextWeekStart.getDate() + i);
+      currentDate.setHours(0, 0, 0, 0);
+
+      if (currentDate.getTime() > checkOutDate.getTime()) {
         break;
       }
-      
-      // 判断日期状态
+
+      lastDateInRange = new Date(currentDate);
+
+      const currentDateString = this.formatDate(currentDate);
+
       let disabled = false;
       let tooEarly = false;
       let expired = false;
+      let outOfStay = false;
       let hasOrder = false;
-      
-      // 检查该日期是否已有订单
-      const currentDateString = this.formatDate(currentDate);
+      let isCheckoutDay = currentDate.getTime() === checkOutDate.getTime();
+
       if (this.data.orderedDates.includes(currentDateString)) {
         disabled = true;
         hasOrder = true;
-      } else if (currentDate < orderStartDate) {
-        // 还未到可点餐的入住第8天
+      }
+
+      if (currentDate.getTime() < effectiveStart.getTime()) {
         disabled = true;
         tooEarly = true;
-      } else if (currentDate > checkOutDate) {
-        // 已经超出入住期间
-        disabled = true;
-      } else if (currentDate < earliestOrderDate) {
-        // 需要提前3天预订，今天、明天、后天不能点餐
+      }
+
+      if (currentDate.getTime() < earliestOrderDate.getTime()) {
         disabled = true;
         expired = true;
       }
-      
+
+      if (currentDate.getTime() > checkOutDate.getTime()) {
+        disabled = true;
+        outOfStay = true;
+      }
+
+      const dateObj = {
+        date: currentDateString,
+        day: currentDate.getDate(),
+        month: currentDate.getMonth() + 1,
+        monthName: this.getMonthName(currentDate.getMonth() + 1),
+        year: currentDate.getFullYear(),
+        disabled,
+        tooEarly,
+        expired,
+        hasOrder,
+        outOfStay,
+        isCheckoutDay,
+        selected: false,
+        isToday: this.isSameDate(currentDate, today),
+        showMonth: i === 0 || currentDate.getDate() === 1
+      };
+
+      if (!disabled && firstSelectableIndex === -1) {
+        dateObj.selected = true;
+        firstSelectableDate = dateObj.date;
+        firstSelectableIndex = i;
+      }
+
+      dateList.push(dateObj);
+    }
+
+    if (dateList.length === 0 || !lastDateInRange) {
+      this.setData({
+        orderDateRange: '暂无可点餐日期',
+        dateList: [],
+        selectedDate: ''
+      });
+      return;
+    }
+
+    const isLastWeek = firstSelectableIndex !== -1 && lastDateInRange && lastDateInRange.getTime() === checkOutDate.getTime();
+    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}${isLastWeek ? '（离店周）' : ''}`;
+
+    this.setData({
+      orderDateRange: orderDateRangeText,
+      dateList,
+      selectedDate: firstSelectableDate
+    });
+  },
+
+  // 默认日期列表（当用户信息不完整时使用）
+  initDefaultDateList() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextWeekStart = this.getNextWeekStart(today);
+    const nextWeekEnd = this.getNextWeekEnd(nextWeekStart);
+
+    const earliestOrderDate = this.getEarliestOrderDate(today, today);
+
+    const dateList: any[] = [];
+    let firstSelectableDate = '';
+    let firstSelectableIndex = -1;
+    let lastDateInRange: Date | null = null;
+
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(nextWeekStart);
+      currentDate.setDate(nextWeekStart.getDate() + i);
+      currentDate.setHours(0, 0, 0, 0);
+
+      if (currentDate.getTime() > nextWeekEnd.getTime()) {
+        break;
+      }
+
+      lastDateInRange = new Date(currentDate);
+
+      let disabled = false;
+      let expired = false;
+      let outOfStay = false;
+
+      if (currentDate.getTime() < earliestOrderDate.getTime()) {
+        disabled = true;
+        expired = true;
+      }
+
+      if (currentDate.getTime() > nextWeekEnd.getTime()) {
+        disabled = true;
+        outOfStay = true;
+      }
+
       const dateObj = {
         date: this.formatDate(currentDate),
         day: currentDate.getDate(),
         month: currentDate.getMonth() + 1,
         monthName: this.getMonthName(currentDate.getMonth() + 1),
         year: currentDate.getFullYear(),
-        disabled: disabled,
-        tooEarly: tooEarly,
-        expired: expired,
-        hasOrder: hasOrder,  // 新增：是否已有订单
+        disabled,
+        tooEarly: false,
+        expired,
+        hasOrder: false,
+        outOfStay,
         selected: false,
         isToday: this.isSameDate(currentDate, today),
-        showMonth: currentDate.getDate() === 1 || i === 0 // 每月1号或第一个日期显示月份
+        showMonth: i === 0 || currentDate.getDate() === 1
       };
-      
-      // 如果当前日期可用且还没有选中日期，选中它
-      if (!disabled && selectedIndex === -1) {
-        dateObj.selected = true;
-        selectedIndex = i;
-        this.setData({ selectedDate: dateObj.date });
-      }
-      
-      dateList.push(dateObj);
-      
-      // 如果已经超过结束日期，停止生成
-      if (currentDate >= checkOutDate) {
-        break;
-      }
-    }
-    
-    this.setData({ dateList });
-  },
 
-  // 默认日期列表（当用户信息不完整时使用）
-  initDefaultDateList() {
-    const today = new Date();
-    const dateList = [];
-    
-    // 设置默认的可点餐日期范围文字
-    this.setData({ orderDateRange: '入住第8天到出所当日' });
-    
-    // 计算提前3天的最早可点餐日期
-    const earliestOrderDate = new Date(today);
-    earliestOrderDate.setDate(today.getDate() + 3);
-    
-    // 从今天开始显示14天，但优先显示可点餐的日期
-    let selectedIndex = -1;
-    
-    for (let i = 0; i < 14; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      
-      // 判断是否需要提前3天预订
-      const disabled = date < earliestOrderDate;
-      
-      const dateObj = {
-        date: this.formatDate(date),
-        day: date.getDate(),
-        month: date.getMonth() + 1,
-        monthName: this.getMonthName(date.getMonth() + 1),
-        year: date.getFullYear(),
-        disabled: disabled,
-        tooEarly: false,
-        expired: disabled, // 前3天标记为expired
-        selected: false,
-        isToday: this.isSameDate(date, today),
-        showMonth: date.getDate() === 1 || i === 0
-      };
-      
-      // 选择第一个可用日期
-      if (!disabled && selectedIndex === -1) {
+      if (!disabled && !firstSelectableDate) {
         dateObj.selected = true;
-        selectedIndex = i;
-        this.setData({ selectedDate: dateObj.date });
+        firstSelectableDate = dateObj.date;
       }
-      
+
       dateList.push(dateObj);
     }
-    
-    this.setData({ dateList });
+
+    if (!lastDateInRange) {
+      this.setData({
+        orderDateRange: '暂无可点餐日期',
+        dateList: [],
+        selectedDate: ''
+      });
+      return;
+    }
+
+    const isLastWeek = firstSelectableIndex !== -1 && lastDateInRange && lastDateInRange.getTime() === checkOutDate.getTime();
+    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}${isLastWeek ? '（离店周）' : ''}`;
+
+    this.setData({
+      orderDateRange: orderDateRangeText,
+      dateList,
+      selectedDate: firstSelectableDate
+    });
   },
 
   // 获取月份名称
@@ -322,6 +369,47 @@ Page({
     return `${month}月${day}日`;
   },
 
+  getNextWeekStart(date: Date): Date {
+    const result = new Date(date);
+    const day = result.getDay();
+    const daysUntilNextMonday = (8 - day) % 7;
+    result.setDate(result.getDate() + (daysUntilNextMonday === 0 ? 7 : daysUntilNextMonday));
+    result.setHours(0, 0, 0, 0);
+    return result;
+  },
+
+  getNextWeekEnd(date: Date): Date {
+    const end = new Date(date);
+    end.setDate(end.getDate() + 6);
+    end.setHours(0, 0, 0, 0);
+    return end;
+  },
+
+  getEarliestOrderDate(today: Date, orderStartDate: Date): Date {
+    const earliest = new Date(today);
+    earliest.setDate(today.getDate() + 3);
+    earliest.setHours(0, 0, 0, 0);
+    if (orderStartDate.getTime() > earliest.getTime()) {
+      return new Date(orderStartDate);
+    }
+    return earliest;
+  },
+
+  getUserStayInfo() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    if (!userInfo.checkInDate || !userInfo.totalDays) {
+      return null;
+    }
+    const checkInDate = new Date(userInfo.checkInDate);
+    checkInDate.setHours(0, 0, 0, 0);
+    const checkOutDate = new Date(checkInDate);
+    checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays);
+    checkOutDate.setHours(0, 0, 0, 0);
+    return {
+      checkInDate,
+      checkOutDate
+    };
+  },
 
   // 选择日期
   selectDate(e: any) {

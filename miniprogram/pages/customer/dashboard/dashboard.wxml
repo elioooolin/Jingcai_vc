@@ -20,7 +20,7 @@
               <view 
                 wx:for="{{dateList}}" 
                 wx:key="date"
-                class="date-item {{item.disabled || item.tooEarly || item.expired ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}} {{item.hasOrder ? 'has-order' : ''}}"
+                class="date-item {{item.disabled || item.tooEarly || item.expired ? 'disabled' : ''}} {{item.selected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}} {{item.hasOrder ? 'has-order' : ''}} {{item.isCheckoutDay ? 'checkout-day' : ''}}"
                 bind:tap="selectDate"
                 data-date="{{item.date}}"
                 data-index="{{index}}"
@@ -29,6 +29,7 @@
                 <view class="date-day">{{item.day}}</view>
                 <view class="today-badge" wx:if="{{item.isToday}}">今天</view>
                 <view class="order-badge" wx:if="{{item.hasOrder}}">已订餐</view>
+                <view class="checkout-badge" wx:if="{{item.isCheckoutDay}}">离店</view>
               </view>
             </view>
             <view class="date-legend">

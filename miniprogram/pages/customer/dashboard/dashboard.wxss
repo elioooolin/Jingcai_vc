@@ -116,6 +116,22 @@
   border-color: #e0e0e0;
 }
 
+.date-item.checkout-day:not(.selected) {
+  border: 2rpx dashed #d4a574;
+  position: relative;
+}
+
+.checkout-badge {
+  position: absolute;
+  bottom: 6rpx;
+  right: 4rpx;
+  background: rgba(212, 165, 116, 0.15);
+  color: #b0743d;
+  font-size: 14rpx;
+  padding: 2rpx 6rpx;
+  border-radius: 8rpx;
+}
+
 .date-item.today:not(.selected):not(.disabled) {
   border-color: var(--brand-primary);
   border-width: 3rpx;

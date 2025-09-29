@@ -81,20 +81,26 @@ Page({
     lunchSoupRequired: 0,
     dinnerMainRequired: 0,
     dinnerSoupRequired: 0,
-    supplementRequired: 0
+    supplementRequired: 0,
+
+    // 入住信息
+    stayInfo: null as { checkInDate: Date; checkOutDate: Date } | null
   },
 
   async onLoad(options: any) {
     if (options.date) {
       this.setData({ selectedDate: options.date });
     }
-    
-    // 设置导航栏标题
+
+    const stayInfo = this.getStayInfo();
+    if (stayInfo) {
+      this.setData({ stayInfo });
+    }
+
     wx.setNavigationBarTitle({
       title: `${options.date || ''} 点餐`
     });
-    
-    // 并行执行权限检查和菜单数据加载
+
     await Promise.all([
       this.checkSupplementPermission(),
       this.loadMenuData()
@@ -162,6 +168,41 @@ Page({
     console.log('开始解析菜单数据:', menuData);
     
     const meals = menuData.meals;
+    
+    const isLastDay = this.isLastDayOfStay();
+
+    if (isLastDay) {
+      this.setData({
+        lunchMainMenu: [],
+        lunchSoupMenu: [],
+        dinnerMainMenu: [],
+        dinnerSoupMenu: [],
+        lunchMainRule: '',
+        lunchSoupRule: '',
+        dinnerMainRule: '',
+        dinnerSoupRule: '',
+        lunchMainRequired: 0,
+        lunchSoupRequired: 0,
+        dinnerMainRequired: 0,
+        dinnerSoupRequired: 0
+      });
+      if (meals.breakfast && meals.breakfast['菜品']) {
+        this.setData({
+          breakfastMenu: meals.breakfast['菜品'].dishes,
+          breakfastRule: meals.breakfast['菜品'].selection_rule,
+          breakfastRequired: meals.breakfast['菜品'].required_count
+        });
+      }
+      this.setData({
+        supplementMenu: [],
+        supplementRule: '',
+        supplementRequired: 0,
+        showSupplementSection: false
+      });
+      this.showLastDayToast();
+      this.storeDishInfoToLocal();
+      return;
+    }
     
     // 解析早餐
     if (meals.breakfast && meals.breakfast['菜品']) {
@@ -494,29 +535,46 @@ Page({
     const dinnerMainSelected = this.data.dinnerMainMenu.filter(item => item.selected).length;
     const dinnerSoupSelected = this.data.dinnerSoupMenu.filter(item => item.selected).length;
     
-    // 检查是否满足要求
-    const breakfastOk = breakfastSelected >= Math.min(this.data.breakfastRequired, 1);
-    // 午餐和晚餐主菜必须选择2个
-    const lunchMainOk = lunchMainSelected === 2;
-    const lunchSoupOk = lunchSoupSelected >= Math.min(this.data.lunchSoupRequired, 1);
-    const dinnerMainOk = dinnerMainSelected === 2;
-    const dinnerSoupOk = dinnerSoupSelected >= Math.min(this.data.dinnerSoupRequired, 1);
-    
-    const canSubmit = breakfastOk && lunchMainOk && lunchSoupOk && dinnerMainOk && dinnerSoupOk;
+    const breakfastRequired = Math.max(this.data.breakfastRequired, 1);
+    const breakfastOk = breakfastSelected >= breakfastRequired;
+
+    const isLastDay = this.isLastDayOfStay();
+
+    let canSubmit = breakfastOk;
+    let lunchMainOk = true;
+    let lunchSoupOk = true;
+    let dinnerMainOk = true;
+    let dinnerSoupOk = true;
+
+    if (!isLastDay) {
+      const lunchMainRequired = this.data.lunchMainRequired || 0;
+      const dinnerMainRequired = this.data.dinnerMainRequired || 0;
+      const lunchSoupRequired = Math.max(this.data.lunchSoupRequired, lunchMainRequired > 0 ? 1 : 0);
+      const dinnerSoupRequired = Math.max(this.data.dinnerSoupRequired, dinnerMainRequired > 0 ? 1 : 0);
+
+      lunchMainOk = lunchMainRequired > 0 ? lunchMainSelected === lunchMainRequired : true;
+      dinnerMainOk = dinnerMainRequired > 0 ? dinnerMainSelected === dinnerMainRequired : true;
+      lunchSoupOk = lunchSoupRequired > 0 ? lunchSoupSelected >= lunchSoupRequired : true;
+      dinnerSoupOk = dinnerSoupRequired > 0 ? dinnerSoupSelected >= dinnerSoupRequired : true;
+
+      canSubmit = canSubmit && lunchMainOk && lunchSoupOk && dinnerMainOk && dinnerSoupOk;
+    }
     
     // 更新提交按钮的状态和提示文本
     let submitButtonText = '提交订单';
     if (!canSubmit) {
       if (!breakfastOk) {
         submitButtonText = '请选择早餐';
-      } else if (!lunchMainOk) {
-        submitButtonText = `午餐主菜需选择2个 (已选${lunchMainSelected}个)`;
-      } else if (!lunchSoupOk) {
-        submitButtonText = '请选择午餐汤品';
-      } else if (!dinnerMainOk) {
-        submitButtonText = `晚餐主菜需选择2个 (已选${dinnerMainSelected}个)`;
-      } else if (!dinnerSoupOk) {
-        submitButtonText = '请选择晚餐汤品';
+      } else if (!isLastDay) {
+        if (!lunchMainOk) {
+          submitButtonText = `午餐主菜需选择${this.data.lunchMainRequired}个 (已选${lunchMainSelected}个)`;
+        } else if (!lunchSoupOk) {
+          submitButtonText = '请选择午餐汤品';
+        } else if (!dinnerMainOk) {
+          submitButtonText = `晚餐主菜需选择${this.data.dinnerMainRequired}个 (已选${dinnerMainSelected}个)`;
+        } else if (!dinnerSoupOk) {
+          submitButtonText = '请选择晚餐汤品';
+        }
       }
     }
     
@@ -914,5 +972,44 @@ Page({
   onPullDownRefresh() {
     this.loadMenuData();
     wx.stopPullDownRefresh();
+  },
+
+  isLastDayOfStay(): boolean {
+    const stayInfo = this.data.stayInfo;
+    if (!stayInfo || !stayInfo.checkOutDate || !this.data.selectedDate) {
+      return false;
+    }
+    const selected = new Date(this.data.selectedDate);
+    selected.setHours(0, 0, 0, 0);
+    return selected.getTime() === stayInfo.checkOutDate.getTime();
+  },
+
+  getStayInfo() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo.checkInDate || !userInfo.totalDays) {
+        return null;
+      }
+      const checkInDate = new Date(userInfo.checkInDate);
+      checkInDate.setHours(0, 0, 0, 0);
+      const checkOutDate = new Date(checkInDate);
+      checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays);
+      checkOutDate.setHours(0, 0, 0, 0);
+      return {
+        checkInDate,
+        checkOutDate
+      };
+    } catch (error) {
+      console.error('获取入住信息失败:', error);
+      return null;
+    }
+  },
+
+  showLastDayToast() {
+    wx.showToast({
+      title: '离店当日仅提供早餐',
+      icon: 'none',
+      duration: 2500
+    });
   }
 });
