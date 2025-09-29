@@ -1,6 +1,468 @@
 /* 页面容器 */
 .page-container {
-  padding: 32rpx;
-  background: #faf8f5;
+  background: #f5f5f5;
   min-height: 100vh;
+}
+
+/* 页面头部 */
+.page-header {
+  background: linear-gradient(135deg, #d4a574 0%, #c8956d 100%);
+  color: white;
+  padding: 60rpx 40rpx 40rpx;
+  text-align: center;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* Tabs区域 */
+.tabs-container {
+  background: white;
+  box-shadow: 0 4rpx 24rpx rgba(0,0,0,0.1);
+  margin-bottom: 32rpx;
+}
+
+.tabs-header {
+  display: flex;
+  background: #f5f5f5;
+  border-radius: 24rpx;
+  margin: 40rpx;
+  padding: 8rpx;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background: #d4a574;
+  color: white;
+  box-shadow: 0 4rpx 16rpx rgba(212, 165, 116, 0.3);
+}
+
+.tab-content {
+  display: none;
+  padding: 0 40rpx 40rpx;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* 轮播图区域 */
+.swiper-section {
+  margin-bottom: 32rpx;
+}
+
+.swiper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.swiper-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.week-indicator {
+  background: #d4a574;
+  color: white;
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+
+/* 轮播容器 */
+.swiper-container {
+  border-radius: 24rpx;
+  background: #f8f9fa;
+}
+
+.swiper-slide {
+  height: auto;
+}
+
+/* 诊断卡片 */
+.diagnosis-card {
+  background: white;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1);
+}
+
+.tongue-image {
+  width: 100%;
+  height: 400rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.tongue-image image {
+  width: 100%;
+  height: 100%;
+}
+
+.tongue-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.placeholder-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.placeholder-text {
+  font-size: 28rpx;
+}
+
+.diagnosis-content {
+  padding: 32rpx;
+}
+
+.diagnosis-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.diagnosis-title::before {
+  content: "🏥";
+  margin-right: 16rpx;
+}
+
+.diagnosis-text {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 32rpx;
+  background: #f8f9fa;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  border-left: 6rpx solid #d4a574;
+}
+
+.diagnosis-placeholder {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+  padding: 40rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 药膳方子区域 */
+.prescriptions {
+  margin-top: 32rpx;
+}
+
+.prescriptions-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.prescriptions-title::before {
+  content: "🍵";
+  margin-right: 16rpx;
+}
+
+.prescription-item {
+  background: #fff;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.prescription-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.prescription-image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 16rpx;
+  margin-right: 24rpx;
+  overflow: hidden;
+  background: linear-gradient(45deg, #74b9ff, #0984e3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24rpx;
+}
+
+.prescription-image image {
+  width: 100%;
+  height: 100%;
+}
+
+.prescription-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.prescription-details {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.prescription-materials {
+  margin-bottom: 8rpx;
+}
+
+.prescription-effects {
+  color: #d4a574;
+  font-weight: 500;
+}
+
+.prescriptions-placeholder {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+}
+
+/* 轮播指示器 */
+.swiper-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+
+.pagination-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #ddd;
+  transition: all 0.3s;
+}
+
+.pagination-dot.active {
+  background: #d4a574;
+  width: 48rpx;
+  border-radius: 8rpx;
+}
+
+/* 药膳介绍区域 */
+.herbal-section {
+  padding: 0;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -16rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 4rpx;
+  background: #d4a574;
+}
+
+/* 药膳类别卡片 */
+.herbal-category {
+  background: white;
+  border-radius: 32rpx;
+  margin-bottom: 40rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.1);
+}
+
+.category-image {
+  width: 100%;
+  height: 320rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-image image {
+  width: 100%;
+  height: 100%;
+}
+
+.category-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  padding: 40rpx 32rpx 24rpx;
+  color: white;
+}
+
+.category-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.category-image.category-tea {
+  background: linear-gradient(45deg, #00b894, #00cec9);
+}
+
+.category-image.category-soup {
+  background: linear-gradient(45deg, #e17055, #d63031);
+}
+
+.category-image.category-drink {
+  background: linear-gradient(45deg, #74b9ff, #0984e3);
+}
+
+.category-image.category-porridge {
+  background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+}
+
+.category-content {
+  padding: 40rpx;
+}
+
+.category-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  text-align: center;
+}
+
+.category-description {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 32rpx;
+}
+
+.category-details {
+  background: #f8f9fa;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  border-left: 8rpx solid #d4a574;
+}
+
+.detail-item {
+  margin-bottom: 24rpx;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.detail-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #d4a574;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
 }

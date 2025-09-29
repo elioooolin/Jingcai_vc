@@ -253,7 +253,7 @@ function generateExcelData(orders, usersMap, store, date) {
     supplementRow.push(orderDetails.supplement || '');
     specialRequirementsRow.push(orderDetails.special_requirements);
   });
-  excelData.push(breakfastRow, lunchDish1Row, lunchDish2Row, lunchSoupRow, dinnerDish1Row, dinnerDish2Row, dinnerSoupRow, supplementRow, specialRequirementsRow);
+  excelData.push(breakfastRow, lunchSoupRow, lunchDish1Row, lunchDish2Row, dinnerSoupRow, dinnerDish1Row, dinnerDish2Row, supplementRow, specialRequirementsRow);
 
   return excelData;
 }

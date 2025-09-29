@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "订单历史",
+  "navigationBarTitleText": "健康档案",
   "enablePullDownRefresh": true,
   "backgroundColor": "#faf8f5",
   "usingComponents": {

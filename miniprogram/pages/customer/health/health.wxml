@@ -1,5 +1,162 @@
 <view class="page-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">健康档案</view>
+    <view class="header-subtitle">专属中医调理方案</view>
+  </view>
 
+  <!-- Tabs区域 -->
+  <view class="tabs-container">
+    <!-- Tab头部 -->
+    <view class="tabs-header">
+      <view 
+        class="tab-button {{activeTab === 0 ? 'active' : ''}}" 
+        bind:tap="switchTab" 
+        data-index="0"
+      >
+        中医问诊档案
+      </view>
+      <view 
+        class="tab-button {{activeTab === 1 ? 'active' : ''}}" 
+        bind:tap="switchTab" 
+        data-index="1"
+      >
+        爱睦药食文化
+      </view>
+    </view>
+
+    <!-- Tab内容1: 中医问诊档案 -->
+    <view class="tab-content {{activeTab === 0 ? 'active' : ''}}">
+      <view wx:if="{{rxData.length > 0}}" class="swiper-section">
+         <view class="section-title">第{{currentWeek}}周</view>
+
+        <swiper 
+          class="swiper-container"
+          style="height: {{swiperHeight}}px;"
+          current="{{currentSlideIndex}}"
+          bindchange="onSwiperChange"
+          indicator-dots
+          circular="{{false}}"
+          autoplay="{{false}}"
+        >
+          <!-- 轮播内容 -->
+          <swiper-item 
+            wx:for="{{rxData}}" 
+            wx:key="_id" 
+            class="swiper-slide"
+          >
+            <view class="diagnosis-card" id="swiper-item-{{index}}">
+              <!-- 舌苔图片 -->
+              <view class="tongue-image">
+                <image 
+                  wx:if="{{item.tongueImageExists}}"
+                  src="{{item.tongueImageUrl}}" 
+                  mode="aspectFill"
+                  bind:error="onTongueImageError"
+                  data-index="{{index}}"
+                />
+                <view wx:else class="tongue-placeholder">
+                  <text class="placeholder-icon">📷</text>
+                  <text class="placeholder-text">舌苔图片上传中</text>
+                </view>
+              </view>
+
+              <view class="diagnosis-content">
+                <!-- 中医诊断 -->
+                <view class="diagnosis-title">中医建议</view>
+                <view wx:if="{{item.note}}" class="diagnosis-text">
+                  {{item.note}}
+                </view>
+                <view wx:else class="diagnosis-placeholder">
+                  等待上传中...
+                </view>
+
+                <!-- 药膳方子推荐 -->
+                <view wx:if="{{item.prescriptions.length > 0}}" class="prescriptions">
+                  <view class="prescriptions-title">推荐药膳方</view>
+                  
+                  <view 
+                    wx:for="{{item.prescriptions}}" 
+                    wx:for-item="prescription" 
+                    wx:key="_id" 
+                    class="prescription-item"
+                  >
+                    <view class="prescription-header">
+                      <view class="prescription-image">
+                        <image 
+                          src="{{prescription.imageUrl}}" 
+                          mode="aspectFill"
+                          bind:error="onPrescriptionImageError"
+                        />
+                      </view>
+                      <view class="prescription-name">{{prescription.name}}</view>
+                    </view>
+                    <view class="prescription-details">
+                      <view class="prescription-materials">材料：{{prescription.ingredient}}</view>
+                      <view class="prescription-effects">功效：{{prescription.benefit}}</view>
+                    </view>
+                  </view>
+                </view>
+                <view wx:else class="prescriptions-placeholder">
+                  <text>药膳方案准备中...</text>
+                </view>
+              </view>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+
+      <!-- 暂无数据状态 -->
+      <view wx:else class="empty-state">
+        <view class="empty-icon">🏥</view>
+        <view class="empty-text">暂无中医诊断记录</view>
+        <view class="empty-desc">您的专属中医师正在为您准备个性化的调理方案</view>
+      </view>
+    </view>
+
+    <!-- Tab内容2: 爱睦药食文化 -->
+    <view class="tab-content {{activeTab === 1 ? 'active' : ''}}">
+      <view class="herbal-section">
+        <view class="section-title">药膳养生系列</view>
+
+        <!-- 药膳类别卡片 -->
+        <view 
+          wx:for="{{herbalCategories}}" 
+          wx:key="category" 
+          class="herbal-category"
+        >
+          <view class="category-image category-{{item.category}}">
+            <image 
+              src="{{item.imageUrl}}" 
+              mode="aspectFill"
+              bind:error="onCategoryImageError"
+            />
+            <view class="category-overlay">
+              <text class="category-title">{{item.category}}</text>
+            </view>
+          </view>
+          <view class="category-content">
+            <view class="category-name">{{item.name}}</view>
+            <view class="category-description">{{item.description}}</view>
+            <view class="category-details">
+              <view class="detail-item">
+                <view class="detail-label">主要食材</view>
+                <view class="detail-content">{{item.materials}}</view>
+              </view>
+              <view class="detail-item">
+                <view class="detail-label">主要功效</view>
+                <view class="detail-content">{{item.effects}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-overlay">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在加载健康档案...</text>
+  </view>
 </view>
-
-<!-- 使用原生 API，不需要这些组件 -->

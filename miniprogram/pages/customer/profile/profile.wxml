@@ -3,7 +3,7 @@
   <view class="profile-header">
     <view class="user-info-section">
       <text class="user-name">{{userInfo.name || '用户'}}</text>
-      <text class="user-desc">今天是入住第{{userInfo.checkInDays || 0}}天</text>
+      <text class="user-desc">欢迎入住·爱睦 Love Moon</text>
     </view>
   </view>
 

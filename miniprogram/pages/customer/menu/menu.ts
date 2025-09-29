@@ -4,7 +4,6 @@ interface MenuItem {
   id: string;
   name: string;
   description: string;
-  icon: string;
   color: string;
   selected: boolean;
   _id?: string;
@@ -888,7 +887,6 @@ Page({
       nutritional_info: dish.nutritional_info,
       imageUrl: dish.imageUrl,
       selected: false,
-      icon: dish.icon || '🍲',
       color: dish.color || '#FF6B6B'
     }));
     
