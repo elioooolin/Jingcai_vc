@@ -148,26 +148,6 @@ Page({
     this.setData({ isFavorite });
   },
 
-  // 预览图片
-  previewImage(e: any) {
-    const { url } = e.currentTarget.dataset;
-    if (url) {
-      wx.previewImage({
-        current: url,
-        urls: [url],
-        fail: (error) => {
-          console.error('预览图片失败:', error);
-          wx.showToast({
-            title: '图片加载失败',
-            icon: 'error',
-            duration: 2000
-          });
-        }
-      });
-    }
-  },
-
-
   // 选择菜品
   selectDish() {
     const { dishInfo } = this.data;

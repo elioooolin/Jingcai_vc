@@ -772,28 +772,6 @@ Page({
     }
   },
 
-  // 预览菜品图片
-  previewImage(e: any) {
-    e.stopPropagation(); // 阻止事件冒泡，避免触发菜品选择
-    const { url } = e.currentTarget.dataset;
-    
-    if (url) {
-      wx.previewImage({
-        current: url,
-        urls: [url],
-        fail: (error) => {
-          console.error('预览图片失败:', error);
-          wx.showToast({
-            title: '图片加载失败',
-            icon: 'error',
-            duration: 2000
-          });
-        }
-      });
-    }
-  },
-
-
   // 检查用户高补餐权限（从云数据库实时获取）
   async checkSupplementPermission() {
     console.log('从云数据库检查用户高补餐权限...');
