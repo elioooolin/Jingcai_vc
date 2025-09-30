@@ -104,10 +104,22 @@ exports.main = async (event, context) => {
       usersMap[user._id] = user;
     });
     
-    // 6. 生成Excel数据
-    const excelData = generateExcelData(confirmedOrders, usersMap, store, date);
+    // 6. 按房号（数字）升序排序订单
+    const sortedOrders = confirmedOrders.slice().sort((a, b) => {
+      const userA = usersMap[a.userId] || {};
+      const userB = usersMap[b.userId] || {};
+      const roomA = parseInt((userA.room || '').toString().match(/\d+/)?.[0] || '', 10);
+      const roomB = parseInt((userB.room || '').toString().match(/\d+/)?.[0] || '', 10);
+      if (isNaN(roomA) && isNaN(roomB)) return 0;
+      if (isNaN(roomA)) return 1; // 无法解析的房号排后
+      if (isNaN(roomB)) return -1;
+      return roomA - roomB;
+    });
+
+    // 7. 生成Excel数据（使用排序后的订单）
+    const excelData = generateExcelData(sortedOrders, usersMap, store, date);
     
-    // 7. 生成文件名
+    // 8. 生成文件名
     const storeName = getStoreShortName(store);
     const dateStr = formatDateForFileName(date);
     const randomNumber = Math.random().toString(36).substring(2, 8);
@@ -116,7 +128,7 @@ exports.main = async (event, context) => {
     console.log('生成文件名:', fileName);
     console.log('Excel数据行数:', excelData.length);
     
-    // 8. 生成Excel文件
+    // 9. 生成Excel文件
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(excelData);
     
@@ -125,8 +137,8 @@ exports.main = async (event, context) => {
       { wch: 20 } // 第一列（标题列）稍微宽一些
     ];
     
-    // 为每个客户添加列宽设置
-    for (let i = 0; i < confirmedOrders.length; i++) {
+    // 为每个客户添加列宽设置（使用排序后的订单数量）
+    for (let i = 0; i < sortedOrders.length; i++) {
       colWidths.push({ wch: 15 }); // 客户数据列
     }
     
@@ -142,7 +154,7 @@ exports.main = async (event, context) => {
     
     console.log('Excel文件生成成功，大小:', excelBuffer.length, 'bytes');
     
-    // 9. 上传到云存储
+    // 10. 上传到云存储
     try {
       const uploadResult = await cloud.uploadFile({
         cloudPath: `menu-exports/${fileName}`,
@@ -172,7 +184,7 @@ exports.main = async (event, context) => {
             fileName: fileName,
             fileUrl: fileUrl,
             fileId: uploadResult.fileID,
-            ordersCount: confirmedOrders.length,
+            ordersCount: sortedOrders.length,
             fileSize: excelBuffer.length
           };
         } else {
