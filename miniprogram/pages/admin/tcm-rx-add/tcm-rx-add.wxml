@@ -1,0 +1,103 @@
+<view class="page-container">
+  <!-- 页面标题 -->
+  <view class="page-header admin-gradient">
+    <text class="page-title">添加处方</text>
+    <text class="page-subtitle">为 {{customerName}} 添加中医处方记录</text>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-container">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="section-title">处方信息</view>
+      
+      <view class="form-group">
+        <t-input
+          label="周数"
+          type="number"
+          placeholder="请输入周数，如：1、2、3..."
+          value="{{formData.week}}"
+          bind:change="onFieldChange"
+          data-field="week"
+          required
+        />
+      </view>
+      
+      <view class="form-group">
+        <t-textarea
+          label="中医备注"
+          placeholder="请输入中医建议、诊断说明等（选填）"
+          value="{{formData.note}}"
+          bind:change="onFieldChange"
+          data-field="note"
+          maxlength="500"
+          indicator
+        />
+      </view>
+    </view>
+
+    <!-- 药膳方选择 -->
+    <view class="form-section">
+      <view class="section-title">药膳方选择 ({{formData.selectedRxIds.length}}项)</view>
+      
+      <view wx:if="{{loadingTcm}}" class="loading-tcm">
+        <text>正在加载药膳方...</text>
+      </view>
+      
+      <view wx:else class="rx-list">
+        <view class="rx-grid">
+          <view 
+            wx:for="{{tcmList}}" 
+            wx:key="_id" 
+            class="rx-item {{item.selected ? 'selected' : ''}}"
+            bind:tap="toggleRxSelection"
+            data-id="{{item._id}}"
+          >
+            <view class="rx-checkbox">
+              <view wx:if="{{item.selected}}" class="checkbox-checked">✓</view>
+              <view wx:else class="checkbox-unchecked"></view>
+            </view>
+            <text class="rx-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 舌苔图上传 -->
+    <view class="form-section">
+      <view class="section-title">舌苔图</view>
+      
+      <view class="image-upload-section">
+        <view wx:if="{{!formData.tongueImagePath}}" class="upload-placeholder" bind:tap="chooseTongueImage">
+          <view class="upload-icon">📷</view>
+          <text class="upload-text">点击上传舌苔图</text>
+        </view>
+        
+        <view wx:else class="image-preview-section">
+          <view class="image-preview">
+            <image src="{{formData.tongueImagePath}}" mode="aspectFit" class="preview-image" />
+          </view>
+          <view class="image-actions">
+            <t-button theme="light" size="small" bind:tap="chooseTongueImage">重新选择</t-button>
+            <t-button theme="light" size="small" bind:tap="cropImage">裁剪图片</t-button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-section">
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        loading="{{submitting}}"
+        bind:tap="submitForm"
+        disabled="{{!canSubmit}}"
+        class="submit-btn"
+      >
+        {{submitting ? '提交中...' : '保存处方'}}
+      </t-button>
+    </view>
+  </view>
+</view>

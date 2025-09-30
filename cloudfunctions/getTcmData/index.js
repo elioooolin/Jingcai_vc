@@ -33,7 +33,7 @@ exports.main = async (event, context) => {
       return {
         ...rx,
         prescriptions: prescriptions,
-        tongueImageUrl: `${userId}/tongue/week_${rx.week}.JPG`
+        tongueImageUrl: `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/${userId}/tongue/week_${rx.week}.JPG`
       };
     });
 

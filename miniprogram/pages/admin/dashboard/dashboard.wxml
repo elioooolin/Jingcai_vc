@@ -216,6 +216,15 @@
                 >
                   删除
                 </t-button>
+                <t-button 
+                  theme="primary"
+                  size="small"
+                  bind:tap="openRx"
+                  data-id="{{item.id}}"
+                  data-name="{{item.name}}"
+                >
+                  处方
+                </t-button>
               </view>
             </view>
           </view>

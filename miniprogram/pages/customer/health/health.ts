@@ -100,7 +100,6 @@ Page({
             return {
               ...item,
               prescriptions: processedPrescriptions,
-              tongueImageUrl: `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/${item.tongueImageUrl}`,
               tongueImageExists
             };
           })
@@ -146,8 +145,9 @@ Page({
   async checkImageExists(imagePath: string): Promise<boolean> {
     try {
       // 尝试获取云存储文件信息
+      console.log('checkImageExists imagePath', imagePath);
       const result = await wx.cloud.getTempFileURL({
-        fileList: [`cloud://your-env-id.7465-your-env-id-1234567890/${imagePath}`]
+        fileList: [imagePath]
       });
       return result.fileList[0].status === 0;
     } catch (error) {

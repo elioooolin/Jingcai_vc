@@ -1,0 +1,221 @@
+/* pages/admin/tcm-rx-add/tcm-rx-add.wxss */
+
+.page-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.page-header {
+  padding: 40rpx 30rpx 30rpx;
+  text-align: center;
+  color: white;
+  background: linear-gradient(135deg, #d4a574 0%, #b8956a 100%);
+  border-radius: 0 0 32rpx 32rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.page-subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.form-container {
+  padding: 30rpx;
+}
+
+.form-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* 药膳方选择样式 */
+.loading-tcm {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+}
+
+.rx-list { max-height: 400rpx; overflow-y: auto; }
+/* 注意：部分基础库不支持 flex gap 与 calc，改用百分比+space-between 保证真机两列 */
+.rx-grid { display: flex; flex-wrap: wrap; justify-content: space-between; }
+
+.rx-item { display:flex; align-items:center; padding:20rpx 16rpx; border-radius:12rpx; background:#f8f8f8; transition:all 0.3s ease; border:2rpx solid transparent; box-sizing: border-box; flex: 0 0 48%; width: 48%; margin-bottom: 16rpx; }
+
+.rx-item:last-child { margin-bottom: 0; }
+
+.rx-item.selected {
+  background: rgba(212, 165, 116, 0.1);
+  border-color: #d4a574;
+}
+
+.rx-item:active {
+  background: #f0f0f0;
+}
+
+.rx-item.selected:active {
+  background: rgba(212, 165, 116, 0.2);
+}
+
+.rx-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.checkbox-unchecked {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid #d0d0d0;
+  border-radius: 6rpx;
+  background: white;
+}
+
+.checkbox-checked {
+  width: 32rpx;
+  height: 32rpx;
+  background: #d4a574;
+  border-radius: 6rpx;
+  color: white;
+  font-size: 20rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rx-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+}
+
+.rx-item.selected .rx-name {
+  color: #d4a574;
+  font-weight: 500;
+}
+
+/* 图片上传样式 */
+.image-upload-section {
+  width: 100%;
+}
+
+.upload-placeholder {
+  width: 100%;
+  height: 300rpx;
+  border: 2rpx dashed #d0d0d0;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.upload-placeholder:active {
+  background: #f0f0f0;
+  border-color: #d4a574;
+}
+
+.upload-icon {
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
+}
+
+.upload-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.image-preview-section {
+  width: 100%;
+}
+
+.image-preview {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+  background: #f8f8f8;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+}
+
+.image-actions {
+  display: flex;
+  gap: 16rpx;
+  justify-content: center;
+}
+
+/* 提交按钮 */
+.submit-section {
+  margin-top: 40rpx;
+  padding: 0 30rpx;
+}
+
+.submit-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+/* TDesign 组件样式覆盖 */
+.t-input__wrap {
+  border-radius: 12rpx !important;
+}
+
+.t-textarea__wrapper {
+  border-radius: 12rpx !important;
+}
+
+.t-button--theme-primary {
+  background: linear-gradient(135deg, #d4a574 0%, #b8956a 100%) !important;
+  border: none !important;
+}
+
+.t-button--theme-light {
+  background: #f8f8f8 !important;
+  border: 1rpx solid #e8e8e8 !important;
+  color: #666 !important;
+}
+
+.t-button--disabled {
+  background: #f0f0f0 !important;
+  color: #ccc !important;
+}

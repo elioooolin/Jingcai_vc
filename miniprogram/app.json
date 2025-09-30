@@ -9,7 +9,9 @@
     "pages/admin/dashboard/dashboard",
     "pages/admin/customer-manage/customer-manage",
     "pages/admin/order-edit/order-edit",
-    "pages/dish-detail/dish-detail"
+    "pages/dish-detail/dish-detail",
+    "pages/admin/tcm-rx/tcm-rx",
+    "pages/admin/tcm-rx-add/tcm-rx-add"
   ],
   "window": {
     "navigationBarTextStyle": "white",

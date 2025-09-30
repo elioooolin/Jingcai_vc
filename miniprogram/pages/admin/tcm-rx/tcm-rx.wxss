@@ -1,0 +1,59 @@
+.page-container { padding: 24rpx; background: linear-gradient(180deg, #faf7f2 0%, #fff 40%); min-height: 100vh; }
+.header { display:flex; align-items:center; justify-content: space-between; margin-bottom: 24rpx; }
+.title { font-size: 34rpx; font-weight: 700; color:#3a2a18; }
+.actions button { margin-left: 12rpx; }
+.primary { background: #d4a574; color: #fff; border: none; padding: 12rpx 20rpx; border-radius: 12rpx; }
+.light { background: #f0f0f0; color: #333; border: none; padding: 12rpx 20rpx; border-radius: 12rpx; }
+.loading, .empty { color:#999; padding: 20rpx 0; }
+.rx-card { background:#fff; border-radius: 20rpx; padding: 28rpx; box-shadow: 0 10rpx 28rpx rgba(0,0,0,0.06); margin-bottom: 24rpx; border: 1rpx solid #f1e8df; }
+.rx-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 8rpx; 
+}
+
+.rx-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.rx-week { 
+  font-weight: 600; 
+  color: #333; 
+  font-size: 32rpx;
+}
+
+.rx-date {
+  color: #999;
+  font-size: 24rpx;
+}
+
+.delete-btn {
+  padding: 8rpx 20rpx;
+  font-size: 24rpx;
+  color: #fff;
+  background: #ff4444;
+  border: none;
+  border-radius: 8rpx;
+  line-height: 1.2;
+}
+
+.delete-btn::after {
+  border: none;
+}
+.rx-note { color:#555; margin: 8rpx 0 12rpx; line-height: 1.6; }
+
+/* 舌苔图样式 */
+.tongue-section { margin: 18rpx 0 8rpx; }
+.section-title { display:flex; align-items:center; justify-content: space-between; margin-bottom: 12rpx; }
+.tongue-title { font-weight: 700; color: #3a2a18; font-size: 30rpx; }
+.tip { font-size: 22rpx; color: #b09a83; }
+.image-wrapper { width: 100%; height: 420rpx; border-radius: 16rpx; overflow: hidden; background: #f6f1ea; border: 1rpx solid #efe2d6; }
+.tongue-image { width: 100%; height: 100%; display:block; }
+
+.rx-prescriptions-title { font-weight:700; color:#3a2a18; margin: 18rpx 0 10rpx; display:block; }
+.chip-list { display:flex; flex-wrap: wrap; gap: 12rpx; }
+.rx-chip { padding: 8rpx 14rpx; background: #fcf5ee; color:#7b5d3f; border: 1rpx solid #efd8c1; border-radius: 999rpx; font-size: 24rpx; }
+

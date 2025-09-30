@@ -998,6 +998,19 @@ Page({
     });
   },
 
+  // 打开客户中医处方页面
+  openRx(e: any) {
+    const customerId = e.currentTarget.dataset.id;
+    const customerName = e.currentTarget.dataset.name;
+    if (!customerId) {
+      wx.showToast({ title: '客户ID缺失', icon: 'error' });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/admin/tcm-rx/tcm-rx?userId=${customerId}&name=${encodeURIComponent(customerName || '')}`
+    });
+  },
+
   // 删除客户
   deleteCustomer(e: any) {
     const customerId = e.currentTarget.dataset.id;

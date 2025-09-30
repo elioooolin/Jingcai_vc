@@ -1,0 +1,58 @@
+<view class="page-container">
+  <view class="header">
+    <text class="title">{{customerName || '中医处方'}}</text>
+    <view class="actions">
+      <button class="primary" bind:tap="onAddRx">上传中医处方</button>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:if="{{!loading && rxData.length === 0}}" class="empty">
+    暂无处方记录
+  </view>
+
+  <view wx:for="{{rxData}}" wx:key="_id" class="rx-card">
+    <view class="rx-header">
+      <view class="rx-header-left">
+        <text class="rx-week">第{{item.week}}周</text>
+        <text class="rx-date" wx:if="{{item.createdAt}}">{{item.createdAt}}</text>
+      </view>
+      <button 
+        class="delete-btn" 
+        bind:tap="deleteRx"
+        data-id="{{item._id}}"
+        data-week="{{item.week}}"
+        data-user-id="{{item.userId}}"
+      >
+        删除
+      </button>
+    </view>
+    <view class="rx-note" wx:if="{{item.note}}">{{item.note}}</view>
+
+    <!-- 舌苔图 -->
+    <view wx:if="{{item.tongueImageUrl}}" class="tongue-section">
+      <view class="section-title">
+        <text class="tongue-title">舌苔图</text>
+        <text class="tip">点击可查看大图</text>
+      </view>
+      <view class="image-wrapper">
+        <image 
+          src="{{item.tongueImageUrl}}" 
+          mode="aspectFill" 
+          class="tongue-image"
+          bind:tap="previewTongueImage"
+          data-url="{{item.tongueImageUrl}}"
+        />
+      </view>
+    </view>
+
+    <view class="rx-prescriptions" wx:if="{{item.prescriptions && item.prescriptions.length}}">
+      <text class="rx-prescriptions-title">推荐药膳方</text>
+      <view class="chip-list">
+        <view class="rx-chip" wx:for="{{item.prescriptions}}" wx:key="_id" wx:for-item="prescription">{{prescription.name}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+
