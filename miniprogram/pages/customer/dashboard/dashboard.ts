@@ -631,7 +631,26 @@ Page({
   // 计算订单是否可取消
   calculateIsCancelable(orderDateString: string): boolean {
     try {
-      const orderDate = new Date(orderDateString);
+      let orderDate: Date;
+      
+      // 判断是否为中文日期格式（如：2025年10月7日）
+      if (orderDateString.includes('年') && orderDateString.includes('月') && orderDateString.includes('日')) {
+        // 解析中文日期格式
+        const match = orderDateString.match(/(\d+)年(\d+)月(\d+)日/);
+        if (match) {
+          const year = parseInt(match[1]);
+          const month = parseInt(match[2]) - 1; // 月份从0开始
+          const day = parseInt(match[3]);
+          orderDate = new Date(year, month, day);
+        } else {
+          console.error('无法解析中文日期格式:', orderDateString);
+          return false;
+        }
+      } else {
+        // 标准日期格式（如：2025-10-07）
+        orderDate = new Date(orderDateString);
+      }
+      
       const today = new Date();
       
       // 设置时间为0点，只比较日期
@@ -647,7 +666,8 @@ Page({
       console.log(`订单日期: ${orderDateString}, 今天: ${today.toISOString().split('T')[0]}, 相差天数: ${daysDiff}`);
       
       // 如果订单日期与当日日期间隔小于3天，则不可取消
-      // 例如：订单日期为1月8日，如果今天是1月6日或之后，则不可取消
+      // 例如：10月7日订单，今天是9月30日，相差7天，可以取消
+      // 例如：10月7日订单，今天是10月5日，相差2天，不可取消
       return daysDiff >= 3;
       
     } catch (error) {

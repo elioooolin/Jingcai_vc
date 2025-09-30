@@ -774,6 +774,19 @@ Page({
 
   // 检查用户高补餐权限（从云数据库实时获取）
   async checkSupplementPermission() {
+
+    // 检查日期是否为周二或周五
+    const isSupplementDay = this.isSupplementAvailableDay();
+    if (!isSupplementDay) {
+      console.log('当前日期不是周二或周五，不显示高补餐');
+      this.setData({ 
+        showSupplementSection: false,
+        userSupplementCount: 0,
+        supplementMenu: []
+      });
+      return;
+    }
+    
     console.log('从云数据库检查用户高补餐权限...');
     
     const userInfo = wx.getStorageSync('userInfo');
@@ -802,7 +815,7 @@ Page({
         console.log('从数据库获取的用户高补餐次数:', supplementCount);
         
         if (supplementCount > 0) {
-          console.log('用户有高补餐权限，加载高补餐数据');
+          console.log('用户有高补餐权限且日期符合要求，加载高补餐数据');
           this.setData({ 
             showSupplementSection: true,
             userSupplementCount: supplementCount 
@@ -989,6 +1002,25 @@ Page({
       icon: 'none',
       duration: 2500
     });
+  },
+
+  // 判断当前日期是否为高补餐可选日（周二或周五）
+  isSupplementAvailableDay(): boolean {
+      const selectedDate = this.data.selectedDate;
+      if (!selectedDate) {
+        console.log('未选择日期，高补餐不可用');
+        return false;
+      }
+      
+      // 将日期字符串转换为 Date 对象
+      const date = new Date(selectedDate);
+      
+      // 获取星期几 (0=周日, 1=周一, 2=周二, 3=周三, 4=周四, 5=周五, 6=周六)
+      const dayOfWeek = date.getDay();
+      
+      // 判断是否为周二(2)或周五(5)
+      return dayOfWeek === 2 || dayOfWeek === 5;
+      
   },
 
   // 页面分享
