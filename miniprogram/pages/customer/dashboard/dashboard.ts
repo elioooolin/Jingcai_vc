@@ -657,13 +657,44 @@ Page({
       orderDate.setHours(0, 0, 0, 0);
       today.setHours(0, 0, 0, 0);
       
+      // 获取今天是星期几 (0=周日, 1=周一, 2=周二, ..., 6=周六)
+      const todayDayOfWeek = today.getDay();
+      
+      // 规则：每周五过后（周六、周日），下周的订单全部不能取消
+      if (todayDayOfWeek === 6 || todayDayOfWeek === 0) {
+        // 计算下周一的日期
+        let nextMonday: Date;
+        if (todayDayOfWeek === 6) {
+          // 今天是周六，下周一是+2天
+          nextMonday = new Date(today);
+          nextMonday.setDate(today.getDate() + 2);
+        } else {
+          // 今天是周日，下周一是+1天
+          nextMonday = new Date(today);
+          nextMonday.setDate(today.getDate() + 1);
+        }
+        nextMonday.setHours(0, 0, 0, 0);
+        
+        // 计算下周日的日期（下周一+6天）
+        const nextSunday = new Date(nextMonday);
+        nextSunday.setDate(nextMonday.getDate() + 6);
+        nextSunday.setHours(0, 0, 0, 0);
+        
+        // 如果订单日期在下周范围内（周一到周日），不可取消
+        if (orderDate.getTime() >= nextMonday.getTime() && orderDate.getTime() <= nextSunday.getTime()) {
+          const dayName = todayDayOfWeek === 0 ? '日' : '六';
+          console.log(`今天是周${dayName}，订单日期(${orderDateString})在下周范围内，已锁定，不可取消`);
+          return false;
+        }
+      }
+      
       // 计算日期差（毫秒）
       const timeDiff = orderDate.getTime() - today.getTime();
       
       // 转换为天数
       const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
       
-      console.log(`订单日期: ${orderDateString}, 今天: ${today.toISOString().split('T')[0]}, 相差天数: ${daysDiff}`);
+      console.log(`订单日期: ${orderDateString}, 今天: ${today.toISOString().split('T')[0]}, 星期${todayDayOfWeek}, 相差天数: ${daysDiff}`);
       
       // 如果订单日期与当日日期间隔小于3天，则不可取消
       // 例如：10月7日订单，今天是9月30日，相差7天，可以取消
