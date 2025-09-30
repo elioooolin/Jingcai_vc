@@ -70,22 +70,34 @@
   </view>
 </t-dialog>
 
-<!-- 用户协议弹窗 -->
-<t-dialog
-  visible="{{userAgreementVisible}}"
-  title="用户协议"
-  content="{{userAgreementContent}}"
-  confirm-btn="我知道了"
-  bind:confirm="closeUserAgreementDialog"
-  bind:close="closeUserAgreementDialog"
-/>
+<!-- 用户协议弹窗 - 微信原生组件 -->
+<view class="custom-modal" wx:if="{{userAgreementVisible}}" catchtouchmove="true">
+  <view class="modal-mask" bindtap="closeUserAgreementDialog"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">用户协议</text>
+    </view>
+    <scroll-view scroll-y class="modal-body">
+      <text class="modal-text">{{userAgreementContent}}</text>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="modal-button" bindtap="closeUserAgreementDialog">我知道了</button>
+    </view>
+  </view>
+</view>
 
-<!-- 隐私政策弹窗 -->
-<t-dialog
-  visible="{{privacyPolicyVisible}}"
-  title="隐私政策"
-  content="{{privacyPolicyContent}}"
-  confirm-btn="我知道了"
-  bind:confirm="closePrivacyPolicyDialog"
-  bind:close="closePrivacyPolicyDialog"
-/>
+<!-- 隐私政策弹窗 - 微信原生组件 -->
+<view class="custom-modal" wx:if="{{privacyPolicyVisible}}" catchtouchmove="true">
+  <view class="modal-mask" bindtap="closePrivacyPolicyDialog"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">隐私政策</text>
+    </view>
+    <scroll-view scroll-y class="modal-body">
+      <text class="modal-text">{{privacyPolicyContent}}</text>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="modal-button" bindtap="closePrivacyPolicyDialog">我知道了</button>
+    </view>
+  </view>
+</view>
