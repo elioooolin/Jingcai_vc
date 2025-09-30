@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "登录 - 爱睦 Love Moon",
   "navigationStyle": "default",
+  "enableShareAppMessage": true,
   "usingComponents": {
     "t-button": "tdesign-miniprogram/button/button",
     "t-input": "tdesign-miniprogram/input/input",

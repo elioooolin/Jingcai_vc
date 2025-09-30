@@ -632,8 +632,9 @@ Page({
         }
       });
 
-      if (result.result && result.result.success) {
-        const customers = (result.result.customers || []).map((item: any) => ({
+      const resp: any = result.result as any;
+      if (resp && resp.success) {
+        const customers = (resp.customers || []).map((item: any) => ({
           ...item,
           checkOutDateRaw: new Date(item.checkOutDate)
         }));
@@ -710,8 +711,9 @@ Page({
       
       console.log('客户数据云函数调用结果:', result.result);
       
-      if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
-        const customers = (result.result as any).customers || [];
+      const resp2: any = result.result as any;
+      if (resp2 && resp2.success) {
+        const customers = (resp2.customers || []);
         
         // 转换为CustomerItem格式
         const formattedCustomers: CustomerItem[] = customers.map((customer: any) => ({
@@ -1305,5 +1307,13 @@ Page({
         }
       }
     });
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '爱睦 Love Moon',
+      path: '/pages/login/login'
+    };
   }
 });

@@ -2,6 +2,7 @@
   "navigationBarTitleText": "点餐",
   "enablePullDownRefresh": false,
   "backgroundColor": "#faf8f5",
+  "enableShareAppMessage": true,
   "usingComponents": {
     "t-button": "tdesign-miniprogram/button/button",
     "t-tabs": "tdesign-miniprogram/tabs/tabs",

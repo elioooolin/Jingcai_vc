@@ -2,6 +2,7 @@
   "navigationBarTitleText": "管理后台",
   "enablePullDownRefresh": true,
   "backgroundColor": "#faf8f5",
+  "enableShareAppMessage": true,
   "usingComponents": {
     "t-tag": "tdesign-miniprogram/tag/tag",
     "t-button": "tdesign-miniprogram/button/button",

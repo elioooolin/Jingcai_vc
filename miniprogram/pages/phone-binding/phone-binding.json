@@ -3,6 +3,7 @@
   "navigationBarBackgroundColor": "#f8f5f0",
   "navigationBarTextStyle": "black",
   "backgroundColor": "#f8f5f0",
+  "enableShareAppMessage": true,
   "usingComponents": {
     "t-input": "tdesign-miniprogram/input/input",
     "t-button": "tdesign-miniprogram/button/button",

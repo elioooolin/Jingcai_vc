@@ -2,6 +2,7 @@
   "navigationBarTitleText": "菜品详情",
   "enablePullDownRefresh": false,
   "backgroundColor": "#faf8f5",
+  "enableShareAppMessage": true,
   "usingComponents": {
     "t-button": "tdesign-miniprogram/button/button",
     "t-tag": "tdesign-miniprogram/tag/tag",

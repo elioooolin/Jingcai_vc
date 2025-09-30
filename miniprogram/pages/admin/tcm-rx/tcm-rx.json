@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "中医处方",
+  "enableShareAppMessage": true,
   "usingComponents": {}
 }
 

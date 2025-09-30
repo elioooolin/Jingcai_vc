@@ -149,5 +149,13 @@ Page({
         }
       }
     });
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '爱睦 Love Moon',
+      path: '/pages/login/login'
+    };
   }
 });

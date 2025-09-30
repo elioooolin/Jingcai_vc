@@ -224,5 +224,13 @@ Page({
   onCategoryImageError(e: any) {
     console.log('药膳类别图片加载失败:', e);
     // 可以设置默认图片或显示占位符
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '爱睦 Love Moon',
+      path: '/pages/login/login'
+    };
   }
 });

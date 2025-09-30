@@ -245,5 +245,13 @@ Page({
   // 关闭隐私政策弹窗
   closePrivacyPolicyDialog() {
     this.setData({ privacyPolicyVisible: false });
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '爱睦 Love Moon',
+      path: '/pages/login/login'
+    };
   }
 });

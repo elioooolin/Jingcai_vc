@@ -247,8 +247,7 @@ Page({
       return;
     }
 
-    const isLastWeek = firstSelectableIndex !== -1 && lastDateInRange && lastDateInRange.getTime() === checkOutDate.getTime();
-    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}${isLastWeek ? '（离店周）' : ''}`;
+    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}`;
 
     this.setData({
       orderDateRange: orderDateRangeText,
@@ -330,8 +329,7 @@ Page({
       return;
     }
 
-    const isLastWeek = firstSelectableIndex !== -1 && lastDateInRange && lastDateInRange.getTime() === checkOutDate.getTime();
-    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}${isLastWeek ? '（离店周）' : ''}`;
+    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}`;
 
     this.setData({
       orderDateRange: orderDateRangeText,
@@ -866,5 +864,13 @@ Page({
         }
       }
     });
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '爱睦 Love Moon',
+      path: '/pages/login/login'
+    };
   }
 });
