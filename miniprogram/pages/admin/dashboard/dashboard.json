@@ -3,8 +3,6 @@
   "enablePullDownRefresh": true,
   "backgroundColor": "#faf8f5",
   "usingComponents": {
-    "t-grid": "tdesign-miniprogram/grid/grid",
-    "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
     "t-tag": "tdesign-miniprogram/tag/tag",
     "t-button": "tdesign-miniprogram/button/button",
     "t-tabs": "tdesign-miniprogram/tabs/tabs",
