@@ -2,6 +2,7 @@
 
 Page({
   data: {
+    today: new Date(),
     userInfo: {},
     checkInDays: 0,
     selectedDate: '',
@@ -18,7 +19,10 @@ Page({
 
   onLoad(options: any) {
     console.log('Dashboard页面加载，参数:', options);
-    
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.setData({today});
+
     this.checkLoginStatus();
     // checkLoginStatus 中已经包含了用户信息初始化和日期列表初始化
     this.loadSupplementData();
@@ -97,14 +101,12 @@ Page({
     if (!checkInDate) return 0;
     
     const checkIn = new Date(checkInDate);
-    const today = new Date();
     
     // 设置时间为当天的开始，避免时间差异
     checkIn.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
     
     // 计算天数差
-    const timeDiff = today.getTime() - checkIn.getTime();
+    const timeDiff = this.data.today.getTime() - checkIn.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
     
     // 入住当天算第1天，所以要加1
@@ -117,11 +119,12 @@ Page({
    * Falls back to default date range if user info is incomplete.
    */
   initDateList() {
-    const userInfo: { checkInDate?: string; totalDays?: number } = this.data.userInfo || {};
+    const userInfo: { checkInDate?: string; totalDays?: number; isMock?: boolean } = this.data.userInfo || {};
 
     console.log('初始化日期列表，用户信息:', {
       checkInDate: userInfo.checkInDate,
-      totalDays: userInfo.totalDays
+      totalDays: userInfo.totalDays,
+      isMock: userInfo.isMock
     });
 
     if (
@@ -135,9 +138,6 @@ Page({
       return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     const checkInDate = new Date(userInfo.checkInDate);
     checkInDate.setHours(0, 0, 0, 0);
 
@@ -149,8 +149,7 @@ Page({
     checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays);
     checkOutDate.setHours(0, 0, 0, 0);
 
-    const nextWeekStart = this.getNextWeekStart(today);
-    const nextWeekEnd = this.getNextWeekEnd(nextWeekStart);
+    const nextWeekStart = this.getNextWeekStart(this.data.today);
 
     if (nextWeekStart.getTime() > checkOutDate.getTime()) {
       console.log('入住结束时间早于下周，暂无可用日期');
@@ -165,7 +164,19 @@ Page({
     const effectiveStart = new Date(Math.max(nextWeekStart.getTime(), orderStartDate.getTime()));
     effectiveStart.setHours(0, 0, 0, 0);
 
-    const earliestOrderDate = this.getEarliestOrderDate(today, orderStartDate);
+    const earliestOrderDate = this.getEarliestOrderDate(this.data.today, orderStartDate);
+
+    // 检查当前是否为周末（周六或周日）
+    const todayDayOfWeek = this.data.today.getDay();
+    const isWeekend = todayDayOfWeek === 0 || todayDayOfWeek === 6;
+    const isMockUser = userInfo.isMock === true;
+    
+    // 非测试用户在周末不能点下周餐单
+    const weekendRestriction = isWeekend && !isMockUser;
+    
+    if (weekendRestriction) {
+      console.log('当前为周末，非测试用户不可点餐');
+    }
 
     const dateList: any[] = [];
     let firstSelectableDate = '';
@@ -190,6 +201,7 @@ Page({
       let expired = false;
       let outOfStay = false;
       let hasOrder = false;
+      let weekendLocked = false;
       let isCheckoutDay = currentDate.getTime() === checkOutDate.getTime();
 
       if (this.data.orderedDates.includes(currentDateString)) {
@@ -212,6 +224,12 @@ Page({
         outOfStay = true;
       }
 
+      // 非测试用户在周末时，下周所有日期都不可点餐
+      if (weekendRestriction) {
+        disabled = true;
+        weekendLocked = true;
+      }
+
       const dateObj = {
         date: currentDateString,
         day: currentDate.getDate(),
@@ -223,9 +241,10 @@ Page({
         expired,
         hasOrder,
         outOfStay,
+        weekendLocked,
         isCheckoutDay,
         selected: false,
-        isToday: this.isSameDate(currentDate, today),
+        isToday: this.isSameDate(currentDate, this.data.today),
         showMonth: i === 0 || currentDate.getDate() === 1
       };
 
@@ -258,17 +277,14 @@ Page({
 
   // 默认日期列表（当用户信息不完整时使用）
   initDefaultDateList() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    const nextWeekStart = this.getNextWeekStart(today);
+    const nextWeekStart = this.getNextWeekStart(this.data.today);
     const nextWeekEnd = this.getNextWeekEnd(nextWeekStart);
 
-    const earliestOrderDate = this.getEarliestOrderDate(today, today);
+    const earliestOrderDate = this.getEarliestOrderDate(this.data.today, this.data.today);
 
     const dateList: any[] = [];
     let firstSelectableDate = '';
-    let firstSelectableIndex = -1;
     let lastDateInRange: Date | null = null;
 
     for (let i = 0; i < 7; i++) {
@@ -308,7 +324,7 @@ Page({
         hasOrder: false,
         outOfStay,
         selected: false,
-        isToday: this.isSameDate(currentDate, today),
+        isToday: this.isSameDate(currentDate, this.data.today),
         showMonth: i === 0 || currentDate.getDate() === 1
       };
 
@@ -421,6 +437,8 @@ Page({
       
       if (item.hasOrder) {
         message = '该日期已有订单，不可重复点餐';
+      } else if (item.weekendLocked) {
+        message = '点餐时间已截止，下周餐单已锁定，无法点餐';
       } else if (item.tooEarly) {
         message = '还未到可点餐时间（入住第8天起）';
       } else if (item.expired) {
@@ -651,27 +669,29 @@ Page({
         orderDate = new Date(orderDateString);
       }
       
-      const today = new Date();
-      
       // 设置时间为0点，只比较日期
       orderDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
       
       // 获取今天是星期几 (0=周日, 1=周一, 2=周二, ..., 6=周六)
-      const todayDayOfWeek = today.getDay();
+      const todayDayOfWeek = this.data.today.getDay();
+      
+      // 检查用户是否为测试用户
+      const userInfo = this.data.userInfo as any;
+      const isMockUser = userInfo && userInfo.isMock === true;
       
       // 规则：每周五过后（周六、周日），下周的订单全部不能取消
-      if (todayDayOfWeek === 6 || todayDayOfWeek === 0) {
+      // 但测试用户不受此限制
+      if ((todayDayOfWeek === 6 || todayDayOfWeek === 0) && !isMockUser) {
         // 计算下周一的日期
         let nextMonday: Date;
         if (todayDayOfWeek === 6) {
           // 今天是周六，下周一是+2天
-          nextMonday = new Date(today);
-          nextMonday.setDate(today.getDate() + 2);
+          nextMonday = new Date(this.data.today);
+          nextMonday.setDate(this.data.today.getDate() + 2);
         } else {
           // 今天是周日，下周一是+1天
-          nextMonday = new Date(today);
-          nextMonday.setDate(today.getDate() + 1);
+          nextMonday = new Date(this.data.today);
+          nextMonday.setDate(this.data.today.getDate() + 1);
         }
         nextMonday.setHours(0, 0, 0, 0);
         
@@ -689,12 +709,12 @@ Page({
       }
       
       // 计算日期差（毫秒）
-      const timeDiff = orderDate.getTime() - today.getTime();
+      const timeDiff = orderDate.getTime() - this.data.today.getTime();
       
       // 转换为天数
       const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
       
-      console.log(`订单日期: ${orderDateString}, 今天: ${today.toISOString().split('T')[0]}, 星期${todayDayOfWeek}, 相差天数: ${daysDiff}`);
+      console.log(`订单日期: ${orderDateString}, 今天: ${this.data.today.toISOString().split('T')[0]}, 星期${todayDayOfWeek}, 相差天数: ${daysDiff}`);
       
       // 如果订单日期与当日日期间隔小于3天，则不可取消
       // 例如：10月7日订单，今天是9月30日，相差7天，可以取消
@@ -767,11 +787,9 @@ Page({
       // 对于其他状态（confirmed等），根据日期判断
       try {
         const orderDateObj = new Date(orderDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
         orderDateObj.setHours(0, 0, 0, 0);
         
-        if (orderDateObj.getTime() < today.getTime()) {
+        if (orderDateObj.getTime() < this.data.today.getTime()) {
           return '已上餐';
         } else {
           return '已确认';

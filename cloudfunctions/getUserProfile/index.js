@@ -70,6 +70,7 @@ exports.main = async (event, context) => {
         phone: user.phone,
         name: user.name,
         userType: user.userType,
+        isMock: user.isMock,
         isAdmin: user.isAdmin,
         room: user.room,
         store: user.store,
