@@ -14,19 +14,19 @@
         bind:tap="switchTab" 
         data-index="0"
       >
-        中医问诊档案
+        爱睦药食文化
       </view>
       <view 
         class="tab-button {{activeTab === 1 ? 'active' : ''}}" 
         bind:tap="switchTab" 
         data-index="1"
       >
-        爱睦药食文化
+        中医问诊档案
       </view>
     </view>
 
-    <!-- Tab内容1: 中医问诊档案 -->
-    <view class="tab-content {{activeTab === 0 ? 'active' : ''}}">
+    <!-- Tab内容2: 中医问诊档案 -->
+    <view class="tab-content {{activeTab === 1 ? 'active' : ''}}">
       <view wx:if="{{rxData.length > 0}}" class="swiper-section">
          <view class="section-title">第{{currentWeek}}周</view>
 
@@ -114,8 +114,8 @@
       </view>
     </view>
 
-    <!-- Tab内容2: 爱睦药食文化 -->
-    <view class="tab-content {{activeTab === 1 ? 'active' : ''}}">
+    <!-- Tab内容1: 爱睦药食文化 -->
+    <view class="tab-content {{activeTab === 0 ? 'active' : ''}}">
       <view class="herbal-section">
         <view class="section-title">药膳养生系列</view>
 
