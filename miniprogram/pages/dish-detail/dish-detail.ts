@@ -59,9 +59,6 @@ Page({
           wx.setNavigationBarTitle({
             title: dishInfo.name
           });
-          
-          // 检查是否收藏
-          this.checkFavoriteStatus(dishId);
           return;
         }
       }
@@ -87,8 +84,6 @@ Page({
           title: dishInfo.name
         });
 
-        // 检查是否收藏
-        this.checkFavoriteStatus(dishId);
       } else {
         wx.showToast({
           title: '菜品信息获取失败',
@@ -137,15 +132,6 @@ Page({
       icon: 'none',
       duration: 3000
     });
-    
-    this.checkFavoriteStatus(dishId);
-  },
-
-  // 检查收藏状态
-  checkFavoriteStatus(dishId: string) {
-    const favorites = wx.getStorageSync('favorites') || [];
-    const isFavorite = favorites.includes(dishId);
-    this.setData({ isFavorite });
   },
 
   // 选择菜品

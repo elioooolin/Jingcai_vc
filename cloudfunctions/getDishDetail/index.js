@@ -49,6 +49,7 @@ exports.main = async (event, context) => {
       ingredients: dish.ingredients,
       chefRecommend: dish.chefRecommend, // boolean类型
       nutritional_info: dish.nutritional_info || {},
+      imageUrl: `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/dish_pics/${dishName || dish.name}.JPG`,
     }
     
     return {

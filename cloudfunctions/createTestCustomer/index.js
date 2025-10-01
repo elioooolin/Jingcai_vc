@@ -91,7 +91,7 @@ exports.main = async (event, context) => {
       isAdmin: false,
       status: 'active',
       room: '301',
-      checkInDate: '2026-09-30',
+      checkInDate: '2025-09-30',
       totalDays: 365,
       store: '爱睦·梅溪湖店',
       dietPreference: '要退奶',
