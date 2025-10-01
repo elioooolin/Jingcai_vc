@@ -15,6 +15,11 @@
     </view>
   </view>
 
+  <!-- 提示信息 -->
+  <view class="notice-section">
+    <text class="notice-text">本服务仅供爱睦旗下月子中心内部客户使用，登录前请确保您已获得邀请码</text>
+  </view>
+
   <!-- 登录按钮 -->
   <view class="login-section">
     <t-button
@@ -25,7 +30,7 @@
       bind:tap="handleWechatLogin"
       class="login-button"
     >
-      <text wx:if="{{!loginLoading}}">登录</text>
+      <text wx:if="{{!loginLoading}}">邀请码登录</text>
       <text wx:else>登录中...</text>
     </t-button>
   </view>

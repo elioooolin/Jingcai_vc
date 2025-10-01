@@ -44,7 +44,7 @@ Page({
     const { phone } = this.data
     
     if (!this.validatePhone(phone)) {
-      this.showErrorDialog('手机号格式错误', '请输入正确的手机号码')
+      this.showErrorDialog('邀请码格式错误', '请输入正确的邀请码')
       return
     }
 
@@ -99,7 +99,7 @@ Page({
     
     switch (result.error) {
       case 'PHONE_ALREADY_BOUND':
-        this.showErrorDialog('手机号已被绑定', '该手机号已被其他微信账号绑定，请联系客服处理')
+        this.showErrorDialog('邀请码已被使用', '该邀请码已被其他微信账号绑定，请联系客服处理')
         break
       case 'USER_NOT_FOUND':
         this.setData({ contactDialogVisible: true })
@@ -108,10 +108,10 @@ Page({
         this.showErrorDialog('账号状态异常', '您的账号状态异常，请联系管理员处理')
         break
       case 'OPENID_ALREADY_BOUND':
-        this.showErrorDialog('微信账号已绑定', '您的微信账号已绑定其他手机号，无法重复绑定')
+        this.showErrorDialog('微信账号已绑定', '您的微信账号已绑定其他账号，无法重复绑定')
         break
       case 'INVALID_PHONE':
-        this.showErrorDialog('手机号格式错误', '请输入正确的手机号码')
+        this.showErrorDialog('邀请码格式错误', '请输入正确的邀请码')
         break
       default:
         this.showErrorDialog('绑定失败', result.message || '绑定失败，请稍后重试')

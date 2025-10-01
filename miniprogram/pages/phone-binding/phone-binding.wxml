@@ -3,19 +3,19 @@
   <!-- 头部说明 -->
   <view class="header-section">
     <view class="logo-wrapper">
-      <view class="logo">
-        <text class="logo-text">爱睦</text>
-      </view>
+      <image 
+        class="logo-image" 
+        src="/assets/icons/logo_reverse_lm.svg" 
+        mode="aspectFit"
+      />
     </view>
     
     <view class="brand-info">
       <text class="brand-title">爱睦 Love Moon</text>
-      <text class="brand-slogan">轻松呵护，用心滋养</text>
     </view>
     
     <view class="binding-info">
-      <text class="binding-title">绑定手机号</text>
-      <text class="binding-desc">请输入您的手机号完成账户绑定</text>
+      <text class="binding-desc">首次登录，请通过邀请码绑定您的客户账号</text>
     </view>
   </view>
 
@@ -24,7 +24,7 @@
     <view class="input-wrapper">
       <t-input
         type="number"
-        placeholder="请输入手机号"
+        placeholder="请输入内部邀请码"
         value="{{phone}}"
         bind:change="onPhoneChange"
         maxlength="11"
@@ -51,9 +51,8 @@
     <view class="tip-card">
       <text class="tip-title">温馨提示</text>
       <text class="tip-content">
-        • 请输入您在爱睦月子中心登记的手机号
-        • 如果提示手机号未注册，请联系工作人员
-        • 每个手机号只能绑定一个微信账号
+        • 如邀请码错误，请联系工作人员
+        • 每个邀请码只能绑定一个微信账号
       </text>
     </view>
   </view>
