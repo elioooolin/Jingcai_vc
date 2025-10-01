@@ -30,7 +30,7 @@ exports.main = async (event, context) => {
       return {
         success: false,
         error: 'INVALID_PHONE',
-        message: '手机号格式不正确'
+        message: '邀请码格式不正确'
       }
     }
     
@@ -43,7 +43,7 @@ exports.main = async (event, context) => {
       return {
         success: false,
         error: 'PHONE_ALREADY_BOUND',
-        message: '该手机号已被绑定，无法重复使用'
+        message: '该邀请码已被绑定，无法重复使用'
       }
     }
     
@@ -56,7 +56,7 @@ exports.main = async (event, context) => {
       return {
         success: false,
         error: 'USER_NOT_FOUND',
-        message: '该手机号未在系统中注册，请联系管理员添加您的信息'
+        message: '邀请码错误，请联系管理员添加您的信息'
       }
     }
     
@@ -80,7 +80,7 @@ exports.main = async (event, context) => {
       return {
         success: false,
         error: 'OPENID_ALREADY_BOUND',
-        message: '您的微信账号已绑定其他手机号'
+        message: '您的微信账号已绑定其他邀请码'
       }
     }
     
