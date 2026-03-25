@@ -290,6 +290,18 @@
   line-height: 1.4;
 }
 
+.portal-card {
+  margin-bottom: 32rpx;
+}
+
+.portal-desc {
+  display: block;
+  font-size: 28rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 28rpx;
+}
+
 /* 空状态 */
 .empty-state {
   text-align: center;
@@ -527,4 +539,3 @@
   background: rgba(212, 123, 0, 0.12);
   border-radius: 8rpx;
 }
-

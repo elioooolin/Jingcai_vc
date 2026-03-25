@@ -1,0 +1,3245 @@
+[
+  {
+    "name": "八宝粥",
+    "description": "采用八种谷物干果，口感软糯香甜，提供完整植物蛋白、膳食纤维及B族维生素，营养全面均衡，豆谷搭配将蛋白质吸收率提升至65%左右，具有暖身养胃的作用",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "黑米、红豆、薏米、糯米、红枣、莲子、花生、桂圆",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 399,
+      "protein": 16.2,
+      "fat": 8.1,
+      "carbohydrates": 68.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "三鲜面",
+    "description": "以墨鱼和香菇为核心食材，搭配鲜美的高汤汤底和劲道的面条，味道清爽又富有层次，整体以突出食材的天然鲜味为特点。主要提供碳水化合物，优质蛋白质，及丰富微量元素",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "面条、墨鱼片、香菇片、高汤打底",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 468,
+      "protein": 15.4,
+      "fat": 5.4,
+      "carbohydrates": 90.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "豆腐鲫鱼汤",
+    "description": "鱼肉先煎，后打碎再进行熬煮，最后过滤掉鱼骨头，放入提前准备好的豆腐和鱼肉，整个烹饪过程拒绝科技与狠活，汤汁呈现奶白色，口感鲜甜。鲫鱼具有催乳、健脾利湿、增强免疫力的作用，且富含优质蛋白质、不饱和脂肪酸、钙、磷，适合哺乳期女性食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "嫩豆腐、鲫鱼",
+    "keywords": [
+      "催乳下奶",
+      "富含钙质"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 91,
+      "protein": 11.2,
+      "fat": 3.7,
+      "carbohydrates": 3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "五指毛桃薏米龙骨汤",
+    "description": "经典的广式祛湿养生汤，以五指毛桃（又称“广东人参”）和薏米为主要药材，搭配猪龙骨慢炖而成，汤色金黄，带有淡淡的椰香味，具有健脾祛湿、补气润肺、增强免疫力的作用，适合湿气重、易疲劳、脾胃虚弱人群",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "五指毛桃、薏米、龙骨",
+    "keywords": [
+      "健脾祛湿",
+      "补气益肺",
+      "增强免疫力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 146,
+      "protein": 7.4,
+      "fat": 3.2,
+      "carbohydrates": 21.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鹌鹑蛋烧猪蹄",
+    "description": "一道色泽红亮、滋味醇厚的经典菜肴，它将猪蹄的丰腴软糯与鹌鹑蛋的细腻入味完美结合，也体现了中式烹饪中主辅相成的智慧—猪蹄提供丰腴的口感，而小巧的鹌鹑蛋则成为吸饱精华、画龙点睛的“黄金配角”",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鹌鹑蛋、猪蹄",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 329,
+      "protein": 25.6,
+      "fat": 23.2,
+      "carbohydrates": 4.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "清炖狮子头",
+    "description": "中国淮扬菜系中极具代表性的菜品，以其形态丰满、口感鲜嫩、汤清味醇而闻名遐迩，它不仅仅是一道菜，更是一件体现了中华烹饪中“功夫”与“火候”的艺术品",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、藕丁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 239,
+      "protein": 7.9,
+      "fat": 22,
+      "carbohydrates": 2.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "麻油菠菜猪肝",
+    "description": "猪肝鲜嫩滑润，菠菜清爽脆嫩，搭配促进子宫恢复的胡麻油，兼具美味与营养的养生菜。猪肝富含铁元素和维生素A，菠菜富含叶酸和膳食纤维，双重补血，改善气色，适合产后或缺铁性贫血人群食用",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "菠菜、猪肝、胡麻油",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 33,
+      "protein": 1.8,
+      "fat": 4.5,
+      "carbohydrates": 1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉沫烧茄子",
+    "description": "将软糯入味的茄子与鲜香浓郁的肉沫完美结合，茄子吸饱了酱汁，口感绵密细腻，搭配炒香的肉沫，咸香微甜，酱汁浓郁，实属米饭绝配",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪里脊肉、茄子",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 71,
+      "protein": 10.7,
+      "fat": 2.2,
+      "carbohydrates": 3.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "海底椰百合瘦肉汤",
+    "description": "经典的广式养生汤品，以清甜滋润著称。汤色清澈透亮，海底椰带来独特的椰香，百合软糯清心，搭配瘦肉鲜甜不油腻。具有滋阴润肺、除燥清热的作用，富含多种维生素和矿物质",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "海底椰、百合、腱子肉",
+    "keywords": [
+      "滋阴润肺"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 68,
+      "protein": 4.7,
+      "fat": 1,
+      "carbohydrates": 10.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "党参山药养生汤",
+    "description": "温和滋补的药膳汤品，以党参的甘醇和山药的绵润为主调，搭配瘦肉慢炖而成，汤色金黄清亮，入口回甘，既能补中益气，又能健脾养胃，特别适合体质虚弱、疲劳乏力的人群食用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "党参、山药、瘦肉",
+    "keywords": [
+      "补中益气",
+      "健脾养胃",
+      "增强免疫力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 123,
+      "protein": 10.9,
+      "fat": 4.4,
+      "carbohydrates": 12.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "芋头蒸排骨",
+    "description": "广式经典菜品，将粉糯香甜的芋头与鲜嫩多汁的排骨完美结合，经过蒸制，芋头吸饱了排骨的肉香，入口即化，排骨裹着芋头的清甜，肉质嫩滑不腻，一软一嫩层次丰富。芋头富含膳食纤维，搭配优质蛋白质，既营养又美味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "荔浦芋头、排骨",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 274,
+      "protein": 13,
+      "fat": 14.9,
+      "carbohydrates": 16.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "清蒸鲈鱼",
+    "description": "经典粤菜代表作，以“极简烹饪，极致鲜味”闻名，鲜活鲈鱼经过精准火候蒸制，鱼肉雪白似蒜瓣，淋上蒸鱼豉油，泼一勺热油激发出葱丝香气，最大程度保留鱼的本鲜。鲈鱼高蛋白低脂肪，可补充优质蛋白质",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鲈鱼、自制蒸鱼汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 147,
+      "protein": 25.3,
+      "fat": 4.6,
+      "carbohydrates": 1.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "盐焗三黄鸡",
+    "description": "中国月菜系中一道享誉盛名的菜肴，它以其皮爽肉滑、骨香味浓、色泽微黄而著称，通过独特的“盐焗”技法，将鸡肉的鲜美原味与咸香完美融合",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "三黄鸡",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 199,
+      "protein": 30.1,
+      "fat": 7.9,
+      "carbohydrates": 1.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "口味小土豆",
+    "description": "充满异域风情的创意菜品，粉糯绵密的土豆搭配秘制咖喱，金黄诱人的色泽，温暖馥郁的香气，盖饭绝配。土豆含有多种维生素和无机盐，纯素食菜品也可摄入营养素",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "土豆、自制咖喱汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 186,
+      "protein": 3.6,
+      "fat": 8.5,
+      "carbohydrates": 24.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "咖喱鸡肉拉面",
+    "description": "嫩滑的鸡肉搭配手工拉面，以金黄浓稠的咖喱汤底打底，每一口都充满层次感，咖喱的浓郁、鸡肉的鲜香完美搭配，无论是暖胃还是解馋，咖喱鸡肉拉面都能以它的温暖浓香带来满足感",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "手工拉面、鸡肉、自制咖喱汁、高汤打底",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 356,
+      "protein": 15,
+      "fat": 5.5,
+      "carbohydrates": 60.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "干炒河粉",
+    "description": "一道经典的中式炒粉料理，尤其在粤菜中广受欢迎，它以镬气十足、干香入味著称，讲究火候和调味。选用宽扁的鲜河粉，口感柔韧有米香，久炒不碎",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "新鲜河粉、包菜丝、胡萝卜丝、洋葱丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 323,
+      "protein": 7.3,
+      "fat": 5.3,
+      "carbohydrates": 62
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "木瓜猪蹄汤",
+    "description": "精选猪前蹄，先沸水下食材，猛火滚煮15分钟逼出杂质，转砂锅慢炖3小时，汤品浓郁而不油腻，具有催乳下奶的作用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪蹄、木瓜",
+    "keywords": [
+      "催乳下奶",
+      "温补肾阳"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 147,
+      "protein": 9.1,
+      "fat": 6.7,
+      "carbohydrates": 13
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "陈皮赤小豆腱子肉汤",
+    "description": "融合广式煲汤的药膳汤品，以陈皮的芳香化湿、赤小豆的利尿消肿，搭配腱子肉的高蛋白低脂肪，汤味清甜回甘，兼具食疗与美味。具有理气健脾、祛湿的作用，适合水肿、食欲不振人群食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "赤小豆、陈皮、腱子肉",
+    "keywords": [
+      "利尿祛湿"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 90,
+      "protein": 3.5,
+      "fat": 1.7,
+      "carbohydrates": 15.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鲍汁金汤娃娃菜卷肉",
+    "description": "融合了粤菜精致工艺与家常风味的创意菜，以鲜嫩的娃娃菜包裹肉馅，淋上精制高汤，口感层次丰富—菜叶清甜，肉馅鲜嫩，汤汁醇厚，娃娃菜的清爽平衡汤汁的厚重，肉馅多汁不柴，黄金汤底口感绵密，菜品高蛋白低脂肪，美味无负担",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、娃娃菜、高汤打底",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 140,
+      "protein": 16.4,
+      "fat": 7,
+      "carbohydrates": 3.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "酱烧鸭脯肉",
+    "description": "浓香入味、酱香浓郁的一道菜品，选用肉质细嫩的鸭胸肉，经过先煎后烧的烹饪方式，使鸭肉外皮焦香、内里多汁，裹满浓郁的酱汁，鲜而不腥",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸭胸肉、自制酱汁",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 159,
+      "protein": 20,
+      "fat": 5.3,
+      "carbohydrates": 7.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "大红彩椒炒卤牛肉",
+    "description": "一道非常经典且受欢迎的小炒菜品，它结合了卤味的醇厚和蔬菜的清新，色彩艳丽，味道浓郁，是米饭的绝佳搭配",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "牛肉、彩椒",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 235,
+      "protein": 18.5,
+      "fat": 12.7,
+      "carbohydrates": 20.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黑芝麻莴笋丝",
+    "description": "清爽脆嫩的莴笋搭配香醇的黑芝麻，低卡菜品为健康加分。黑芝麻富含钙质，不饱和脂肪酸，补钙乌发，莴笋含钾助排水，且低热量，高纤维，整个菜品清爽不寡淡，适合减脂",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "莴笋、黑芝麻",
+    "keywords": [
+      "养发乌发"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 70,
+      "protein": 2.2,
+      "fat": 4.6,
+      "carbohydrates": 5.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "猴头菇排骨汤",
+    "description": "猴头菇口感嫩滑似肉，具有淡淡的坚果香，具有养胃健脾、助消化的作用，富含多糖肽和氨基酸，有助于增强免疫力，排骨提供蛋白质和钙质，炖煮后汤底浓郁，与猴头菇的清香相得益彰。适合脾胃虚弱、消化不良者食用，能滋阴润燥，补中益气",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "排骨、猴头菇",
+    "keywords": [
+      "养胃健脾",
+      "滋阴润燥",
+      "补中益气"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 217,
+      "protein": 12.6,
+      "fat": 18,
+      "carbohydrates": 2.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "天麻红枣土鸡汤",
+    "description": "传统滋补药膳汤品，融合了天麻的药用价值和土鸡的鲜美，搭配红枣的甘甜，具有安神、补气、养血的功效，适合体虚、头痛眩晕或需要滋补气血的人群食用。汤色清亮，天麻略带药香但无库位，与土鸡的鲜味完美融合，红枣的甜味使整体口感醇厚回甘",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "土鸡、天麻、红枣",
+    "keywords": [
+      "改善睡眠",
+      "补中益气",
+      "养血安神"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 131,
+      "protein": 17.8,
+      "fat": 3.8,
+      "carbohydrates": 6.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "卤味拼盘",
+    "description": "由卤制食材搭配而成，精选自制卤料，卤制1~2个小时，色泽红亮、咸香入味，风味浓郁",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "金钱肚、鸡蛋",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 348,
+      "protein": 34.4,
+      "fat": 16.6,
+      "carbohydrates": 15.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "小银鱼煎蛋",
+    "description": "融合了银鱼的鲜美和鸡蛋的鲜嫩，口感丰富，营养均衡。银鱼高钙低脂，鸡蛋富含蛋白质，特别适合需要补钙人群。银鱼自带海洋鲜味，煎蛋外酥里嫩，口感层次分明",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "小银鱼、鸡蛋",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 219,
+      "protein": 12.4,
+      "fat": 18.1,
+      "carbohydrates": 1.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "金汤虾丸",
+    "description": "手工现制新鲜虾丸，虾肉搭配马蹄清爽解腻，搭配慢火细炖的高汤，味道清淡而不寡淡",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "虾肉、马蹄、高汤打底",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 117,
+      "protein": 7.5,
+      "fat": 8.7,
+      "carbohydrates": 2.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "橄榄菜肉沫四季豆",
+    "description": "结合了肉沫的鲜美，四季豆的清爽，橄榄的咸香，口感丰富",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、四季豆、橄榄菜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 112,
+      "protein": 9.1,
+      "fat": 6.4,
+      "carbohydrates": 7.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "南瓜枸杞小米粥",
+    "description": "口感绵密香甜，具有温和养胃的作用，适合肠胃虚弱的人群",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "南瓜、小米",
+    "keywords": [
+      "温和养胃"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 92,
+      "protein": 2.8,
+      "fat": 1.4,
+      "carbohydrates": 16.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鲜肉馄饨",
+    "description": "薄滑的馄饨皮包裹鲜嫩多汁的肉馅，搭配高汤，口感丰富",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "猪肉、馄饨皮、高汤打底",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 346,
+      "protein": 14.6,
+      "fat": 18.2,
+      "carbohydrates": 62.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "通草黄花菜瘦肉汤",
+    "description": "口感清甜温和，适合产后滋补通乳，同时也具有清热利尿的作用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "黄花菜、通草、瘦肉",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 71,
+      "protein": 7.9,
+      "fat": 2.3,
+      "carbohydrates": 4.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "养气血乌鸡汤",
+    "description": "具有补气养血、增强免疫力的作用，适合产后调理气血",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "乌鸡、党参、红枣",
+    "keywords": [
+      "滋补气血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 109,
+      "protein": 17,
+      "fat": 1.8,
+      "carbohydrates": 5.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鹌鹑蛋烧牛腩",
+    "description": "一道经典的红烧菜式，以其营养均衡、滋味醇厚而深受喜爱，它将牛腩的浓香软烂与鹌鹑蛋的细腻入味完美结合，这道菜秉承了红烧菜系的精髓，味道咸鲜带甜，酱香浓郁",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鹌鹑蛋、牛腩",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 268,
+      "protein": 16.1,
+      "fat": 29.8,
+      "carbohydrates": 4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "小青柠香煎去骨鸡腿肉",
+    "description": "小青柠带有独特的柑橘芬芳，不仅能有效去除鸡肉的油腻感，其清新的酸爽味更能极大地刺激食欲；鸡腿肉通过精准的火候控制，口感外脆里嫩，层次分明，形成强烈的口感对比",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡腿肉、青柠",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 201,
+      "protein": 12.5,
+      "fat": 12.7,
+      "carbohydrates": 9.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "爆炒猪腰",
+    "description": "主打猪腰的脆嫩无腥，猪腰富含优质蛋白质、铁元素，适合腰膝酸软者调理",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪腰、彩椒",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 133,
+      "protein": 15.7,
+      "fat": 4,
+      "carbohydrates": 9.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "芹菜沙茶炒肉饼",
+    "description": "一道融合潮汕风味的菜品，兼具清爽与浓香，沙茶酱的加入赋予菜品浓郁的咸香微甜，芹菜的清脆爽口增添清香",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "自制猪肉饼、芹菜、沙茶酱",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 140,
+      "protein": 10.2,
+      "fat": 7.3,
+      "carbohydrates": 8.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "白菜枸杞肉片汤",
+    "description": "一道清淡鲜美、营养均衡的汤品，以娃娃菜的清甜、肉片的嫩滑和枸杞的天然甘味为特色，以高汤打底，汤汁奶白，口感温润，兼具滋补与解腻的功效",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "瘦肉、高山娃娃菜",
+    "keywords": [
+      "温补不燥"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 85,
+      "protein": 18.5,
+      "fat": 1.2,
+      "carbohydrates": 0
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "太子参龙眼乳鸽汤",
+    "description": "具有温润滋补作用的养生汤品，适合体虚乏力、气血不足的宝妈调理身体",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "乳鸽、太子参、干龙眼",
+    "keywords": [
+      "滋补气血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 101,
+      "protein": 3.1,
+      "fat": 9.3,
+      "carbohydrates": 0.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧黄骨鱼",
+    "description": "红烧黄骨鱼是长江流域经典菜品，尤以湖北、湖南、江浙一带为盛。黄骨鱼富含高蛋白，适合产后补充蛋白质，富含硒、锌，鱼皮胶质润肤养颜，且具有利水消肿的作用",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "黄骨鱼、红烧汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 181,
+      "protein": 18,
+      "fat": 6.8,
+      "carbohydrates": 10.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鱼香茄子",
+    "description": "一道“下饭神器”，它用茄子作为载体，通过神奇的调味，创造出复杂而和谐的味觉交响，其软糯的口感、红亮的色泽和“鱼香”的复合味道，足以让人忘记它其实并无鱼肉",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "茄子、鱼香汁",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 117,
+      "protein": 5.7,
+      "fat": 5.4,
+      "carbohydrates": 13.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "粉丝蒸扇贝",
+    "description": "扇贝的鲜甜，粉丝的爽滑，蒜蓉的香气完美融合，高蛋白，低脂肪，富含微量元素，可补锌补硒，增强免疫力",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "扇贝、粉丝、蒜蓉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 124,
+      "protein": 14,
+      "fat": 1.6,
+      "carbohydrates": 13.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鹿茸菌烧五花肉",
+    "description": "鹿茸菌富含多糖、氨基酸和微量元素，有助于增强免疫力，猪肉提供优质蛋白和铁元素，满足营养摄入需求",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "精选五花肉、鹿茸菌",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 377,
+      "protein": 13.8,
+      "fat": 33.2,
+      "carbohydrates": 6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "排骨胡萝卜粒砂锅粥",
+    "description": "广式经典粥品，以砂锅慢煨的方式，将排骨的肉香、胡萝卜的甜润完美融合，排骨提供优质蛋白质，胡萝卜富含β-胡萝卜素，营养均衡",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "排骨、大米、胡萝卜粒",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 156,
+      "protein": 7.1,
+      "fat": 10,
+      "carbohydrates": 9.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "三丝炒米线",
+    "description": "以爽滑的米线搭配3种配菜快炒而成，口感丰富，营养均衡",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "米线、豆芽、包菜、胡萝卜丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 252,
+      "protein": 6.9,
+      "fat": 3.8,
+      "carbohydrates": 47.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "木瓜公鸡汤",
+    "description": "汤色清亮，口感鲜美不腻，适合女性调理及产后催乳",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "公鸡、木瓜",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 84,
+      "protein": 6.4,
+      "fat": 5,
+      "carbohydrates": 3.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "莲子红枣猪肚汤",
+    "description": "具有健脾和胃、补气安神的作用，适合脾胃虚弱的人群食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪肚、莲子、红枣",
+    "keywords": [
+      "健脾和胃"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 111,
+      "protein": 7.3,
+      "fat": 8.8,
+      "carbohydrates": 0.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧大明虾",
+    "description": "以大明虾为主料，通过红烧技法烹制，虾肉紧实弹牙。富含蛋白质，脂肪含量低，有助于补充DHA",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "大明虾、自制红烧汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 92,
+      "protein": 11.2,
+      "fat": 3.4,
+      "carbohydrates": 4.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "xo酱芹菜炒鱿鱼须",
+    "description": "融合粤式风味，口感鲜嫩脆爽。鱿鱼富含牛磺酸，有护眼降压的作用，芹菜富含膳食纤维，有助于改善产后便秘",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鱿鱼、芹菜、xo酱汁",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 93,
+      "protein": 8.4,
+      "fat": 4.9,
+      "carbohydrates": 4.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鲍汁土豆海带节小肉",
+    "description": "浓郁鲜香、层次丰富的炖菜，将鲍汁的醇厚、土豆的绵软、海带的鲜滑与猪肉的嫩香完美结合，既下饭又营养",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、土豆、海带",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 196,
+      "protein": 18.9,
+      "fat": 5.7,
+      "carbohydrates": 18.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鸡蛋蒸肉饼",
+    "description": "结合细腻的肉糜和嫩滑的蛋液，口感软嫩多汁。富含优质蛋白质，低脂肪",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、鸡蛋",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 190,
+      "protein": 23.6,
+      "fat": 5.8,
+      "carbohydrates": 10.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "一品菌皇汤",
+    "description": "鸡枞菌被誉为“菌中之王”，富含多糖和微量元素，搭配瘦肉炖汤，汤色清亮，鲜香浓郁，既保留了山野的天然风味，又增添了肉类的醇厚，是一道兼具滋补与美味的养生汤品",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、鸡枞菌、虫草花",
+    "keywords": [
+      "增强免疫力",
+      "润燥养胃"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 132,
+      "protein": 6.2,
+      "fat": 11,
+      "carbohydrates": 2.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红菇药膳龙骨汤",
+    "description": "闽南传统药膳汤，汤色红润清亮，龙骨鲜香，红菇甘甜，药膳回甘。红菇富含多糖和铁，补血养颜，搭配药膳温和滋补，适合产后调理",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "龙骨、红菇、党参、山药片",
+    "keywords": [
+      "滋补养颜",
+      "增强免疫力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 116,
+      "protein": 13.3,
+      "fat": 5.6,
+      "carbohydrates": 2.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "糯米蒸鸡中翅",
+    "description": "利用蒸制的烹饪方式，极大程度地保留了食材的原汁原味，口感软糯鲜香，营养丰富。糯米的谷物清香与鸡翅的醇厚肉香相互交融，形成浑然一体的美味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸡翅、糯米",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 246,
+      "protein": 13.4,
+      "fat": 9.8,
+      "carbohydrates": 33.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "素炒三丝",
+    "description": "这道菜的精髓在于口感的层次，不同的食材经过快炒，会呈现出爽脆、软嫩的多样质地，它不依赖浓油赤酱，调味通常以咸鲜为主，旨在突出食材本身的清甜原味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "莴笋、木耳、胡萝卜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 134,
+      "protein": 1.1,
+      "fat": 12.1,
+      "carbohydrates": 5.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "潮州卤水鹅",
+    "description": "此菜品为粤菜潮州帮的镇派名菜，行政总厨精心研制卤料，适合产褥期和哺乳期，菜品皮弹、肉嫩、骨香，鹅肉不饱和脂肪酸占比超过60%，优于鸡鸭",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鹅肉、自制卤汁",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 263,
+      "protein": 23.7,
+      "fat": 17.7,
+      "carbohydrates": 2.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "花生碎烩南瓜",
+    "description": "南瓜的软糯与花生的酥香形成口感二重奏，花生碎经煸炒后释放坚果油脂，替代食用油实现“以素提荤香”。黄金营养配比：南瓜富含β-胡萝卜素+花生不饱和脂肪酸，构成护眼健脑组合",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "老南瓜、花生碎",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 230,
+      "protein": 8.6,
+      "fat": 12.1,
+      "carbohydrates": 23.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉酱拌扁粉",
+    "description": "选用鲜制扁粉能挂住肉汁又不失弹性，选用猪前腿肉手工剁馅，搭配酱汁，浓郁鲜香",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "新鲜扁粉、肉沫",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 377,
+      "protein": 7.5,
+      "fat": 26.5,
+      "carbohydrates": 27.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黑椒意大利面",
+    "description": "现磨黑胡椒的芳香、回甘，构成味觉主轴，意面裹上黑椒酱汁，每一根面条都承载着地中海的阳光和热情",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "意大利面、黑椒汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 372,
+      "protein": 14.2,
+      "fat": 10.2,
+      "carbohydrates": 55.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄豆猪蹄汤",
+    "description": "一道经典的滋补汤品，以猪蹄的丰富胶质和黄豆的植物蛋白完美结合。汤色奶白浓郁，口感醇厚，既能美容养颜，又能强健筋骨，黄豆中的铁元素和猪蹄的滋补作用适合产后用于催乳下奶",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪蹄、黄豆",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 147,
+      "protein": 9.1,
+      "fat": 6.7,
+      "carbohydrates": 13
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鱼丸菠菜粉丝汤",
+    "description": "手打鱼丸的弹润、菠菜的嫩绿、粉丝的滑爽，在热气中交织出海陆双鲜的至味平衡，潮汕人称之为“三鲜和味”。鱼丸提供18种氨基酸，菠菜提供非血红素铁，鱼丸提供维生素B12，兼具营养与美味",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "鱼丸、菠菜、粉丝、高汤打底",
+    "keywords": [
+      "养血润燥",
+      "祛风暖胃"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 144,
+      "protein": 5.8,
+      "fat": 3.7,
+      "carbohydrates": 21.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黑椒菠萝牛肉粒",
+    "description": "优选谷饲牛肉，搭配特选菠萝，牛肉脂肪中的醛类物质散发脂香，菠萝的乙酸异戊酯散发果香，结合黑椒汁的辛香，风味层次丰富，菠萝中含有的菠萝蛋白酶能促进牛肉蛋白质分解吸收，这道菜品是热带风情与肉香的完美碰撞",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "牛肉粒、菠萝、黑椒汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 151,
+      "protein": 25.7,
+      "fat": 1.1,
+      "carbohydrates": 9.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄焖鳝鱼",
+    "description": "经典中式菜肴，以鳝鱼为主料，通过黄焖的烹饪方式（先煎后焖，酱香浓郁）突出鲜嫩口感和醇厚滋味，鳝鱼鲜嫩入味，汤汁醇厚，兼具美味与营养",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鳝鱼",
+    "keywords": [
+      "补气养血",
+      "强筋骨"
+    ],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 152,
+      "protein": 15.1,
+      "fat": 7.8,
+      "carbohydrates": 5.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "腰果西芹炒爽肉",
+    "description": "属于粤菜/江浙菜系的清淡风格菜肴，以猪里脊肉/猪颈肉的嫩滑、西芹的清脆和腰果的香酥为特色，口感层次丰富，味道清爽鲜美，健康低负担",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、西芹、腰果",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 160,
+      "protein": 14.5,
+      "fat": 8.8,
+      "carbohydrates": 6.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "芦笋木耳炒虾仁",
+    "description": "兼具清爽与鲜嫩的经典菜肴，以脆嫩的芦笋、弹滑的木耳、鲜甜的虾仁为主角，搭配简单的调味，突出食材本味，色彩清新，营养丰富",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "虾仁、芦笋、木耳",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 85,
+      "protein": 7.3,
+      "fat": 4.7,
+      "carbohydrates": 4.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "莲藕花生煲瘦肉汤",
+    "description": "经典的广式汤品，以莲藕的粉糯清甜、花生的香醇和瘦肉的鲜美为特色，汤色清澈微白，口感温润回甘。此汤既滋润去燥，又健脾养胃，适合产后调理身体",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、莲藕、花生",
+    "keywords": [
+      "健脾开胃",
+      "补血润燥"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 165,
+      "protein": 10.5,
+      "fat": 3.6,
+      "carbohydrates": 22.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "沙参玉竹老鸭汤",
+    "description": "广府养生汤的代表作之一，以老鸭的温润滋补，搭配沙参、玉竹的甘凉清润，汤色澄黄清亮，滋味鲜甜回甘。此汤尤其适合阴虚火旺体质饮用，能有效缓解口干舌燥，虚火上升等亚健康状态",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "鸭肉、沙参、玉竹",
+    "keywords": [
+      "滋阴降火"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 161,
+      "protein": 12.8,
+      "fat": 3.8,
+      "carbohydrates": 19.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "炭烧猪颈肉",
+    "description": "源自东南亚，尤其是在泰国和越南非常著名，并风靡全球的经典菜肴，以其焦香的外皮、鲜嫩多汁的肉质和浓郁独特的甜咸风味而著称",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪颈肉",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 285,
+      "protein": 10.1,
+      "fat": 25.2,
+      "carbohydrates": 5.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "蒜香柠檬烤鸡腿",
+    "description": "经典的法式菜品，以金黄酥脆的外皮、鲜嫩多汁的肉质和馥郁的风味著称，肉质鲜嫩，带有淡淡蒜香和香草气息。这道菜完美诠释了法式烹饪的哲学—用简单的食材，通过精准的火候与调味，创造厨令人难忘的美味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸡腿肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 169,
+      "protein": 19.2,
+      "fat": 10,
+      "carbohydrates": 0.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "小葱肉沫拌豆腐",
+    "description": "以嫩滑的豆腐为主料，搭配鲜香的肉沫和清爽的小葱，口感丰富，这道菜品的关键在于食材的新鲜和简单调味，突出豆腐的本味与葱、肉的交融，是一道百搭菜品",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "嫩豆腐、肉沫、葱末",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 147,
+      "protein": 11.7,
+      "fat": 9.7,
+      "carbohydrates": 5.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "番茄炒蛋",
+    "description": "色泽鲜艳、酸甜开胃，口感嫩滑，营养丰富。番茄的酸甜与鸡蛋的鲜美完美结合，开胃又营养，番茄富含维生素C和番茄红素，鸡蛋提供优质蛋白质，搭配健康",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸡蛋、番茄",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 126,
+      "protein": 7,
+      "fat": 8.9,
+      "carbohydrates": 5.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "三丝炒面",
+    "description": "流行于中国南方及东南亚地区的经典炒面，以三种不同口感的“丝”状食材搭配面条快炒而成，色泽油亮、镬气十足，既有主食的饱腹感，又有丰富的配菜层次",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "卷面、豆芽、包菜、胡萝卜丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 219,
+      "protein": 7.9,
+      "fat": 7,
+      "carbohydrates": 32.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "海鲜粥",
+    "description": "以新鲜海产与米粥同煮的经典美食，兼具粥品的绵滑与海鲜的鲜甜，营养丰富且易于消化，在沿海地区及东南亚广受欢迎，适合用于产后进行滋补",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "虾、鱼肉、大米",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 123,
+      "protein": 11.9,
+      "fat": 1.8,
+      "carbohydrates": 15.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "通草鲫鱼汤",
+    "description": "鱼肉先煎，后打碎再进行熬煮，最后过滤掉鱼骨头，放入提前准备好的豆腐和鱼肉，整个烹饪过程拒绝科技与狠活，汤汁呈现奶白色，口感鲜甜。鲫鱼具有催乳、健脾利湿、增强免疫力的作用，且富含优质蛋白质、不饱和脂肪酸、钙、磷，适合哺乳期女性食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "鲫鱼、通草",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 91,
+      "protein": 11.2,
+      "fat": 3.7,
+      "carbohydrates": 3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "无花果雪耳瘦肉汤",
+    "description": "兼具美味与养生的广式汤水，以无花果的天然甜润、雪耳的胶质嫩滑与瘦肉的鲜香为特色，汤色清澈微稠，口感清甜滋润，尤其适合长期用嗓人群，既能润肺养颜，又能增强免疫力",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、无花果、干雪耳",
+    "keywords": [
+      "滋阴润肺"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 47,
+      "protein": 3,
+      "fat": 1.2,
+      "carbohydrates": 6.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "风范汁罗氏虾",
+    "description": "融合了粤式风味酱汁和罗氏虾的创意料理，酱汁奶香浓郁，略带芝士和蒜香，口感浓郁却不腻。荞麦面打底，搭配罗氏虾，虾肉鲜甜弹牙，裹上香浓酱汁，拌饭超绝",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "罗氏虾、荞麦面",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 191,
+      "protein": 16.1,
+      "fat": 13.2,
+      "carbohydrates": 2.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉丝酱四季豆",
+    "description": "经典的中式小炒菜品，以四季豆的清脆爽口和肉丝的酱香入味为特色，香鲜微甜的酱汁裹满食材，口感层次丰富，既下饭又营养",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、四季豆",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 112,
+      "protein": 9.1,
+      "fat": 6.4,
+      "carbohydrates": 7.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄豆焖猪蹄",
+    "description": "经典的中式菜品，猪蹄软糯弹牙，黄豆吸饱肉汁，酱香浓郁，富含胶原蛋白，是产后催乳、美容养颜的佳品",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪蹄",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 208,
+      "protein": 18.2,
+      "fat": 14.3,
+      "carbohydrates": 2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鸡汁荷包蛋煮豆笋",
+    "description": "一道融合了多重口感与鲜味的料理，以金黄焦香的荷包蛋与吸汁饱满的腐竹为主角，在醇厚的鸡汁高汤中炖煮，形成鲜香嫩滑的风味组合。这道菜既有荷包蛋的蛋香，又有腐竹的柔韧，汤汁浓郁适口，特别适合拌饭",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "腐竹、荷包蛋",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 166,
+      "protein": 9.8,
+      "fat": 11.3,
+      "carbohydrates": 7.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "松茸肉汁汤",
+    "description": "珍贵山珍松茸与浓郁肉丸完美结合的高端汤品，既有松茸的天然鲜味，又有肉质的醇厚饱满，尤其适合产后进行滋补。松茸富含多种氨基酸和微量元素，搭配手工自制肉丸营养更全面",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "手工自制肉丸、松茸菌",
+    "keywords": [
+      "提升抵抗力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 130,
+      "protein": 16.8,
+      "fat": 5.3,
+      "carbohydrates": 3.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "巴戟肉苁蓉牛骨汤",
+    "description": "结合传统药膳与牛骨的滋补汤品，适合腰膝酸软、体虚乏力的人群。巴戟天和肉苁蓉搭配牛骨熬煮，既能温补阳气，又能补充胶原蛋白，是养生佳品",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "牛骨、巴戟天、肉苁蓉",
+    "keywords": [
+      "温补肾阳"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 188,
+      "protein": 21.5,
+      "fat": 2.4,
+      "carbohydrates": 15.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "香煎巴沙鱼",
+    "description": "以巴沙鱼柳为主料的经典煎制菜肴，其肉质细嫩、无骨无刺、低脂高蛋白，适合用于补充蛋白质。成品外皮微脆，内里雪白柔滑，搭配自制酱汁更显清新爽口",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "巴沙鱼、姜丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 176,
+      "protein": 22.2,
+      "fat": 9.6,
+      "carbohydrates": 0.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "羊肚菌酿虾滑炒百合",
+    "description": "这道菜将羊肚菌的浓郁香气、虾滑的Q弹鲜美和百合的清甜脆嫩完美结合，口感层次丰富。羊肚菌富含氨基酸，虾滑高蛋白低脂，百合润肺安神，整体搭配健康又美味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "虾肉、羊肚菌、新鲜百合",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 120,
+      "protein": 18.8,
+      "fat": 6.3,
+      "carbohydrates": 10.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "油豆腐酿肉",
+    "description": "融合了豆制品醇香与肉馅鲜美的传统家常菜，凭借其外柔内鲜、汁浓味厚的特点。金黄饱满的油豆腐包裹着精心调制的肉馅，经过烹饪后，每一口都能尝到豆香与肉汁交融的满足感",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、油豆腐",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 129,
+      "protein": 11.3,
+      "fat": 7.6,
+      "carbohydrates": 5.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "湘式麻油鸡",
+    "description": "极具代表性的滋补药膳菜品，以浓郁麻油香和嫩滑鸡肉著称。既能驱寒暖身，又蕴含产后调理、气血双补的食养智慧",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "三黄鸡、胡麻油",
+    "keywords": [
+      "滋补气血",
+      "促进子宫恢复"
+    ],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 201,
+      "protein": 20.7,
+      "fat": 12.4,
+      "carbohydrates": 1.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黑米紫薯粥",
+    "description": "充满自然能量的养生粥品，以双色天然食材碰撞出迷人的绛紫色，既拥有黑米的醇厚谷香，又带着紫薯的温柔清甜。这碗粥不仅是视觉上的治愈，更是现代人追求轻养生的早餐首选—低GI、高纤维、富含花青素，堪称“可以吃的抗氧化剂”",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "紫薯、黑米",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 119,
+      "protein": 7,
+      "fat": 3.5,
+      "carbohydrates": 14.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "培根彩椒黑椒乌冬面",
+    "description": "一道融合了乌冬面的Q弹与西式黑椒风味的快炒面食，金黄焦香的培根、脆甜的彩椒裹挟着浓郁的黑椒酱汁，与粗犷的乌冬面碰撞出令人上瘾的咸香滋味",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "乌冬面、青红彩椒、培根、黑椒汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 201,
+      "protein": 6.7,
+      "fat": 9.6,
+      "carbohydrates": 22.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄花菜通草炖龙骨汤",
+    "description": "传承百年的广式滋补汤水，以黄花菜的清甜通草的通络功效与猪龙骨的醇厚相结合，既是产后妈妈们的催乳神器，也是湿热季节里祛湿健脾的靓汤。汤色金黄清透，入口鲜中回甘，藏着岭南药膳清补不燥的养生哲学",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "龙骨、黄花菜、通草",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 174,
+      "protein": 9.9,
+      "fat": 14.2,
+      "carbohydrates": 1.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "海带筒子骨汤",
+    "description": "融合海洋鲜味与骨髓醇香的滋补汤品，乳白的汤色中沉浮着墨玉般的海带，经由童子骨熬出的丰腴胶质，又有海带带来的海洋矿物质鲜味，需注意甲亢者虚避免食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "筒子骨、海带",
+    "keywords": [
+      "健脾利湿"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 281,
+      "protein": 14.9,
+      "fat": 19.6,
+      "carbohydrates": 12.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "虫草花香菇蒸鸡腿",
+    "description": "一道融合山珍鲜味与鸡肉嫩滑的养生蒸菜，以虫草花的天然甜润，香菇的浓郁香气，搭配鸡腿的饱满多汁，通过清蒸锁住原汁原味。这道菜既保留了食材的本真滋味，又兼具滋补功效，尤其适合体虚乏力，免疫力低下的人群食用，堪称蒸出来的免疫力",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡腿肉、虫草花、香菇",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 161,
+      "protein": 21.8,
+      "fat": 7.7,
+      "carbohydrates": 0.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "米粉蒸肉",
+    "description": "承载着中国农耕文明智慧的传统蒸菜，以质朴的粗粮米粉包裹肥瘦相间的五花肉，经蒸汽点化，成就酥糯不腻、肉香与米香交融的经典滋味",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "五花肉、米粉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 396,
+      "protein": 8.4,
+      "fat": 27.8,
+      "carbohydrates": 27.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "醴陵小炒肉",
+    "description": "一道根植于湖南醴陵市井烟火中的香味爆炒经典，以猛火快攻的哲烹饪哲学和独特的风味体系，在湖南小炒肉江湖中劈开一条个性鲜明的美味之路",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、青红彩椒",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 143,
+      "protein": 14.9,
+      "fat": 7.1,
+      "carbohydrates": 5.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "西芹炒牛肚",
+    "description": "凭借西芹的翡翠脆爽与牛肚的弹牙嚼劲，演绎出素菜与内脏完美共舞的味觉奇迹，从粤式茶楼的精致版本到川湘菜式的爆辣变种，这道菜用最朴素的食材结合，征服了从养生派到重口味者的挑剔味蕾",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "牛肚、芹菜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 83,
+      "protein": 9.8,
+      "fat": 3,
+      "carbohydrates": 5.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "水果三宝汤",
+    "description": "一道颠覆传统汤羹概念的果味甜汤，以雪梨、无花果、瘦肉为核心，通过炖煮激发其隐藏的醇厚滋味，既有糖水的清润，又具备药膳的滋补逻辑",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "瘦肉、无花果、雪梨",
+    "keywords": [
+      "滋阴润肺"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 47,
+      "protein": 3,
+      "fat": 1.2,
+      "carbohydrates": 6.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "石斛麦冬炖鸡汤",
+    "description": "一道蕴含中医五行智慧的经典药膳，将石斛的胶质润泽、麦冬的甘凉清润与土鸡的醇厚滋补融为一体。这碗汤既不是大补的浓烈，也非清汤的寡淡，而是在润肺阴、养胃津、清虚火之间找到精妙平衡，特别适合熬夜、用嗓过度、口干舌燥等亚健康状态",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "土鸡、石斛、麦冬",
+    "keywords": [
+      "滋养胃津"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 125,
+      "protein": 14.2,
+      "fat": 6.9,
+      "carbohydrates": 1.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "意大利黑醋麻薯配肋排",
+    "description": "融合东西方味觉美学，以意大利百年陈酿黑醋的醇厚酸香，解构肋排的丰润油脂\n独创《麻薯裹脂技法》：手打糯米麻薯包裹肋排，肋排高温烹饪后形成焦糖色，外裹流心质感米麻薯",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肋排、自制米麻薯",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 293,
+      "protein": 14.6,
+      "fat": 24,
+      "carbohydrates": 4.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "酿藕夹",
+    "description": "煎过的藕片清脆爽口，内馅的肉糜鲜嫩多汁，形成外脆内软、清甜与咸鲜交织的绝妙口感体验，一口咬下，先是感受到藕片的微韧和清脆，随即是内馅的丰腴和鲜美，层次感极强",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、藕",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 252,
+      "protein": 7.7,
+      "fat": 16.1,
+      "carbohydrates": 19.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "彩椒土豆丝炒肉",
+    "description": "看似平凡却暗藏玄机的下饭神器，以土豆丝的爽脆、彩椒的鲜甜和瘦肉的嫩滑，在锅中碰撞出绚丽的色彩与丰富的层次感。彩椒的维生素C促进铁吸收，既满足营养均衡，又拥有让人停不下筷子的魔力",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、土豆丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 202,
+      "protein": 8.9,
+      "fat": 16,
+      "carbohydrates": 6.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "xo酱虾仁烩蛋白",
+    "description": "一道在粤菜中常见的矜贵小炒，以滑若凝脂的蛋白为画布，用虾仁的弹嫩与XO酱的奢华鲜味，挥洒出金玉满堂的意境。这道菜将“烩”的温润与“炒”的镬气完美结合，每一勺都包裹着干贝、火腿浓缩的海洋与陆地精华，堪称平底锅里的米其林",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "虾仁、鸡蛋白",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 122,
+      "protein": 14.2,
+      "fat": 6.3,
+      "carbohydrates": 2.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "牛肉拉面",
+    "description": "中国传统面食的代表之一，以汤清、肉香、面筋道为特色。牛肉拉面不仅是饱腹美食，更体现了中国饮食中工匠精神与地域风味的完美结合",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "拉面、牛肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 243,
+      "protein": 6,
+      "fat": 2.5,
+      "carbohydrates": 19.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "紫菜水饺",
+    "description": "中国传统面食的代表之一，历史悠久，流行于全国各地，尤其在北方地区被视为重要的节庆食品。它以面皮包裹馅料，经水煮而成，形状多样，馅料丰富，搭配高汤和紫菜，风味层次丰富",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "水饺",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 218,
+      "protein": 7.5,
+      "fat": 10.8,
+      "carbohydrates": 26
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "花生猪蹄汤",
+    "description": "经典中式滋补汤品，以猪蹄和花生为主要食材，其汤色乳白，口感浓郁，猪蹄软糯，花生绵密，既有丰富的胶原蛋白，又具备补血养颜的功效，尤其适合产后调理使用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪蹄、花生",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 74,
+      "protein": 4,
+      "fat": 4.1,
+      "carbohydrates": 5.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "干贝时蔬奶白汤",
+    "description": "一道融合海鲜与蔬菜鲜味的精致汤品，以干贝为主料，搭配时令蔬菜炖煮，汤色乳白浓郁，口感鲜甜醇厚，兼具美味与营养",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "瘦肉、干贝（瑶柱）、高山娃娃菜",
+    "keywords": [
+      "提升抵抗力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 24,
+      "protein": 2.4,
+      "fat": 0.2,
+      "carbohydrates": 3.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "上海熏鱼",
+    "description": "上海本帮菜中的经典菜品，鱼肉外酥里嫩，咸甜交织，带有浓郁的酱香和微微烟熏风味，虽名为熏鱼，但实际做法以过油和酱汁浸泡为主",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鲈鱼",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 121,
+      "protein": 13.4,
+      "fat": 5.9,
+      "carbohydrates": 3.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鹿茸菌焖鸭",
+    "description": "一道集滋补与美味于一体的传统山珍菜肴，以鸭肉和鹿茸菌（一种名贵食用菌，形似鹿茸，口感脆嫩）为主料，通过焖煮的方式使菌香和肉香充分融合，这道菜兼具鲜美的口感和食疗价值，鹿茸菌富含多糖和氨基酸，鸭肉滋阴润燥，适合体虚者用于调理",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸭肉、鹿茸菌",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 183,
+      "protein": 13.9,
+      "fat": 12,
+      "carbohydrates": 2.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "烧汁茄夹",
+    "description": "一道经典的家常下饭菜，以茄子为主料，夹入肉馅后煎炸、焖煮，再淋上浓郁鲜香的烧汁，口感外酥里嫩，酱香扑鼻。这道菜结合了茄子的软糯和肉馅的鲜美，尤其适合搭配米饭食用",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、茄子",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 181,
+      "protein": 8.9,
+      "fat": 12,
+      "carbohydrates": 1.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "花生芽炒鸡柳",
+    "description": "花生芽带有一股独特的清香和淡淡的坚果回甘，这与鸡肉的鲜味相得益彰，整道调味通常以咸鲜为主，旨在突出花生芽的清甜和鸡肉的本味，口感清爽不油腻",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、花生芽",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 183,
+      "protein": 13.2,
+      "fat": 10.4,
+      "carbohydrates": 9.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "核桃山药瘦肉汤",
+    "description": "一道温润滋补的汤品，结合了核桃的醇香、山药的绵软和瘦肉的鲜嫩，具有健脾养胃、补脑益智的功效，尤其适合体虚或者是脑力劳动者作为调理使用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、核桃、山药",
+    "keywords": [
+      "健脾养胃"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 105,
+      "protein": 5.9,
+      "fat": 7,
+      "carbohydrates": 5.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄芪乌骨鸡汤",
+    "description": "经典的中医滋补药膳，以乌鸡为主料，搭配黄芪、枸杞等药食同源材料炖煮而成。其特点是汤色金黄，肉质鲜嫩，药香浓郁，具有显著的补气养血、增强免疫等功效，尤其适合体虚产后人群食用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "乌鸡、黄芪",
+    "keywords": [
+      "补气养血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 131,
+      "protein": 20.2,
+      "fat": 2.1,
+      "carbohydrates": 6.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "彩椒酱爆牛蛙丁",
+    "description": "一道色香味俱全的热炒菜肴，以鲜嫩牛蛙肉为主料，搭配彩椒的脆甜和秘制酱汁的浓郁，蛙肉滑嫩，彩椒爽口，既下饭又营养",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "牛蛙、青红彩椒",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 162,
+      "protein": 14.6,
+      "fat": 7.9,
+      "carbohydrates": 8.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "客家酿豆腐",
+    "description": "客家传统名菜之一，以鲜嫩豆腐为外衣，包裹着咸香肉馅，经过煎、焖或蒸制而成。这道菜既有豆腐的嫩滑，又有肉馅的鲜美，口感丰富，体现了客家菜“粗料精做”的饮食智慧",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、嫩豆腐",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 155,
+      "protein": 11.3,
+      "fat": 9.8,
+      "carbohydrates": 6.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "菠萝咕咾肉",
+    "description": "经典的粤式酸甜口味菜肴，以酥脆的炸肉块搭配新鲜菠萝和彩椒，裹上晶莹红亮的糖醋汁而成。其特点是外酥里嫩，酸甜开胃，果香浓郁，是粤菜馆的必点菜品之一",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、菠萝、糖醋汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 220,
+      "protein": 12,
+      "fat": 8.6,
+      "carbohydrates": 23.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "酱爆杏鲍菇片",
+    "description": "杏鲍菇的肉质紧实肥厚，通过恰当的刀工和烹饪，能呈现出一种独特的Q弹爽滑口感，一口咬下，饱含酱汁的菇肉在齿间产生微妙的抵抗感，满足感极强",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "杏鲍菇",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 160,
+      "protein": 21.9,
+      "fat": 7.4,
+      "carbohydrates": 0.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "排骨生菜面",
+    "description": "一道简单又营养的汤面，以鲜嫩的排骨、清爽的生菜和劲道的面条为主料，搭配鲜美的高汤汤底，既暖胃又满足。这道早餐荤素搭配均衡，提供充足的营养成分",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "面条、排骨、生菜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 261,
+      "protein": 11.9,
+      "fat": 15.4,
+      "carbohydrates": 18.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "生滚鱼片粥",
+    "description": "广式传统粥品之一，以现熬白粥为底，加入新鲜鱼片，生滚烫熟而成。其特点是粥底绵滑，鱼片鲜嫩，原汁原味，既暖胃又营养",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "鱼肉、大米",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 115,
+      "protein": 8.2,
+      "fat": 1.3,
+      "carbohydrates": 19.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "葛根鲫鱼汤",
+    "description": "传统药膳汤品，以鲫鱼为主料，搭配葛根等食材炖煮而成。此汤结合了鲫鱼的鲜美和葛根的清甜，具有健脾利湿、滋阴润燥的功效，也比较适合产后用于催乳下奶",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "鲫鱼、葛根",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 112,
+      "protein": 7,
+      "fat": 4.4,
+      "carbohydrates": 11.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鸡枞菌瘦肉汤",
+    "description": "以珍稀野生鸡枞菌和猪瘦肉为主料的鲜美汤品，兼具山野清香与肉类的醇厚，鸡枞菌被誉为菌中之王。其肉质肥厚、鲜甜脆嫩，搭配瘦肉的清淡，形成汤色清亮、鲜味浓郁、营养丰富的特点",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、鸡枞菌",
+    "keywords": [
+      "抗氧化",
+      "延缓衰老"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 61,
+      "protein": 6.2,
+      "fat": 3.4,
+      "carbohydrates": 2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧筒骨",
+    "description": "经典的家常硬菜，以猪筒骨为主料，经过长时间炖煮，使骨髓的精华融入浓油赤酱的汤汁中，其特点是肉质酥烂、骨髓香滑、酱香浓郁，尤其适合喜欢啃骨头的食客，也是补钙的食疗佳品",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "筒子骨",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 214,
+      "protein": 12.2,
+      "fat": 13.3,
+      "carbohydrates": 12.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "西葫芦炒牛肉片",
+    "description": "以西葫芦的清爽脆嫩和牛肉的咸香滑嫩为主，搭配简单调味，口感荤素均衡，鲜嫩多汁",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "牛肉、西葫芦",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 138,
+      "protein": 7,
+      "fat": 8.1,
+      "carbohydrates": 9.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "丝瓜烧蛤蜊",
+    "description": "一道经典的海鲜菜肴，广泛流行于沿海地区，以其清爽鲜美、口感嫩滑而备受喜欢，这道菜完美诠释了如何用最少的调味，激发食材最本真的味道，由海鲜与蔬菜共同谱写的清、甜、鲜、香的滋味，让人回味无穷",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "丝瓜、蛤蜊",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 120,
+      "protein": 13.6,
+      "fat": 5.4,
+      "carbohydrates": 4.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "芹菜炒肉丝",
+    "description": "经典的小炒菜品，以清脆的芹菜和嫩滑的肉丝为主料，搭配简单调味快炒而成。其特点是清爽脆嫩，咸香适口，荤素均衡",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、芹菜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 115,
+      "protein": 8.4,
+      "fat": 5.7,
+      "carbohydrates": 8.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "冬瓜薏仁龙骨汤",
+    "description": "经典的广式祛湿养生汤品，以猪龙骨为主料，搭配清热利水的冬瓜和健脾祛湿的薏仁慢炖而成。其特点是汤色清润，口感鲜甜，祛湿消肿，尤其适合湿热体质者饮用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪龙骨、冬瓜、薏仁",
+    "keywords": [
+      "祛湿消肿"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 187,
+      "protein": 9.7,
+      "fat": 12.6,
+      "carbohydrates": 9.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "墨鱼猪肚汤",
+    "description": "经典的中医滋补药膳，以乌鸡为主料，搭配黄芪、枸杞等药食同源材料炖煮而成。其特点是汤色金黄，肉质鲜嫩，药香浓郁，具有显著的补气养血、增强免疫等功效，尤其适合体虚产后人群食用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "乌鸡、黄芪",
+    "keywords": [
+      "补气养血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 131,
+      "protein": 20.2,
+      "fat": 2.1,
+      "carbohydrates": 6.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "蛋黄焗大明虾",
+    "description": "融合了粤式和东南亚风味的经典海鲜菜肴，以新鲜大明虾为主料，裹上咸蛋黄酱焗制而成。其特点是虾肉Q弹，蛋黄咸香酥沙，口感浓郁，既有海鲜的鲜美，又有蛋黄的醇厚",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "大明虾",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 275,
+      "protein": 22.1,
+      "fat": 12.5,
+      "carbohydrates": 18.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "贝贝瓜煨鸡",
+    "description": "集健康、美味与美观于一体的滋补菜，将鲜嫩的鸡肉与粉糯甘甜的贝贝瓜相结合，通过“煨”这种温和的烹饪方式，使两种食材的风味完美融合，汤汁醇厚，原汁原味，最大程度地保留了食材本身的鲜美滋味",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "贝贝瓜、三黄鸡",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 306,
+      "protein": 18.6,
+      "fat": 15.9,
+      "carbohydrates": 22.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "小青瓜炒爽肉",
+    "description": "一道清爽快手的小炒菜品，以脆嫩的小青瓜和嫩滑的猪肉为主料，搭配简单调味快炒而成。其特点是口感爽脆，荤素均衡，低脂健康",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、小青瓜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 121,
+      "protein": 12.9,
+      "fat": 5.1,
+      "carbohydrates": 6.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "松仁玉米粒",
+    "description": "以甜玉米粒和松仁为主料炒制而成，其特点是色泽鲜艳，口感清甜，松仁香脆，金黄玉米与香脆松仁的搭配，简单却充满幸福感",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "玉米、松仁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 202,
+      "protein": 7.2,
+      "fat": 5.8,
+      "carbohydrates": 29.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "牛肉丸汤圆粉",
+    "description": "融合潮汕牛肉丸与客家汤圆粉特色的暖心主食，以弹牙的牛肉丸和软糯的圆粉为主料，搭配清鲜的高汤，其特点是汤头鲜甜，牛肉丸筋道，既有饱腹感，又温暖脾胃",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "圆粉、牛肉丸",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 213,
+      "protein": 11.9,
+      "fat": 9.1,
+      "carbohydrates": 21.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "云耳黄花菜肉片汤",
+    "description": "传统养生汤品，以云耳、黄花菜和猪瘦肉为主料，慢火炖煮而成。其特点是汤色清亮，口感丰富，营养均衡，兼具补血养颜、润燥安神的功效，尤其适合体虚者或产后催乳食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、云耳、黄花菜",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 71,
+      "protein": 3.7,
+      "fat": 5.3,
+      "carbohydrates": 2.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "灵芝石斛排骨汤",
+    "description": "传统滋补药膳汤品，以灵芝、石斛和猪排骨为主料，其特点是汤色清润，甘甜回香，养生功效显著，尤其适合熬夜、疲劳、免疫力低下及阴虚火旺者调理饮用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "排骨、灵芝、石斛",
+    "keywords": [
+      "提升抵抗力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 105,
+      "protein": 6.8,
+      "fat": 7.2,
+      "carbohydrates": 2.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "荷兰豆炒鱿鱼",
+    "description": "清爽鲜美的快炒菜品，以脆嫩的荷兰豆和弹牙的鲜鱿鱼为主料，搭配蒜香和酱汁快炒而成。其特点是色泽翠绿，口感爽脆，海鲜风味浓郁，既保留了荷兰豆的清甜，又突出了鱿鱼的鲜香",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鱿鱼、荷兰豆",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 169,
+      "protein": 15,
+      "fat": 8,
+      "carbohydrates": 8.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "一品红烧肉",
+    "description": "经典的中式家常硬菜，以五花肉为主料，经过焯水、煎炒、慢炖等多道工序，使肉质酥烂，肥而不腻，裹满浓郁的红烧酱汁。其特点是色泽红亮，入口即化，咸甜交织",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "五花肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 310,
+      "protein": 9.7,
+      "fat": 25.7,
+      "carbohydrates": 10.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧小鸡腿",
+    "description": "以鲜嫩的小鸡腿为主料，通过煎炒和红烧慢炖而成，其特点是酱香浓郁，肉质嫩滑，咸甜适口，是下饭的绝佳选择",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡腿",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 237,
+      "protein": 22.7,
+      "fat": 15.4,
+      "carbohydrates": 2.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "百合蒸南瓜",
+    "description": "一道清淡养生的菜肴，以南瓜和百合为主料，通过清蒸的方式保留食材的原汁原味。其特点是南瓜软糯，百合清甜，口感细腻，是一道低卡的健康餐",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "南瓜、百合",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 106,
+      "protein": 1.4,
+      "fat": 0.2,
+      "carbohydrates": 25.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "什锦蔬菜汤",
+    "description": "一道以多种时令蔬菜为主料的清淡汤品，口感鲜甜爽口，营养丰富，低卡健康，适合作为开胃汤、减脂餐。这道汤既能保留蔬菜的原汁原味，又能通过简单的调味激发食材的天然鲜甜，尤其适合喜欢素食者食用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "时令蔬菜、猪肉",
+    "keywords": [
+      "低卡低脂"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 42,
+      "protein": 2.1,
+      "fat": 1.2,
+      "carbohydrates": 6.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "天麻黄精鸽子汤",
+    "description": "传统药膳滋补汤品，以鸽子为主料，搭配天麻、黄精等药食同源材料炖煮而成。此汤具有补气养阴，益智安神的功效，尤其适合失眠、头痛、体质虚弱者调理食用，也是产后、术后恢复的滋补佳品",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "乳鸽、黄精、天麻",
+    "keywords": [
+      "补气养阴",
+      "益智安神"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 63,
+      "protein": 5,
+      "fat": 4.2,
+      "carbohydrates": 1.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "紫苏焖鸡爪",
+    "description": "一道风味独特、令人回味无穷的粤式菜肴，它将口感胶质丰富的鸡爪与香气霸道的紫苏相结合，通过“焖”这一烹饪方式，创造厨一种浓香入味、软糯弹牙的极致体验",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸡爪",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 183,
+      "protein": 33.7,
+      "fat": 5.2,
+      "carbohydrates": 0
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "蛋黄排骨",
+    "description": "一道色香味俱全的经典菜肴，常见于粤菜或沪菜，在高级中餐厅和家常餐桌上都备受欢迎。它的核心在于咸蛋黄和酥炸排骨的完美结合，创造厨一种令人难以抗拒的复合口感—沙、酥、咸、香",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "排骨、咸蛋黄",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 279,
+      "protein": 15.4,
+      "fat": 22.5,
+      "carbohydrates": 3.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "清蒸桂鱼仔",
+    "description": "经典的粤式蒸鱼菜肴，以鲜活桂鱼为主料，通过清蒸的方式，最大程度保留鱼肉的鲜嫩与原味。其特点是鱼肉雪白细嫩、鲜美无腥、入口即化，搭配葱姜和豉油汁提鲜，堪称餐桌上的鲜味担当",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "桂鱼",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 169,
+      "protein": 24.8,
+      "fat": 7.1,
+      "carbohydrates": 1.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "山药炒肉",
+    "description": "一道营养均衡的小炒菜品，以脆嫩的山药和鲜嫩的猪肉为主料，搭配简单调味快炒而成。其特点是山药爽脆，肉片嫩滑，清淡可口，既保留了山药的清甜，又融合了肉类的鲜美，适合作为下饭菜或健康轻食",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、山药",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 157,
+      "protein": 10.6,
+      "fat": 6.9,
+      "carbohydrates": 13.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "三丝炒东莞米线",
+    "description": "经典的粤式炒粉，以东莞特产米线（细而爽滑）为主料，搭配蔬菜丝快炒而成。其特点是米线干香不腻，根根分明，镬气十足，既有主食的饱腹感，又有丰富的配菜口感，是广东茶餐厅的招牌美食之一",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "米线、豆芽、包菜、胡萝卜丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 252,
+      "protein": 6.9,
+      "fat": 3.8,
+      "carbohydrates": 47.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "番茄肥牛拉面",
+    "description": "融合了日式拉面与中式番茄汤底风味的暖心主食，以酸甜浓郁的番茄汤、嫩滑的肥牛片和筋道的拉面为主料。口感酸甜开胃，汤鲜肉嫩，面条爽滑",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "拉面、肥牛卷、番茄",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 181,
+      "protein": 9.7,
+      "fat": 3.2,
+      "carbohydrates": 26.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉苁蓉猪蹄汤",
+    "description": "传统药膳滋补汤品，以猪蹄和肉苁蓉为主料慢炖而成，其特点是汤色醇厚、猪蹄软糯、药香温和，具有强筋健骨的功效，尤其适合体虚或催乳下奶使用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪蹄、肉苁蓉",
+    "keywords": [
+      "催乳下奶",
+      "强筋健骨"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 106,
+      "protein": 8.2,
+      "fat": 6.4,
+      "carbohydrates": 4.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "奶白财鱼汤",
+    "description": "以鲜活财鱼为主料，通过煎煮使汤色呈现浓郁的奶白色，肉质鲜嫩，汤头醇厚。其特点是汤色如乳，鱼肉细嫩，鲜香无腥，既滋补又开胃，尤其适合术后恢复、产后调理或日常养生",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "财鱼",
+    "keywords": [
+      "促进伤口愈合"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 109,
+      "protein": 19.4,
+      "fat": 2.8,
+      "carbohydrates": 2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "白灼大明虾",
+    "description": "经典的粤式海鲜料理，以鲜活大明虾为主料，通过白灼的烹饪方式，最大程度保留虾的原始鲜甜。其特点是虾肉紧实弹牙，原汁原味，蘸料提鲜，搭配葱姜酱油，堪称海鲜爱好者必尝的极致鲜味",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "大明虾",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 92,
+      "protein": 11.2,
+      "fat": 3.4,
+      "carbohydrates": 4.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧苏格兰蛋",
+    "description": "一道融合了中西风味的创意菜，在传统苏格兰蛋的基础上，结合中式红烧技法改良而成，其特点是酱香浓郁，鸡蛋包裹着香浓的肉馅，外形煎炸定型后再以红烧汁慢炖入味，形成层次丰富的口感",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡蛋、猪肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 220,
+      "protein": 23,
+      "fat": 12.8,
+      "carbohydrates": 3.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "豆豉彩椒炒鸡腿肉",
+    "description": "经过热油爆香，豆豉散发出那种独特、醇厚而霸道的发酵豉香，能瞬间激活味蕾，这种香气深深渗透到鸡肉和彩椒中，构成了整道菜风味的基础，非常开胃",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡肉、彩椒、豆豉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 122,
+      "protein": 8.4,
+      "fat": 7.2,
+      "carbohydrates": 7.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉沫毛豆仁",
+    "description": "经典的小炒菜品，以鲜嫩的毛豆仁和香浓的肉沫为主料，搭配简单调味快炒而成。其特点是毛豆清香，肉沫鲜嫩咸香下饭，既保留了毛豆的脆爽口感，又融合了肉沫的油脂香气，适合作为下饭菜食用",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、毛豆",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 273,
+      "protein": 19.1,
+      "fat": 15.9,
+      "carbohydrates": 15.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "竹荪虫草花扇骨汤",
+    "description": "一道融合山珍与肉香的广式养生汤品，以猪扇骨为基底，搭配竹荪和虫草花慢炖而成，其特点是汤色金黄透亮，竹荪如纱似雪，虫草花甘香馥郁，兼具润肺养颜和增强免疫力的功效",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪扇骨、竹荪、虫草花",
+    "keywords": [
+      "提升抵抗力"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 109,
+      "protein": 12.3,
+      "fat": 2.7,
+      "carbohydrates": 10.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "熟地扇骨汤",
+    "description": "经典的广府药膳汤品以猪扇骨和熟地黄为主料，搭配其他滋补食材慢炖而成。其特点是汤色深褐、甘甜回香、滋补肝肾，尤其适合阴虚体质食用，或用于熬夜、产后等气血亏虚的食补",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪扇骨、熟地",
+    "keywords": [
+      "滋阴养血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 104,
+      "protein": 5.3,
+      "fat": 6.5,
+      "carbohydrates": 6.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧鲈鱼",
+    "description": "经典的中式菜品，以鲜嫩少刺的鲈鱼为主料，通过红烧技法烹制而成。其色泽红亮诱人，鱼肉细嫩入味，酱汁浓郁鲜甜，完美展示了江浙菜浓油赤酱的精髓",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鲈鱼",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 158,
+      "protein": 21.5,
+      "fat": 7.6,
+      "carbohydrates": 0.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "粉丝蒸蟹柳",
+    "description": "一道流行语粤菜馆的经典菜式，它以其“鲜香入味、口感丰富”而著称，完美体现了中式烹饪中“蒸”这以技法对原汁原味的保留与升华",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "蟹柳棒、粉丝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 128,
+      "protein": 11.5,
+      "fat": 2.6,
+      "carbohydrates": 14.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "彩椒茶树菇炒猪柳",
+    "description": "堪称色、香、味、营养俱全的经典小炒菜肴，融合了肉类醇香、菌菇鲜香和彩椒的清甜，它色彩缤纷，口感层次极为丰富，味道咸鲜可口",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、茶树菇、彩椒",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 189,
+      "protein": 10.8,
+      "fat": 7.6,
+      "carbohydrates": 21.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉片冬瓜",
+    "description": "经典的小炒菜品，以冬瓜和猪肉为主要食材，口感清淡鲜美，营养丰富，适合日常饮食",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、冬瓜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 156,
+      "protein": 14.2,
+      "fat": 8.9,
+      "carbohydrates": 5.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "桂圆莲子粥",
+    "description": "传统的中式养生甜粥以桂圆和莲子为主要食材，搭配大米熬煮而成，其口感软糯香甜，具有滋补安神的功效，尤其适合体虚人群使用",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "大米、桂圆、莲子、红枣、枸杞",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 115,
+      "protein": 6.4,
+      "fat": 0,
+      "carbohydrates": 21.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "火腿肠炒面",
+    "description": "一道简单快手的快炒主食，以面条、火腿肠为主要食材，搭配蔬菜和调料快速翻炒而成。它味道香浓，适合早餐或忙碌时的简餐",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "面条、火腿肠、洋葱",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 301,
+      "protein": 8.8,
+      "fat": 9.8,
+      "carbohydrates": 44.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "药膳公鸡汤",
+    "description": "传统滋补汤品，以公鸡为主料，搭配多种中药材炖煮而成。其汤色清亮，肉质鲜嫩，具有温补气血、强身健体的功效，尤其适合产后调理或体虚人群食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "公鸡",
+    "keywords": [
+      "催乳下奶"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 248,
+      "protein": 23.1,
+      "fat": 10.8,
+      "carbohydrates": 22.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "陈皮莲子筒子骨汤",
+    "description": "传统广式养生汤，以猪筒子骨为主料，搭配陈皮、莲子等食材慢炖而成，汤色清润，滋味醇厚，兼具健脾开胃、润肺安神的功效，适合四季滋补，尤其适合食欲不振、脾胃虚弱或睡眠不佳者食用",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "筒子骨、陈皮、莲子",
+    "keywords": [
+      "健脾开胃",
+      "润肺安神"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 175,
+      "protein": 16.8,
+      "fat": 12,
+      "carbohydrates": 2.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黑椒牛仔骨",
+    "description": "经典的中西融合菜肴，选用鲜嫩多汁的牛仔骨，搭配浓郁黑胡椒酱烹制而成，其肉质酥软，酱汁香浓，兼具西餐的精致与中餐的锅气",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "牛仔骨、黑椒汁",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 231,
+      "protein": 10.2,
+      "fat": 19.6,
+      "carbohydrates": 3.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "荷叶香菇虾米蒸排骨",
+    "description": "经典的粤式蒸菜，以排骨为主料，搭配干香菇和虾米蒸制而成。其肉质鲜嫩多汁，香菇和虾米的鲜香充分渗透到排骨中，口感丰富，营养均衡",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "排骨、香菇、河虾",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 285,
+      "protein": 13,
+      "fat": 14.7,
+      "carbohydrates": 25.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "莴笋木耳炒肉",
+    "description": "一道清爽与鲜香兼备的小炒菜品，以脆嫩的莴笋、弹滑的黑木耳和鲜香的肉片搭配快炒而成。其口感层次丰富，莴笋的清脆、木耳的爽滑、肉片的嫩滑在口中交织，低脂高纤维的特点尤其适合现代健康饮食需求",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、莴笋、木耳",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 122,
+      "protein": 10.2,
+      "fat": 5.9,
+      "carbohydrates": 7.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "西蓝花烧墨鱼",
+    "description": "一道鲜香浓郁的海鲜菜肴，以嫩滑的墨鱼仔为主料，通过酱烧的烹饪方式，使其充分吸收酱汁的咸甜口味。其特点是墨鱼仔Q弹爽口，酱香扑鼻，色泽红亮，尤其受到喜欢海鲜的人群喜爱",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "新鲜墨鱼、西蓝花",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 282,
+      "protein": 23,
+      "fat": 15.2,
+      "carbohydrates": 14.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红菇莲藕瘦肉汤",
+    "description": "兼具滋补与美味的养生汤品，以红菇、莲藕和猪瘦肉为主料，搭配慢炖而成，汤色清润透红，味道鲜甜回甘，既保留了红菇的天然香气，又融合了莲藕的粉糯口感，是温补的佳选",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、红菇、莲藕",
+    "keywords": [
+      "健脾胃",
+      "补气血"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 61,
+      "protein": 5.7,
+      "fat": 2.6,
+      "carbohydrates": 3.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "杜仲巴戟天炖龙骨汤",
+    "description": "传统滋补药膳以龙骨为主料，搭配杜仲、巴戟天等药食同源材料慢炖而成，汤色醇厚，药香浓郁而不苦涩，具有强筋健骨的功效，尤其适合腰膝酸软者调理身体",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪龙骨、杜仲、巴戟天",
+    "keywords": [
+      "强健筋骨"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 105,
+      "protein": 6.8,
+      "fat": 7.2,
+      "carbohydrates": 2.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧开背罗氏虾",
+    "description": "色香味俱全的菜肴，以肥美的罗氏虾为主料，通过开配处理，充分吸收酱汁。红烧做法让虾肉弹鲜嫩弹牙的同时裹满浓郁酱香，橘红的虾壳与油亮酱汁交相辉映，堪称视觉与味觉的双重享受",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "罗氏虾",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 336,
+      "protein": 56.6,
+      "fat": 5.3,
+      "carbohydrates": 14.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "豉油鸭",
+    "description": "一道经典的粤式沙拉菜肴，以整鸭为主料，通过豉油卤制而成。其色泽红润油润，鸭肉嫩滑入味，酱香浓郁中带着微微甜味，既可作为冷盘宴客，也能热食下饭，是广式烧腊店的招牌美味之一",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸭肉",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 313,
+      "protein": 16.6,
+      "fat": 26.1,
+      "carbohydrates": 2.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "西葫芦虫草花炒蛋",
+    "description": "一道融合了蔬菜的清爽、菌菇的鲜香和鸡蛋的醇厚的小炒菜品。它的味道以清淡、咸鲜为主，口感上既有西葫芦的脆嫩多汁，又有虫草独特的韧劲嚼头，再加上鸡蛋的蓬松软嫩，层次非常丰富",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鸡蛋、西葫芦、虫草花",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 131,
+      "protein": 8.8,
+      "fat": 8.6,
+      "carbohydrates": 4.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉沫秋葵",
+    "description": "兼具营养与口感的创意菜品，以秋葵的粘滑鲜嫩搭配肉末的咸香，形成独特的味觉体验。秋葵如翡翠般碧绿的外表裹着金黄肉末，不仅颜值出众，更因秋葵的植物粘液与肉质融合，产生令人惊喜的嫩滑口感",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、秋葵",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 212,
+      "protein": 10.5,
+      "fat": 17.4,
+      "carbohydrates": 4.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "香菇肉饼炒饭",
+    "description": "融合了煎肉饼的焦香与炒饭的锅气的创意主食，将多汁的香菇肉饼切块后，与粒粒分明的米饭同炒，肉香、菌香与米香三重奏，每一口都能吃到酥嫩的肉粒与弹滑的香菇，堪称炒饭界的豪华版",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "米饭、香菇、猪肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 213,
+      "protein": 5.9,
+      "fat": 8.7,
+      "carbohydrates": 28.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "木耳肉丝汤粉",
+    "description": "温暖鲜美的汤粉料理，以滑嫩的米粉为基底，搭配脆嫩的黑木耳，鲜鲜香的瘦肉丝，汤头清澈却滋味浓郁",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "圆粉、木耳、猪肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 233,
+      "protein": 8.5,
+      "fat": 2.2,
+      "carbohydrates": 45.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "丝瓜肉片汤",
+    "description": "一道清爽鲜美的汤品，以嫩丝瓜的清甜搭配猪肉片的滑嫩，汤色碧绿透亮，入口柔润回甘，夏季食用消暑解腻，秋季品尝温润养胃，堪称四季皆宜的国民汤水，丝瓜络具有疏通乳腺经络的作用，可以辅助下奶",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、丝瓜",
+    "keywords": [
+      "疏通经络"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 29,
+      "protein": 3.6,
+      "fat": 1,
+      "carbohydrates": 1.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "霸王花玉竹扇骨汤",
+    "description": "经典的广式老火靓汤，以清润著称，尤其适合春夏季节去燥润肺。霸王花的清香、玉竹的甘甜与猪扇骨的油脂完美融合，汤色如琥珀般清亮，入口绵滑回甘，既是养生药膳，又是味觉享受",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "猪扇骨、霸王花、玉竹",
+    "keywords": [
+      "清润降燥"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 184,
+      "protein": 9,
+      "fat": 12.1,
+      "carbohydrates": 10.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "广式白切鸡",
+    "description": "粤菜中的经典代表，以皮爽肉滑为最高境界。这道菜看似简单，实则暗藏玄机，用精准的水温控制，最大程度保留鸡的原汁原味。金黄透亮的鸡皮包裹着凝脂般的鸡肉，裹上姜葱蓉或沙姜豉油，每一口都是最基本味的极致诠释",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡肉",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 238,
+      "protein": 24,
+      "fat": 13.5,
+      "carbohydrates": 3.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "海鲜菇炒猪柳",
+    "description": "融合菌菇鲜香与肉嫩多汁的快手小炒，海鲜菇的脆嫩清甜与猪里脊的嫩滑相得益彰，酱香浓郁却不掩食材本味。5分钟快火快炒的烹饪方式，完美保留海鲜菇的爽脆和肉质，堪称下饭届的隐形冠军",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、海鲜菇",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 146,
+      "protein": 7.1,
+      "fat": 11.8,
+      "carbohydrates": 3.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄瓜炒鱼片",
+    "description": "一道清爽鲜嫩的小炒菜品，结合了黄瓜的脆爽和鱼片的滑嫩口感，层次丰富，低脂高蛋白，适合追求健康饮食的人群",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鲈鱼片、黄瓜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 168,
+      "protein": 10.2,
+      "fat": 10.8,
+      "carbohydrates": 7.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "白萝卜酿肉",
+    "description": "鲜美的肉馅填入清甜的白萝卜中，蒸制后萝卜吸饱，肉汁软糯鲜香，肉馅嫩滑多汁，口感层次丰富。这道菜既保留了白萝卜的清爽，又融合了肉馅的浓郁，营养均衡",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、白萝卜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 244,
+      "protein": 9.2,
+      "fat": 20,
+      "carbohydrates": 7.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "无花果玉米炖龙骨汤",
+    "description": "清甜滋润的广式养生汤品，以猪龙骨为主料，搭配无花果干、玉米等食材慢炖而成，汤色金黄透亮，味道甘甜鲜美，兼具润燥、健脾和滋补的功效，特别适合需要温补的人群",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪龙骨、无花果、玉米",
+    "keywords": [
+      "滋阴润燥"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 184,
+      "protein": 9,
+      "fat": 12.1,
+      "carbohydrates": 10.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "四神乳鸽汤",
+    "description": "源自中医食疗的养生汤品，以传统四神汤为基础，搭配乳鸽炖煮而成，汤色清润，味道甘香，兼具健脾祛湿，补中益气的功效，尤其适合脾胃虚弱，湿气重的人群",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "乳鸽、茯苓、淮山、莲子、芡实",
+    "keywords": [
+      "健脾祛湿",
+      "补中益气"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 262,
+      "protein": 8.4,
+      "fat": 23.6,
+      "carbohydrates": 3.9
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "黄豆酱焖多宝鱼",
+    "description": "经典的广式菜品，以肉质细嫩的多宝鱼搭配咸香醇厚的黄豆酱，经过简单焖煮，让鱼肉充分吸收酱香，同时保持鲜嫩口感。这道菜既有海鲜的原汁原味，又有浓郁的酱香风味，下饭又开胃",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "多宝鱼",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 192,
+      "protein": 21.2,
+      "fat": 10.5,
+      "carbohydrates": 3.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "萝卜烧牛腩",
+    "description": "经典的中式菜品，将牛腩的醇厚肉香与萝卜的甘甜完美融合。经过小火慢炖，牛腩酥烂入味，萝卜吸饱肉汁，入口即化，汤汁浓郁，无论是配米饭、面条还是馒头，都让人欲罢不能",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "牛腩、萝卜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 276,
+      "protein": 11.7,
+      "fat": 22.9,
+      "carbohydrates": 6.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "鲍汁香菇扣鹅掌",
+    "description": "传统粤菜中的高档菜品，以鹅掌的交汁丰润，香菇的醇厚吸汁，搭配浓稠鲜美的鲍鱼汁，口感层次丰富。鹅掌炖至酥烂脱骨，入口即化，香菇保吸爆汁精华，每一口都充满奢华满足感",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "鹅掌、香菇",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 132,
+      "protein": 30.7,
+      "fat": 0.6,
+      "carbohydrates": 0.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "芹菜香干炒肉",
+    "description": "一道简单却充满层次的菜品，脆嫩的芹菜豆香，浓郁的香干和鲜美的肉片完美结合，口感丰富，咸香适口。这道菜操作快捷，营养均衡",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、芹菜、香干",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 199,
+      "protein": 9.6,
+      "fat": 16.1,
+      "carbohydrates": 4.3
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "肉酱拌面",
+    "description": "一道简单却充满灵魂的主食，香浓的肉酱裹挟着劲道的面条，每一根都饱含醇厚的酱汁，口感丰富，咸香中带着微微回甜",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "面条、猪肉",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 377,
+      "protein": 7.5,
+      "fat": 26.5,
+      "carbohydrates": 27.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "墨鱼排骨粥",
+    "description": "广东沿海地区的特色粥食，将墨鱼的海洋鲜味与排骨的肉香完美融合，米粥熬制开花绵密，入口顺滑鲜美。这道粥品既保留了海鲜的清甜，又因排骨的加入而更显醇厚",
+    "category": "菜品",
+    "meal_type": "breakfast",
+    "ingredients": "大米、墨鱼、排骨",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 156,
+      "protein": 7.1,
+      "fat": 10,
+      "carbohydrates": 9.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "三鲜汤",
+    "description": "一道经典的中式汤品，以三种鲜味食材为主料，汤色清亮，味道鲜美，制作简单且营养丰富。不同地区的三鲜组合各有特色，既可清淡雅致，也可浓郁开胃",
+    "category": "汤品",
+    "meal_type": "lunch",
+    "ingredients": "瘦肉、菌菇",
+    "keywords": [
+      "调和脾胃",
+      "滋阴润燥"
+    ],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 104,
+      "protein": 7.8,
+      "fat": 7.5,
+      "carbohydrates": 1.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "板栗烧鸡中翅",
+    "description": "一道经典的中式菜肴，属于鲁菜活江南菜系，以其色泽红亮、味道咸鲜微甜、口感层次丰富而深受大众喜爱。板栗自带的淀粉在烹饪中融化，与油脂和调料共同形成了一种自然勾芡的效果，让汤汁浓稠鲜美，微甜的回味恰到好处地中和了油腻感",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "鸡中翅、板栗",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 208,
+      "protein": 17,
+      "fat": 9.1,
+      "carbohydrates": 14.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "沙姜马蹄煨猪肚",
+    "description": "经典的粤式滋补菜，将沙姜的独特辛香、马蹄的清甜爽脆与猪肚的肥厚胶质完美融合。猪肚煨至软糯不失嚼劲，吸饱沙姜香气，马蹄则提供清脆口感，整道菜层次丰富，作为温补佳品食用",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肚、马蹄",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 157,
+      "protein": 21.4,
+      "fat": 7.3,
+      "carbohydrates": 0.1
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "红烧藕丸",
+    "description": "将莲藕的清甜与肉香的浓郁完美结合的传统菜肴，手工剁制的藕粒与肉末混合，炸至金黄后红烧，外皮酥香微焦，内里软嫩多汁，藕粒的脆爽口感尤为点睛，这道菜既有家常的亲切感，又因藕香独特而显得别致",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、莲藕",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 152,
+      "protein": 5.2,
+      "fat": 5.2,
+      "carbohydrates": 22.5
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "花菜炒肉",
+    "description": "一道经典的小炒菜品，以脆嫩的花菜和鲜香的肉片为主料，搭配简单的调味料快炒而成。这道菜口感丰富，花菜爽脆清甜，肉片嫩滑入味，既下饭又营养均衡",
+    "category": "菜品",
+    "meal_type": "lunch",
+    "ingredients": "猪肉、花菜",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 124,
+      "protein": 11,
+      "fat": 6.5,
+      "carbohydrates": 6.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "竹荪干贝腱子肉汤",
+    "description": "融合山珍海味的精品汤品，竹荪的网状结构吸饱汤汁，干贝提鲜增味，腱子肉提供醇厚肉香，汤色清澈金黄，入口鲜甜回甘，兼具滋补与美味，特别适合体虚调理",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、竹荪、干贝",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 111,
+      "protein": 7.8,
+      "fat": 3.2,
+      "carbohydrates": 13.2
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "牛肝菌老鸭汤",
+    "description": "一道融合云南野味与江南滋补智慧的传统汤品，老鸭的醇厚与牛肝菌的木质芳香相互成就，糖色如琥珀般清亮，菌香与肉香层层递进，被誉为润燥第一汤，尤其适合体虚乏力、咽干的人群食用",
+    "category": "汤品",
+    "meal_type": "dinner",
+    "ingredients": "鸭肉、羊肚菌",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 162,
+      "protein": 4.6,
+      "fat": 15.5,
+      "carbohydrates": 0.8
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "蒜香柠檬烤巴沙鱼",
+    "description": "以巴沙鱼为主料的经典菜肴，其肉质细嫩、无骨无刺、低脂高蛋白，适合用于补充蛋白质。成品外皮微脆，内里雪白柔滑，搭配自制酱汁更显清新爽口",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "巴沙鱼",
+    "keywords": [],
+    "chefRecommend": true,
+    "nutritional_info": {
+      "calories": 176,
+      "protein": 22.2,
+      "fat": 9.6,
+      "carbohydrates": 0.4
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "沙茶肉丝芥兰苗",
+    "description": "经典的潮汕菜品，嫩滑的肉丝裹着沙茶酱的醇香，搭配脆嫩的芥兰苗，咸香中带着微辣微甜，镬气扑鼻。这道菜完美展现了潮汕人对火候和酱料的精准把控",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪肉、芥兰苗",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 146,
+      "protein": 6,
+      "fat": 11.3,
+      "carbohydrates": 6.7
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "海皇豆腐",
+    "description": "一道融合山珍海味的经典粤菜嫩豆腐，如凝脂般入口即化，搭配鲜虾、蟹肉、鱿鱼等海鲜，裹以金黄浓稠的芡汁，每一口都充满海洋的鲜甜与豆香的醇厚，这道菜看似清淡，却暗藏奢华",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "内脂豆腐、虾、鱿鱼",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 175,
+      "protein": 17.5,
+      "fat": 1.4,
+      "carbohydrates": 11.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  },
+  {
+    "name": "焦香手抓竹扇骨",
+    "description": "一道融合烤味与卤味精髓的创意菜，精选竹扇骨经秘制卤煮后高温快炸，外皮焦脆如纸，内里肉质纤维分明却酥烂多汁，手持骨边边撕边啃，肉香混合着骨髓的纸香，口味层次丰富",
+    "category": "菜品",
+    "meal_type": "dinner",
+    "ingredients": "猪扇骨",
+    "keywords": [],
+    "chefRecommend": false,
+    "nutritional_info": {
+      "calories": 204,
+      "protein": 19.8,
+      "fat": 10.6,
+      "carbohydrates": 7.6
+    },
+    "store": "爱睦轻予·德思勤店"
+  }
+]

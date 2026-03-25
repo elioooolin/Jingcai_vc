@@ -147,7 +147,8 @@ Page({
         name: 'getAdminOrders',
         data: {
           store: 'all', // 获取所有门店的订单
-          date: '' // 不限制日期
+          date: '', // 不限制日期
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -406,7 +407,8 @@ Page({
         name: 'updateOrderDetails',
         data: {
           orderId: this.data.orderId,
-          updatedOrderDetails: this.data.editOrderDetails
+          updatedOrderDetails: this.data.editOrderDetails,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 

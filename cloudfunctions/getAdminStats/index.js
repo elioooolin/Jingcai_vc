@@ -6,11 +6,24 @@ cloud.init({
 });
 
 const db = cloud.database();
+const PAGE_SIZE = 100;
 
 exports.main = async (event, context) => {
   console.log('获取管理员统计数据请求:', event);
   
   try {
+    const currentUser = await getCurrentUser(event);
+    if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) {
+      return {
+        success: false,
+        message: '需要管理员或员工权限',
+        stats: {
+          totalCustomers: 0,
+          pendingOrders: 0
+        }
+      };
+    }
+
     // 获取今天的日期
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD 格式
@@ -19,18 +32,16 @@ exports.main = async (event, context) => {
     
     // 1. 计算在住客户数
     // 条件：userType为customer, status为active，且 checkInDate + totalDays 不晚于今天
-    const usersResult = await db.collection('users')
-      .where({
-        userType: 'customer',
-        status: 'active',
-      })
-      .get();
+    const usersResult = await getAllDocuments('users', {
+      userType: 'customer',
+      status: 'active',
+    });
     
-    console.log('获取到的用户数据:', usersResult.data.length);
+    console.log('获取到的用户数据:', usersResult.length);
     
     let activeCustomers = 0;
     
-    for (const user of usersResult.data) {
+    for (const user of usersResult) {
       
       if (user.checkInDate && user.totalDays && user.isMock !== true) {
         try {
@@ -58,16 +69,14 @@ exports.main = async (event, context) => {
     
     // 2. 计算待确认订单数
     // 条件：status为pending且isMock不为true
-    const ordersResult = await db.collection('orders')
-      .where({
-        status: 'pending'
-      })
-      .get();
+    const ordersResult = await getAllDocuments('orders', {
+      status: 'pending'
+    });
     
-    console.log('获取到的pending订单数据:', ordersResult.data.length);
+    console.log('获取到的pending订单数据:', ordersResult.length);
     
     // 过滤掉isMock为true和isActive为false的订单
-    const pendingOrders = ordersResult.data.filter(order => 
+    const pendingOrders = ordersResult.filter(order => 
       order.isMock !== true && order.isActive !== false
     );
     
@@ -98,3 +107,89 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+async function getCurrentUser(event = {}) {
+  const { sessionToken } = event;
+
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  const user = userResult.data[0];
+  return {
+    ...user,
+    role: getUserRole(user)
+  };
+}
+
+async function getAllDocuments(collectionName, whereCondition) {
+  let allData = [];
+  let skip = 0;
+
+  while (true) {
+    const result = await db.collection(collectionName)
+      .where(whereCondition)
+      .skip(skip)
+      .limit(PAGE_SIZE)
+      .get();
+
+    const batch = result.data || [];
+    allData = allData.concat(batch);
+
+    if (batch.length < PAGE_SIZE) {
+      break;
+    }
+
+    skip += PAGE_SIZE;
+  }
+
+  return allData;
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}

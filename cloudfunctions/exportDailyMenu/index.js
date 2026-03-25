@@ -4,7 +4,7 @@
  */
 
 const cloud = require('wx-server-sdk');
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 
 // 初始化云开发
 cloud.init({
@@ -37,6 +37,14 @@ exports.main = async (event, context) => {
   }
   
   try {
+    const currentUser = await getCurrentUser(event);
+    if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) {
+      return {
+        success: false,
+        message: '需要管理员或员工权限'
+      };
+    }
+
     // 构建日期查询条件
     const targetDate = new Date(date);
     const startOfDay = new Date(targetDate);
@@ -129,28 +137,8 @@ exports.main = async (event, context) => {
     console.log('Excel数据行数:', excelData.length);
     
     // 9. 生成Excel文件
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-    
-    // 设置列宽 - 第一列是标题，后续列是客户数据
-    const colWidths = [
-      { wch: 20 } // 第一列（标题列）稍微宽一些
-    ];
-    
-    // 为每个客户添加列宽设置（使用排序后的订单数量）
-    for (let i = 0; i < sortedOrders.length; i++) {
-      colWidths.push({ wch: 15 }); // 客户数据列
-    }
-    
-    worksheet['!cols'] = colWidths;
-    
-    XLSX.utils.book_append_sheet(workbook, worksheet, '餐单');
-    
-    // 生成Excel文件buffer
-    const excelBuffer = XLSX.write(workbook, { 
-      type: 'buffer', 
-      bookType: 'xlsx' 
-    });
+    const workbook = await createWorkbook(excelData, sortedOrders.length);
+    const excelBuffer = await workbook.xlsx.writeBuffer();
     
     console.log('Excel文件生成成功，大小:', excelBuffer.length, 'bytes');
     
@@ -219,6 +207,68 @@ exports.main = async (event, context) => {
   }
 };
 
+async function getCurrentUser(event = {}) {
+  const { sessionToken } = event;
+
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  const user = userResult.data[0];
+  return {
+    ...user,
+    role: getUserRole(user)
+  };
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}
+
 /**
  * 生成Excel数据
  */
@@ -249,10 +299,12 @@ function generateExcelData(orders, usersMap, store, date) {
   const dinnerDish2Row = [''];
   const dinnerSoupRow = ['晚餐汤品'];
   const supplementRow = ['高补餐'];
+  const dietPreferenceRow = ['饮食偏好/忌口'];
   const specialRequirementsRow = ['特殊备注'];
 
   orders.forEach(order => {
     const orderDetails = order.order_details || {};
+    const user = usersMap[order.userId] || {};
     breakfastRow.push(orderDetails.breakfast);
     const lunch = orderDetails.lunch || [];
     lunchDish1Row.push(lunch[0] || '');
@@ -263,11 +315,74 @@ function generateExcelData(orders, usersMap, store, date) {
     dinnerDish2Row.push(dinner[1] || '');
     dinnerSoupRow.push(dinner[2] || '');
     supplementRow.push(orderDetails.supplement || '');
+    dietPreferenceRow.push(user.dietPreference || '');
     specialRequirementsRow.push(orderDetails.special_requirements);
   });
-  excelData.push(breakfastRow, lunchSoupRow, lunchDish1Row, lunchDish2Row, dinnerSoupRow, dinnerDish1Row, dinnerDish2Row, supplementRow, specialRequirementsRow);
+  excelData.push(
+    breakfastRow,
+    lunchSoupRow,
+    lunchDish1Row,
+    lunchDish2Row,
+    dinnerSoupRow,
+    dinnerDish1Row,
+    dinnerDish2Row,
+    supplementRow,
+    dietPreferenceRow,
+    specialRequirementsRow
+  );
 
   return excelData;
+}
+
+async function createWorkbook(excelData, orderCount) {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('餐单');
+
+  excelData.forEach((row) => {
+    worksheet.addRow(row);
+  });
+
+  worksheet.columns = [
+    { width: 20 },
+    ...Array.from({ length: orderCount }, () => ({ width: 15 }))
+  ];
+
+  worksheet.eachRow((row) => {
+    row.eachCell((cell) => {
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: 'left',
+        wrapText: true
+      };
+    });
+  });
+
+  const highlightRows = new Set(['高补餐', '饮食偏好/忌口']);
+  worksheet.eachRow((row) => {
+    const rowLabel = row.getCell(1).value;
+    const shouldHighlight = typeof rowLabel === 'string' && highlightRows.has(rowLabel);
+    if (!shouldHighlight) {
+      return;
+    }
+
+    row.eachCell((cell, colNumber) => {
+      if (colNumber === 1) {
+        return;
+      }
+
+      const value = cell.value;
+      if (value === null || value === undefined || String(value).trim() === '') {
+        return;
+      }
+
+      cell.font = {
+        bold: true,
+        color: { argb: 'FFFF0000' }
+      };
+    });
+  });
+
+  return workbook;
 }
 
 /**

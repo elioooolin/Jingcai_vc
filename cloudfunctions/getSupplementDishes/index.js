@@ -16,15 +16,34 @@ const db = cloud.database();
  * 云函数入口函数
  */
 exports.main = async (event, context) => {
-  console.log('开始获取高补品数据...');
+  const { store } = event;
+  console.log('开始获取高补品数据...', { store });
   
   try {
-    // 查询所有高补品
-    const supplementResult = await db.collection('dishes')
-      .where({
-        category: '高补品'
-      })
-      .get();
+    let supplementResult;
+
+    if (store) {
+      supplementResult = await db.collection('dishes')
+        .where({
+          category: '高补品',
+          store
+        })
+        .get();
+
+      if (supplementResult.data.length === 0) {
+        supplementResult = await db.collection('dishes')
+          .where({
+            category: '高补品'
+          })
+          .get();
+      }
+    } else {
+      supplementResult = await db.collection('dishes')
+        .where({
+          category: '高补品'
+        })
+        .get();
+    }
     
     console.log(`找到 ${supplementResult.data.length} 个高补品`);
     
@@ -36,8 +55,10 @@ exports.main = async (event, context) => {
       };
     }
     
+    const dedupedDishes = dedupeByName(supplementResult.data);
+
     // 处理高补品数据，添加图片URL
-    const supplementDishes = supplementResult.data.map(dish => {
+    const supplementDishes = dedupedDishes.map(dish => {
       // 构建图片URL
       const imageFileId = `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/dish_pics/${dish.name}.JPG`;
       
@@ -85,3 +106,17 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+function dedupeByName(dishes) {
+  const dishMap = new Map();
+
+  dishes.forEach((dish) => {
+    const key = String(dish.name || '').trim();
+    if (!key) return;
+    if (!dishMap.has(key)) {
+      dishMap.set(key, dish);
+    }
+  });
+
+  return Array.from(dishMap.values());
+}

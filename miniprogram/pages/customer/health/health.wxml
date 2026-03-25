@@ -6,7 +6,7 @@
   </view>
 
   <!-- Tabs区域 -->
-  <view class="tabs-container">
+  <view class="tabs-container" wx:if="{{!isVisitor}}">
     <!-- Tab头部 -->
     <view class="tabs-header">
       <view 
@@ -155,7 +155,7 @@
   </view>
 
   <!-- 加载状态 -->
-  <view wx:if="{{loading}}" class="loading-overlay">
+  <view wx:if="{{loading && !isVisitor}}" class="loading-overlay">
     <view class="loading-spinner"></view>
     <text class="loading-text">正在加载健康档案...</text>
   </view>

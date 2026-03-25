@@ -11,47 +11,21 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
+  const { sessionToken } = event
   
   try {
-    console.log('获取用户信息请求:', { openid })
-    
-    if (!openid) {
-      return {
-        success: false,
-        error: 'INVALID_OPENID',
-        message: '用户身份验证失败'
-      }
-    }
-    
-    // 从auth表获取用户绑定的手机号
-    const authQuery = await db.collection('auth').where({
-      _openid: openid
-    }).get()
-    
-    if (authQuery.data.length === 0) {
+    console.log('获取用户信息请求:', { openid, hasSessionToken: !!sessionToken })
+
+    const user = await getCurrentUser({ db, cloud, sessionToken })
+
+    if (!user) {
       return {
         success: false,
         error: 'USER_NOT_BOUND',
         message: '用户未绑定手机号'
       }
     }
-    
-    const authRecord = authQuery.data[0]
-    
-    // 通过手机号获取用户详细信息
-    const userQuery = await db.collection('users').where({
-      phone: authRecord.phone
-    }).get()
-    
-    if (userQuery.data.length === 0) {
-      return {
-        success: false,
-        error: 'USER_DATA_NOT_FOUND',
-        message: '用户数据不存在'
-      }
-    }
-    
-    const user = userQuery.data[0]
+    const role = getUserRole(user)
     
     // 检查用户状态
     if (user.status !== 'active') {
@@ -69,6 +43,7 @@ exports.main = async (event, context) => {
         openid: openid,
         phone: user.phone,
         name: user.name,
+        role,
         userType: user.userType,
         isMock: user.isMock,
         isAdmin: user.isAdmin,
@@ -80,6 +55,11 @@ exports.main = async (event, context) => {
         dietPreference: user.dietPreference,
         supplementCount: user.supplementCount,
         status: user.status
+      },
+      session: {
+        role,
+        isRegistered: true,
+        openid: user.openid || openid
       }
     }
     
@@ -91,4 +71,73 @@ exports.main = async (event, context) => {
       message: '服务器错误'
     }
   }
+}
+
+async function getCurrentUser({ db, cloud, sessionToken }) {
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get()
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0]
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now()
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get()
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          }
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext()
+  if (!wxContext.OPENID) {
+    return null
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get()
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get()
+
+  if (userResult.data.length === 0) {
+    return null
+  }
+
+  return {
+    ...userResult.data[0],
+    role: getUserRole(userResult.data[0]),
+    openid: wxContext.OPENID
+  }
+}
+
+function getUserRole(user) {
+  if (user.role) {
+    return user.role
+  }
+
+  if (user.isAdmin === true || user.userType === 'admin') {
+    return 'admin'
+  }
+
+  if (user.userType === 'staff') {
+    return 'staff'
+  }
+
+  return 'customer'
 }

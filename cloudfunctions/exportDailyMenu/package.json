@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "exceljs": "^4.4.0",
     "wx-server-sdk": "~2.6.3",
     "xlsx": "^0.18.5"
   }

@@ -9,32 +9,32 @@ const db = cloud.database()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const { date } = event
+  const { date, store } = event
   
   try {
-    console.log('获取日期菜单:', date)
+    console.log('获取日期菜单:', { date, store })
     
-    // 1. 获取系统配置
-    const sysConfig = await getSysConfig()
-    if (!sysConfig) {
+    // 1. 获取门店菜单轮换配置
+    const rotationConfig = await getMenuRotationConfig(store)
+    if (!rotationConfig) {
       return {
         success: false,
         error: 'SYSTEM_CONFIG_NOT_FOUND',
-        message: '系统配置未找到'
+        message: store ? `${store} 的菜单轮换配置未找到` : '系统配置未找到'
       }
     }
     
     // 2. 计算菜单天数
-    const menuDay = calculateMenuDay(date, sysConfig.menu_start_date)
+    const menuDay = calculateMenuDay(date, rotationConfig)
     console.log('计算得到菜单天数:', menuDay)
     
     // 3. 获取当天菜单配置
-    const dailyMenu = await getDailyMenu(menuDay)
+    const dailyMenu = await getDailyMenu(menuDay, store)
     if (!dailyMenu) {
       return {
         success: false,
         error: 'MENU_NOT_FOUND',
-        message: `第${menuDay}天菜单未找到`
+        message: store ? `${store} 第${menuDay}天菜单未找到` : `第${menuDay}天菜单未找到`
       }
     }
     
@@ -46,6 +46,12 @@ exports.main = async (event, context) => {
       data: {
         date: date,
         menuDay: menuDay,
+        rotation: {
+          menu_start_date: rotationConfig.menu_start_date,
+          start_day: rotationConfig.start_day,
+          end_day: rotationConfig.end_day,
+          source: rotationConfig.source
+        },
         menu: menuWithDetails
       }
     }
@@ -60,28 +66,141 @@ exports.main = async (event, context) => {
   }
 }
 
-// 获取系统配置
-async function getSysConfig() {
+// 获取门店菜单轮换配置
+async function getMenuRotationConfig(store) {
   try {
-    const result = await db.collection('sysinfo').where({
-      key: 'menu_start_date'
-    }).get()
-    
-    if (result.data.length > 0) {
+    const menuBounds = await getMenuDayBounds(store)
+    if (!menuBounds) {
+      return null
+    }
+
+    const configResult = await queryRotationConfig(store)
+    if (configResult.data.length > 0) {
+      const config = normalizeRotationConfig(configResult.data[0])
+      validateRotationConfig(config, menuBounds, store)
       return {
-        menu_start_date: result.data[0].value
+        ...config,
+        source: 'menu_rotation_configs'
       }
     }
+
+    const legacyConfig = await queryLegacyMenuStartDateConfig(store)
+    if (legacyConfig.data.length > 0) {
+      return {
+        menu_start_date: legacyConfig.data[0].value,
+        start_day: menuBounds.minDay,
+        end_day: menuBounds.maxDay,
+        source: legacyConfig.data[0].store ? 'legacy_sysinfo_store' : 'legacy_sysinfo_global'
+      }
+    }
+
     return null
   } catch (error) {
-    console.error('获取系统配置失败:', error)
+    console.error('获取门店菜单轮换配置失败:', error)
     throw error
   }
 }
 
+async function queryRotationConfig(store) {
+  if (store) {
+    const storeScoped = await db.collection('menu_rotation_configs').where({
+      store
+    }).get()
+
+    if (storeScoped.data.length > 0) {
+      return storeScoped
+    }
+  }
+
+  return db.collection('menu_rotation_configs').where({
+    status: 'active'
+  }).get()
+}
+
+async function queryLegacyMenuStartDateConfig(store) {
+  if (store) {
+    const storeScoped = await db.collection('sysinfo').where({
+      key: 'menu_start_date',
+      store
+    }).get()
+
+    if (storeScoped.data.length > 0) {
+      return storeScoped
+    }
+  }
+
+  return db.collection('sysinfo').where({
+    key: 'menu_start_date'
+  }).get()
+}
+
+async function getMenuDayBounds(store) {
+  let result
+
+  if (store) {
+    result = await db.collection('daily_menus').where({ store }).get()
+    if (result.data.length > 0) {
+      return summarizeMenuBounds(result.data)
+    }
+  }
+
+  result = await db.collection('daily_menus').get()
+  if (result.data.length > 0) {
+    return summarizeMenuBounds(result.data)
+  }
+
+  return null
+}
+
+function summarizeMenuBounds(menus) {
+  const days = menus
+    .map(item => Number(item.day))
+    .filter(day => Number.isInteger(day))
+    .sort((a, b) => a - b)
+
+  if (days.length === 0) {
+    return null
+  }
+
+  return {
+    minDay: days[0],
+    maxDay: days[days.length - 1]
+  }
+}
+
+function normalizeRotationConfig(config) {
+  return {
+    menu_start_date: config.menu_start_date || config.value,
+    start_day: Number(config.start_day),
+    end_day: Number(config.end_day)
+  }
+}
+
+function validateRotationConfig(config, menuBounds, store) {
+  if (!config.menu_start_date) {
+    throw new Error(store ? `${store} 缺少 menu_start_date 配置` : '缺少 menu_start_date 配置')
+  }
+
+  if (!Number.isInteger(config.start_day) || config.start_day < 1) {
+    throw new Error(store ? `${store} 的 start_day 非法` : 'start_day 非法')
+  }
+
+  if (!Number.isInteger(config.end_day) || config.end_day < config.start_day) {
+    throw new Error(store ? `${store} 的 end_day 非法` : 'end_day 非法')
+  }
+
+  if (config.start_day < menuBounds.minDay) {
+    throw new Error(store ? `${store} 的 start_day 小于已上传菜单最小天数 ${menuBounds.minDay}` : `start_day 小于已上传菜单最小天数 ${menuBounds.minDay}`)
+  }
+
+  if (config.end_day > menuBounds.maxDay) {
+    throw new Error(store ? `${store} 的 end_day 超过已上传菜单最大天数 ${menuBounds.maxDay}` : `end_day 超过已上传菜单最大天数 ${menuBounds.maxDay}`)
+  }
+}
+
 // 计算菜单天数
-function calculateMenuDay(selectedDate, menuStartDate) {
-  const startDate = new Date(menuStartDate)
+function calculateMenuDay(selectedDate, rotationConfig) {
+  const startDate = new Date(rotationConfig.menu_start_date)
   const currentDate = new Date(selectedDate)
   
   // 设置时间为当天开始，避免时间差异
@@ -90,13 +209,21 @@ function calculateMenuDay(selectedDate, menuStartDate) {
   
   const diffTime = currentDate.getTime() - startDate.getTime()
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  
-  // 计算在14天循环中的位置 (1-14)
-  let menuDay = ((diffDays % 14) + 14) % 14 + 1
+  const cycleLength = rotationConfig.end_day - rotationConfig.start_day + 1
+
+  if (cycleLength <= 0) {
+    throw new Error('菜单轮换区间无效')
+  }
+
+  const offset = ((diffDays % cycleLength) + cycleLength) % cycleLength
+  const menuDay = rotationConfig.start_day + offset
   
   console.log('日期计算:', {
     selectedDate,
-    menuStartDate, 
+    menuStartDate: rotationConfig.menu_start_date,
+    startDay: rotationConfig.start_day,
+    endDay: rotationConfig.end_day,
+    cycleLength,
     diffDays,
     menuDay
   })
@@ -105,9 +232,22 @@ function calculateMenuDay(selectedDate, menuStartDate) {
 }
 
 // 获取当天菜单配置
-async function getDailyMenu(day) {
+async function getDailyMenu(day, store) {
   try {
-    const result = await db.collection('daily_menus').where({
+    let result
+
+    if (store) {
+      result = await db.collection('daily_menus').where({
+        day,
+        store
+      }).get()
+
+      if (result.data.length > 0) {
+        return result.data[0]
+      }
+    }
+
+    result = await db.collection('daily_menus').where({
       day: day
     }).get()
     

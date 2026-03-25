@@ -1,0 +1,111 @@
+<view class="page-container">
+  <view class="page-header admin-gradient">
+    <text class="page-title">{{category}}图片管理</text>
+    <text class="page-subtitle">{{store}}</text>
+  </view>
+
+  <view class="card">
+    <view class="card-body">
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-label">当前分类菜品数</text>
+          <text class="summary-value">{{totalDishCount}}</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">仍在使用占位图</text>
+          <text class="summary-value">{{placeholderDishCount}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">缺图列表</text>
+    </view>
+    <view class="card-body">
+      <view wx:if="{{loading}}" class="empty-state">
+        <text class="empty-text">加载中...</text>
+      </view>
+      <view wx:elif="{{missingItems.length === 0}}" class="empty-state">
+        <text class="empty-text">当前分类已无缺图菜品</text>
+      </view>
+      <view wx:else class="missing-list">
+        <view wx:for="{{missingItems}}" wx:key="id" wx:for-item="dish" class="missing-row">
+          <text class="missing-name">{{dish.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">上传入口</text>
+    </view>
+    <view class="card-body">
+      <view class="picker-card">
+        <text class="picker-label">搜索并选择菜品</text>
+        <input
+          class="dish-search-input"
+          value="{{dishSearchKeyword}}"
+          placeholder="输入菜名关键词后选择"
+          disabled="{{loading || categoryItems.length === 0}}"
+          bindinput="onDishKeywordInput"
+          bindfocus="onDishKeywordFocus"
+        />
+
+        <view wx:if="{{dishDropdownVisible}}" class="dish-dropdown">
+          <view wx:if="{{filteredDishOptions.length === 0}}" class="dish-dropdown-empty">
+            <text class="dish-dropdown-empty-text">没有匹配的菜品，请继续输入关键词</text>
+          </view>
+          <view
+            wx:for="{{filteredDishOptions}}"
+            wx:key="id"
+            wx:for-item="dish"
+            class="dish-dropdown-item"
+            bind:tap="selectDishOption"
+            data-id="{{dish.id}}"
+          >
+            <text class="dish-dropdown-name">{{dish.name}}</text>
+            <text class="dish-dropdown-state">{{dish.hasImage ? '已有图片' : '缺图'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{selectedDishName}}" class="picker-meta">
+        <text class="picker-meta-text">当前状态：{{selectedDishHasImage ? '已有图片，可覆盖更新' : '当前缺图，建议优先上传'}}</text>
+      </view>
+
+      <view wx:if="{{selectedDishName}}" class="preview-card">
+        <text class="picker-label">当前图片预览</text>
+        <view wx:if="{{selectedDishPreviewURL}}" class="image-preview-wrapper" bind:tap="previewSelectedDishImage">
+          <image class="image-preview" src="{{selectedDishPreviewURL}}" mode="aspectFill" />
+          <text class="image-preview-hint">点击查看大图</text>
+        </view>
+        <view wx:else class="image-preview-empty">
+          <text class="empty-text">当前菜品暂无可访问图片，正在使用占位图。</text>
+        </view>
+      </view>
+
+      <view
+        class="action-cta choose-cta {{isReadOnly || !selectedDishName || uploading ? 'action-cta-disabled' : ''}}"
+        bind:tap="chooseImage"
+      >
+        <text class="action-cta-title">选择图片</text>
+        <text class="action-cta-subtitle">{{selectedImageName || (isReadOnly ? '员工只读不可上传' : '为当前菜品选择一张图片')}}</text>
+      </view>
+
+      <view wx:if="{{selectedImagePath}}" class="picker-meta">
+        <text class="picker-meta-text">已选图片，上传时会自动覆盖到 {{selectedDishName}} 的固定命名路径。</text>
+      </view>
+
+      <view
+        class="action-cta upload-cta {{isReadOnly || !selectedDishName || !selectedImagePath || uploading ? 'action-cta-disabled' : ''}}"
+        bind:tap="uploadSelectedImage"
+      >
+        <text class="action-cta-title">{{uploading ? '上传中...' : (selectedDishHasImage ? '更新当前菜品图片' : '上传当前菜品图片')}}</text>
+        <text class="action-cta-subtitle">{{selectedDishHasImage ? '覆盖当前图片并立即刷新状态' : '上传后会自动补齐当前菜品图片'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -57,6 +57,11 @@
           "description": "用户姓名"
         },
         {
+          "name": "role",
+          "type": "string",
+          "description": "角色：admin/staff/customer"
+        },
+        {
           "name": "userType",
           "type": "string",
           "description": "用户类型：customer/admin"
@@ -135,6 +140,58 @@
       ]
     },
     {
+      "name": "menu_rotation_configs",
+      "description": "门店菜单轮换配置表",
+      "fields": [
+        {
+          "name": "_id",
+          "type": "string",
+          "description": "配置唯一标识"
+        },
+        {
+          "name": "store",
+          "type": "string",
+          "description": "门店名称"
+        },
+        {
+          "name": "menu_start_date",
+          "type": "date",
+          "description": "该门店轮换起始日期，对应 start_day"
+        },
+        {
+          "name": "start_day",
+          "type": "number",
+          "description": "轮换起始菜单天数"
+        },
+        {
+          "name": "end_day",
+          "type": "number",
+          "description": "轮换结束菜单天数"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "配置状态：active/inactive"
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "description": "更新时间"
+        },
+        {
+          "name": "updatedBy",
+          "type": "string",
+          "description": "更新人"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": ["store"],
+          "unique": true
+        }
+      ]
+    },
+    {
       "name": "orders",
       "description": "订单信息表",
       "fields": [
@@ -181,6 +238,73 @@
           "name": "updatedAt",
           "type": "date",
           "description": "更新时间"
+        }
+      ]
+    },
+    {
+      "name": "user_sessions",
+      "description": "登录会话表（Plan B 会话模式）",
+      "fields": [
+        {
+          "name": "_id",
+          "type": "string",
+          "description": "会话唯一标识"
+        },
+        {
+          "name": "sessionToken",
+          "type": "string",
+          "description": "客户端持有的随机会话令牌"
+        },
+        {
+          "name": "openid",
+          "type": "string",
+          "description": "本次登录对应的微信 openid"
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "关联的 users._id；visitor 可为空"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "description": "本次登录使用的手机号"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "角色：admin/staff/customer/visitor"
+        },
+        {
+          "name": "isRegistered",
+          "type": "boolean",
+          "description": "是否匹配到已登记用户"
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "description": "会话是否有效"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "description": "创建时间"
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "description": "更新时间"
+        },
+        {
+          "name": "expiresAt",
+          "type": "date",
+          "description": "过期时间"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": ["sessionToken"],
+          "unique": true
         }
       ]
     }

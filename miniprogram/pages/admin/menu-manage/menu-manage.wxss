@@ -1,0 +1,274 @@
+.page-header {
+  margin-bottom: 32rpx;
+  padding: 40rpx 32rpx;
+  border-radius: 32rpx;
+  color: #fff;
+}
+
+.page-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  opacity: 0.92;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 20rpx -4rpx rgba(0, 0, 0, 0.12);
+  margin-bottom: 28rpx;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 28rpx 32rpx 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+.card-body {
+  padding: 28rpx 32rpx 32rpx;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.summary-item {
+  background: #f8f6f2;
+  border-radius: 18rpx;
+  padding: 24rpx;
+}
+
+.summary-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  margin-bottom: 10rpx;
+}
+
+.summary-value {
+  display: block;
+  font-size: 28rpx;
+  color: var(--brand-text);
+  font-weight: 600;
+  min-height: 40rpx;
+  line-height: 40rpx;
+  white-space: nowrap;
+}
+
+.summary-loading {
+  color: #9ca3af;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.rotation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin: 24rpx 0;
+}
+
+.rotation-item {
+  background: #f8f6f2;
+  border-radius: 18rpx;
+  padding: 24rpx;
+  min-width: 0;
+}
+
+.rotation-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  margin-bottom: 12rpx;
+}
+
+.rotation-input {
+  width: 100%;
+  font-size: 32rpx;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--brand-text);
+  background: transparent;
+}
+
+.config-note {
+  padding: 20rpx 0 28rpx;
+}
+
+.supplement-config-section {
+  margin-bottom: 28rpx;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: 12rpx;
+}
+
+.weekday-tag-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.weekday-tag {
+  min-width: 0;
+  padding: 20rpx 0;
+  border-radius: 18rpx;
+  background: #f8f6f2;
+  border: 2rpx solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekday-tag-active {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.weekday-tag-readonly {
+  opacity: 0.8;
+}
+
+.weekday-tag-text {
+  font-size: 26rpx;
+  color: var(--brand-text);
+  font-weight: 500;
+}
+
+.weekday-tag-text-active {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.note-text {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.6;
+}
+
+.preview-card {
+  margin-top: 28rpx;
+  padding-top: 28rpx;
+  border-top: 2rpx solid #f1ece5;
+}
+
+.summary-small {
+  font-size: 24rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.summary-range-text {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--brand-text);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.message-group {
+  margin: 28rpx 0;
+  padding: 24rpx;
+  border-radius: 18rpx;
+  background: #faf7f2;
+}
+
+.message-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.message-item {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.image-category-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.image-category-card {
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: #0052d9;
+  box-shadow: 0 8rpx 24rpx rgba(0, 82, 217, 0.18);
+}
+
+.image-category-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.image-category-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.image-category-count {
+  min-width: 48rpx;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1.2;
+  box-sizing: border-box;
+  text-align: right;
+}
+
+.image-category-count-loading {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+  letter-spacing: 2rpx;
+}
+
+.image-category-desc {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+}
+
+.warning {
+  color: #9a6b21;
+}
+
+.error {
+  color: #c43d3d;
+}

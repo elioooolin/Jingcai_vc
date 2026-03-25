@@ -17,26 +17,9 @@ exports.main = async (event, context) => {
     console.log('保存客户信息请求:', { openid, isEdit, customerId })
     
     // 验证管理员权限
-    const adminAuth = await db.collection('auth').where({
-      _openid: openid
-    }).get()
-    
-    if (adminAuth.data.length === 0) {
-      return {
-        success: false,
-        error: 'UNAUTHORIZED',
-        message: '未授权的操作'
-      }
-    }
-    
-    const adminPhone = adminAuth.data[0].phone
-    const adminUser = await db.collection('users').where({
-      phone: adminPhone,
-      isAdmin: true,
-      status: 'active'
-    }).get()
-    
-    if (adminUser.data.length === 0) {
+    const adminUser = await getCurrentUser(event)
+
+    if (!adminUser || adminUser.role !== 'admin') {
       return {
         success: false,
         error: 'ADMIN_REQUIRED',
@@ -94,6 +77,7 @@ exports.main = async (event, context) => {
       phone: customerData.phone,
       name: customerData.name,
       birthday: customerData.birthday,
+      role: 'customer',
       userType: 'customer',
       isAdmin: false,
       status: 'active',
@@ -104,7 +88,7 @@ exports.main = async (event, context) => {
       dietPreference: customerData.dietPreference || '',
       supplementCount: parseInt(customerData.supplementCount),
       freeFamilyMealCount: parseInt(customerData.freeFamilyMealCount),
-      createdBy: adminUser.data[0].name,
+      createdBy: adminUser.name,
       updatedAt: new Date()
     }
     
@@ -147,4 +131,75 @@ exports.main = async (event, context) => {
       message: '服务器错误，请稍后重试'
     }
   }
+}
+
+async function getCurrentUser(event = {}) {
+  const { sessionToken } = event
+
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get()
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0]
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now()
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get()
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          }
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext()
+  if (!wxContext.OPENID) {
+    return null
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get()
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get()
+
+  if (userResult.data.length === 0) {
+    return null
+  }
+
+  return {
+    ...userResult.data[0],
+    role: getUserRole(userResult.data[0]),
+    openid: wxContext.OPENID
+  }
+}
+
+function getUserRole(user) {
+  if (user.role) {
+    return user.role
+  }
+
+  if (user.isAdmin === true || user.userType === 'admin') {
+    return 'admin'
+  }
+
+  if (user.userType === 'staff') {
+    return 'staff'
+  }
+
+  return 'customer'
 }

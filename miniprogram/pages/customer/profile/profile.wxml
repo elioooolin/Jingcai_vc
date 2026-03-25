@@ -2,8 +2,8 @@
   <!-- 用户信息卡片 -->
   <view class="profile-header">
     <view class="user-info-section">
-      <text class="user-name">{{userInfo.name || '用户'}}</text>
-      <text class="user-desc">欢迎入住·爱睦 Love Moon</text>
+      <text class="user-name">{{isVisitor ? '' : (userInfo.name || '用户')}}</text>
+      <text class="user-desc">{{isVisitor ? '' : '欢迎入住·爱睦 Love Moon'}}</text>
     </view>
   </view>
 
@@ -12,31 +12,31 @@
     <t-cell-group>
       <t-cell 
         title="姓名" 
-        note="{{userInfo.name && userInfo.name !== 'undefined' ? userInfo.name : '未设置'}}"
+        note="{{isVisitor ? '' : (userInfo.name && userInfo.name !== 'undefined' ? userInfo.name : '未设置')}}"
       />
       <t-cell 
         title="手机号" 
-        note="{{userInfo.phone}}"
+        note="{{isVisitor ? '' : userInfo.phone}}"
       />
       <t-cell 
         title="生日" 
-        note="{{userInfo.birthday}}"
+        note="{{isVisitor ? '' : userInfo.birthday}}"
       />
       <t-cell 
         title="入住门店" 
-        note="{{userInfo.store && userInfo.store !== 'undefined' ? userInfo.store : '未设置'}}"
+        note="{{isVisitor ? '' : (userInfo.store && userInfo.store !== 'undefined' ? userInfo.store : '未设置')}}"
       />
       <t-cell 
         title="房间号" 
-        note="{{userInfo.room && userInfo.room !== 'undefined' ? userInfo.room : '未设置'}}"
+        note="{{isVisitor ? '' : (userInfo.room && userInfo.room !== 'undefined' ? userInfo.room : '未设置')}}"
       />
       <t-cell 
         title="入住日期" 
-        note="{{userInfo.checkInDate}}"
+        note="{{isVisitor ? '' : userInfo.checkInDate}}"
       />
       <t-cell 
         title="入住天数" 
-        note="{{userInfo.totalDays && userInfo.totalDays !== 'undefined' ? userInfo.totalDays + '天' : '未设置'}}"
+        note="{{isVisitor ? '' : (userInfo.totalDays && userInfo.totalDays !== 'undefined' ? userInfo.totalDays + '天' : '未设置')}}"
       />
     </t-cell-group>
   </t-card>
@@ -46,15 +46,15 @@
     <t-cell-group>
       <t-cell 
         title="饮食偏好" 
-        note="{{userInfo.dietPreference && userInfo.dietPreference !== 'undefined' ? userInfo.dietPreference : '无特殊偏好'}}"
+        note="{{isVisitor ? '' : (userInfo.dietPreference && userInfo.dietPreference !== 'undefined' ? userInfo.dietPreference : '无特殊偏好')}}"
       />
       <t-cell 
         title="剩余高补餐次数" 
-        note="{{userInfo.supplementCount}}"
+        note="{{isVisitor ? '' : userInfo.supplementCount}}"
       />
       <t-cell 
         title="赠送陪人餐次数" 
-        note="{{userInfo.freeFamilyMealCount}}"
+        note="{{isVisitor ? '' : userInfo.freeFamilyMealCount}}"
       />
     </t-cell-group>
   </t-card>

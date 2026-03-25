@@ -14,17 +14,43 @@
       <text class="brand-title">爱睦 Love Moon</text>
     </view>
     
-    <view class="binding-info">
-      <text class="binding-desc">首次登录，请通过邀请码绑定您的客户账号</text>
+  <view class="binding-info">
+      <text class="binding-desc">首次登录，请优先使用微信手机号一键绑定已登记客户账号</text>
+  </view>
+  </view>
+
+  <!-- 微信手机号一键绑定 -->
+  <view class="input-section">
+    <t-button
+      theme="primary"
+      size="large"
+      block
+      loading="{{bindingLoading}}"
+      openType="getPhoneNumber"
+      bind:getphonenumber="handleGetPhoneNumber"
+      class="bind-button"
+    >
+      <text wx:if="{{!bindingLoading}}">微信手机号一键绑定</text>
+      <text wx:else>绑定中...</text>
+    </t-button>
+  </view>
+
+  <!-- 手动输入手机号备用方式 -->
+  <view class="tip-section">
+    <view class="tip-card secondary-tip-card">
+      <text class="tip-title">备用绑定方式</text>
+      <text class="tip-content">
+        • 如微信手机号授权失败，可手动输入已登记手机号绑定
+        • 每个手机号只能绑定一个微信账号
+      </text>
     </view>
   </view>
 
-  <!-- 手机号输入区域 -->
-  <view class="input-section">
+  <view class="input-section manual-section">
     <view class="input-wrapper">
       <t-input
         type="number"
-        placeholder="请输入内部邀请码"
+        placeholder="请输入已登记手机号"
         value="{{phone}}"
         bind:change="onPhoneChange"
         maxlength="11"
@@ -51,8 +77,8 @@
     <view class="tip-card">
       <text class="tip-title">温馨提示</text>
       <text class="tip-content">
-        • 如邀请码错误，请联系工作人员
-        • 每个邀请码只能绑定一个微信账号
+        • 仅已登记客户可完成绑定
+        • 如手机号未登记，请联系工作人员
       </text>
     </view>
   </view>
@@ -72,7 +98,7 @@
 <t-dialog
   visible="{{contactDialogVisible}}"
   title="联系客服"
-  content="您的手机号未在系统中注册，请联系工作人员为您添加信息。"
+  content="您的手机号未在系统中登记，请联系工作人员为您添加信息。"
   confirm-btn="我知道了"
   bind:confirm="closeContactDialog"
   bind:close="closeContactDialog"

@@ -1,0 +1,287 @@
+<view class="page-container">
+  <view class="page-header admin-gradient">
+    <text class="page-title">门店餐单管理</text>
+    <text class="page-subtitle">统一维护轮换起始日期与餐单轮换区间</text>
+  </view>
+
+  <view class="card">
+    <t-cell
+      title="当前门店"
+      note="{{selectedStore}}"
+      arrow
+      bind:tap="showStorePicker"
+    />
+    <t-picker
+      title="选择门店"
+      visible="{{storeVisible}}"
+      value="{{[selectedStore]}}"
+      cancelBtn="取消"
+      confirmBtn="确认"
+      bind:change="onStoreConfirm"
+      bind:pick="onStorePick"
+      bind:cancel="hideStorePicker"
+    >
+      <t-picker-item options="{{storeOptions}}" />
+    </t-picker>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">菜单概况</text>
+      <t-tag size="small" theme="{{isReadOnly ? 'warning' : 'primary'}}" variant="light">
+        {{isReadOnly ? '员工只读' : '管理员可编辑'}}
+      </t-tag>
+    </view>
+    <view class="card-body">
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-label">已上传菜单天数</text>
+          <text class="summary-value">{{summary.menuCount || 0}}</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">菜单范围</text>
+          <text class="summary-value">
+            {{summary.minDay !== null ? (summary.minDay + ' - ' + summary.maxDay) : '暂无'}}
+          </text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">菜品总数</text>
+          <text class="summary-value">{{summary.totalDishCount || 0}}</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">最近更新时间</text>
+          <text class="summary-value">{{formatUpdatedAt(summary.updatedAt)}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">轮换配置</text>
+    </view>
+    <view class="card-body">
+      <t-cell
+        title="菜单起始日期"
+        note="{{configForm.menu_start_date || '请选择'}}"
+        arrow="{{!isReadOnly}}"
+        bind:tap="showDatePicker"
+      />
+      <t-date-time-picker
+        title="选择菜单起始日期"
+        visible="{{dateVisible}}"
+        mode="date"
+        value="{{configForm.menu_start_date}}"
+        bind:change="onDateConfirm"
+        bind:cancel="hideDatePicker"
+        start="2025-01-01"
+        end="2035-12-31"
+      />
+
+      <view class="rotation-grid">
+        <view class="rotation-item">
+          <text class="rotation-label">起始日</text>
+          <input
+            class="rotation-input"
+            type="number"
+            value="{{configForm.start_day}}"
+            placeholder="请输入"
+            disabled="{{isReadOnly}}"
+            bindinput="onFieldChange"
+            data-field="start_day"
+          />
+        </view>
+        <view class="rotation-item">
+          <text class="rotation-label">结束日</text>
+          <input
+            class="rotation-input"
+            type="number"
+            value="{{configForm.end_day}}"
+            placeholder="请输入"
+            disabled="{{isReadOnly}}"
+            bindinput="onFieldChange"
+            data-field="end_day"
+          />
+        </view>
+      </view>
+
+      <view class="config-note">
+        <text class="note-text" wx:if="{{summary.maxDay !== null}}">
+          当前门店支持的菜单范围：{{summary.minDay}} - {{summary.maxDay}}
+        </text>
+      </view>
+
+      <view class="supplement-config-section">
+        <text class="section-subtitle">高补品可点日期</text>
+        <text class="note-text">可多选周一到周日；不选任何日期表示关闭当前门店高补品功能。</text>
+        <view class="weekday-tag-grid">
+          <view
+            wx:for="{{supplementWeekdayOptions}}"
+            wx:key="value"
+            wx:for-item="weekday"
+            class="weekday-tag {{weekday.selected ? 'weekday-tag-active' : ''}} {{isReadOnly ? 'weekday-tag-readonly' : ''}}"
+            bind:tap="toggleSupplementWeekday"
+            data-day="{{weekday.value}}"
+          >
+            <text class="weekday-tag-text {{weekday.selected ? 'weekday-tag-text-active' : ''}}">{{weekday.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        loading="{{saving}}"
+        disabled="{{isReadOnly || loading}}"
+        bind:tap="saveConfig"
+      >
+        {{isReadOnly ? '员工只读不可保存' : (saving ? '保存中...' : '保存轮换配置')}}
+      </t-button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">表格一键上传</text>
+    </view>
+    <view class="card-body">
+      <view class="config-note">
+        <text class="note-text">支持上传既定格式的表格文件，系统会先解析预检，再确认导入。</text>
+        <text class="note-text">当前文件：{{uploadedFileName || '未选择'}}</text>
+      </view>
+
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        loading="{{parsingFile}}"
+        disabled="{{isReadOnly || parsingFile || importingFile}}"
+        bind:tap="chooseExcelFile"
+      >
+        {{isReadOnly ? '员工只读不可上传' : (parsingFile ? '解析中...' : '选择并解析表格')}}
+      </t-button>
+
+      <view wx:if="{{importPreview}}" class="preview-card">
+        <view class="summary-grid">
+          <view class="summary-item">
+            <text class="summary-label">源文件</text>
+            <text class="summary-value summary-small">{{importPreview.fileName}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">解析总行数</text>
+            <text class="summary-value">{{importPreview.rowCount}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">识别菜品数</text>
+            <text class="summary-value">{{importPreview.dishCount}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">识别菜单天数</text>
+            <text class="summary-value">{{importPreview.menuDayCount}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">菜单范围</text>
+            <text class="summary-value">{{formatPreviewDayRange(importPreview)}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">识别高补品数</text>
+            <text class="summary-value">{{importPreview.supplementDishCount}}</text>
+          </view>
+        </view>
+
+        <view class="message-group" wx:if="{{importPreview.warnings.length > 0}}">
+          <text class="message-title warning">预警</text>
+          <block wx:for="{{importPreview.warnings}}" wx:key="*this">
+            <text class="message-item warning">{{item}}</text>
+          </block>
+        </view>
+
+        <view class="message-group" wx:if="{{importPreview.errors.length > 0}}">
+          <text class="message-title error">错误</text>
+          <block wx:for="{{importPreview.errors}}" wx:key="*this">
+            <text class="message-item error">{{item}}</text>
+          </block>
+        </view>
+
+        <t-button
+          theme="primary"
+          size="large"
+          block
+          loading="{{importingFile}}"
+          disabled="{{isReadOnly || importingFile || importPreview.errors.length > 0}}"
+          bind:tap="confirmImport"
+        >
+          {{importingFile ? '导入中...' : '确认导入当前门店餐单'}}
+        </t-button>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">图片一键上传</text>
+    </view>
+    <view class="card-body">
+      <view class="config-note">
+        <text class="note-text">按分类查看当前门店餐单中仍在使用占位图的菜品，并进入对应页面上传或更新图片。</text>
+      </view>
+
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-label">当前餐单菜品总数</text>
+          <text class="summary-value {{imageStatusLoading ? 'summary-loading' : ''}}">
+            {{imageStatusLoading ? '加载中' : (dishImageSummary.totalDishCount || 0)}}
+          </text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">已有真实图片</text>
+          <text class="summary-value {{imageStatusLoading ? 'summary-loading' : ''}}">
+            {{imageStatusLoading ? '加载中' : (dishImageSummary.matchedImageCount || 0)}}
+          </text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">仍在使用占位图</text>
+          <text class="summary-value {{imageStatusLoading ? 'summary-loading' : ''}}">
+            {{imageStatusLoading ? '加载中' : (dishImageSummary.placeholderDishCount || 0)}}
+          </text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">统计范围</text>
+          <text class="summary-range-text">当前门店在用菜品 + 高补品</text>
+        </view>
+      </view>
+
+      <view class="message-group" wx:if="{{imageStatusLoading}}">
+        <text class="message-title">图片状态</text>
+        <text class="message-item">正在加载当前门店的图片统计，请稍候…</text>
+      </view>
+
+      <view class="message-group" wx:elif="{{missingImageGroups.length === 0}}">
+        <text class="message-title">分类入口</text>
+        <text class="message-item">当前门店餐单引用菜品均已匹配可访问图片。</text>
+      </view>
+
+      <view class="image-category-grid">
+        <view
+          wx:for="{{imageCategoryStats}}"
+          wx:key="label"
+          wx:for-item="category"
+          class="image-category-card"
+          bind:tap="openImageCategoryPage"
+          data-category="{{category.label}}"
+        >
+          <view class="image-category-head">
+            <text class="image-category-title">{{category.label}}</text>
+            <text class="image-category-count {{imageStatusLoading ? 'image-category-count-loading' : ''}}">
+              {{imageStatusLoading ? '...' : category.count}}
+            </text>
+          </view>
+          <text class="image-category-desc">{{category.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

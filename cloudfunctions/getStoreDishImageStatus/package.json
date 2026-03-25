@@ -1,0 +1,9 @@
+{
+  "name": "getStoreDishImageStatus",
+  "version": "1.0.0",
+  "description": "获取门店在用菜品的图片状态",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

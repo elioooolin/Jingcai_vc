@@ -4,6 +4,7 @@ Page({
   data: {
     userInfo: {} as any,
     loading: false,
+    isVisitor: false,
   },
 
   onLoad() {
@@ -19,17 +20,32 @@ Page({
   // 检查登录状态
   checkLoginStatus() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (!userInfo || userInfo.userType !== 'customer') {
+    if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
+      this.setData({
+        userInfo,
+        isVisitor: true
+      });
+      return;
+    }
+
+    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
       wx.reLaunch({
         url: '/pages/login/login'
       });
       return;
     }
-    this.setData({ userInfo });
+    this.setData({
+      userInfo,
+      isVisitor: false
+    });
   },
 
   // 加载用户完整信息
   async loadUserProfile() {
+    if (this.data.isVisitor) {
+      return;
+    }
+
     if (this.data.loading) return;
     
     this.setData({ loading: true });
@@ -141,8 +157,20 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
+          const sessionToken = wx.getStorageSync('sessionToken');
+          if (sessionToken) {
+            wx.cloud.callFunction({
+              name: 'logoutSession',
+              data: { sessionToken },
+              fail: (err) => {
+                console.error('退出 session 失败:', err);
+              }
+            });
+          }
           wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('sessionToken');
           wx.removeStorageSync('profileData');
+          wx.setStorageSync('manualLogout', true);
           wx.reLaunch({
             url: '/pages/login/login'
           });

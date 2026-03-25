@@ -16,7 +16,7 @@ const db = cloud.database();
  * 云函数入口函数
  */
 exports.main = async (event, context) => {
-  const { orderId, userId } = event;
+  const { orderId, userId, sessionToken } = event;
   
   console.log('取消订单请求 - 订单ID:', orderId, '用户ID:', userId);
   
@@ -36,6 +36,21 @@ exports.main = async (event, context) => {
   }
   
   try {
+    const currentUser = await getCurrentUser({ db, cloud, sessionToken });
+    if (!currentUser || currentUser.role !== 'customer') {
+      return {
+        success: false,
+        message: '仅已登记客户可取消订单'
+      };
+    }
+
+    if (currentUser._id !== userId) {
+      return {
+        success: false,
+        message: '无权取消其他用户订单'
+      };
+    }
+
     // 1. 获取订单信息
     console.log('正在获取订单信息...');
     const orderResult = await db.collection('orders')
@@ -187,3 +202,63 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+async function getCurrentUser({ db, cloud, sessionToken }) {
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  return {
+    ...userResult.data[0],
+    role: getUserRole(userResult.data[0]),
+    openid: wxContext.OPENID
+  };
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}

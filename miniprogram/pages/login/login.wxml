@@ -17,20 +17,34 @@
 
   <!-- 提示信息 -->
   <view class="notice-section">
-    <text class="notice-text">本服务仅供爱睦旗下月子中心内部客户使用，登录前请确保您已获得邀请码</text>
+    <text class="notice-text">未登记用户可访客浏览，已登记客户可使用完整服务</text>
   </view>
 
   <!-- 登录按钮 -->
   <view class="login-section">
     <t-button
+      wx:if="{{!pageReady}}"
+      theme="primary"
+      size="large"
+      block
+      loading="{{true}}"
+      disabled="{{true}}"
+      class="login-button"
+    >
+      <text>加载中...</text>
+    </t-button>
+    <t-button
+      wx:else
       theme="primary"
       size="large"
       block
       loading="{{loginLoading}}"
-      bind:tap="handleWechatLogin"
+      disabled="{{loginLoading}}"
+      openType="getPhoneNumber"
+      bind:getphonenumber="handleLoginWithPhoneAuth"
       class="login-button"
     >
-      <text wx:if="{{!loginLoading}}">邀请码登录</text>
+      <text wx:if="{{!loginLoading}}">微信手机号一键登录</text>
       <text wx:else>登录中...</text>
     </t-button>
   </view>

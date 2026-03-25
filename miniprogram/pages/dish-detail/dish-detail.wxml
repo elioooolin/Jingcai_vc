@@ -3,20 +3,13 @@
   <view class="dish-header">
     <view class="dish-image-container">
       <image 
-        wx:if="{{dishInfo.imageUrl}}"
         class="dish-image" 
         src="{{dishInfo.imageUrl}}" 
         mode="aspectFill"
         data-url="{{dishInfo.imageUrl}}"
+        bind:error="onImageError"
         lazy-load="{{true}}"
       />
-      <view 
-        wx:else
-        class="dish-image-placeholder"
-      >
-        <text class="placeholder-icon">🍽️</text>
-        <text class="placeholder-text">暂无图片</text>
-      </view>
     </view>
     
     <view class="dish-basic-info">

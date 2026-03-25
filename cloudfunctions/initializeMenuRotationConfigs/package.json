@@ -1,0 +1,9 @@
+{
+  "name": "initializeMenuRotationConfigs",
+  "version": "1.0.0",
+  "description": "初始化门店轮换配置",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -39,6 +39,8 @@ interface MenuData {
   };
 }
 
+const FOOD_PLACEHOLDER_IMAGE = '/assets/icons/food.png';
+
 Page({
   data: {
     selectedDate: '',
@@ -66,6 +68,7 @@ Page({
     // 高补餐显示控制
     showSupplementSection: false,
     userSupplementCount: 0,
+    supplementAvailableWeekdays: [2, 5] as number[],
     
     // 选择规则
     breakfastRule: '',
@@ -88,6 +91,26 @@ Page({
   },
 
   async onLoad(options: any) {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
+      wx.showToast({
+        title: '当前账号尚未登记为客户，暂不可进入点餐系统',
+        icon: 'none',
+        duration: 2500
+      });
+      wx.reLaunch({
+        url: '/pages/customer/dashboard/dashboard'
+      });
+      return;
+    }
+
+    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
+      wx.reLaunch({
+        url: '/pages/login/login'
+      });
+      return;
+    }
+
     if (options.date) {
       this.setData({ selectedDate: options.date });
     }
@@ -110,6 +133,7 @@ Page({
   // 从数据库加载菜单数据
   async loadMenuData() {
     const selectedDate = this.data.selectedDate;
+    const userInfo = wx.getStorageSync('userInfo');
     if (!selectedDate) {
       wx.showToast({
         title: '日期参数缺失',
@@ -125,7 +149,10 @@ Page({
       
       const result = await wx.cloud.callFunction({
         name: 'getMenuForDate',
-        data: { date: selectedDate }
+        data: {
+          date: selectedDate,
+          store: userInfo?.store || ''
+        }
       });
 
       console.log('菜单数据获取结果:', result);
@@ -655,7 +682,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'submitOrder',
         data: {
-          orderData: orderData
+          orderData: orderData,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -775,10 +803,10 @@ Page({
   // 检查用户高补餐权限（从云数据库实时获取）
   async checkSupplementPermission() {
 
-    // 检查日期是否为周二或周五
-    const isSupplementDay = this.isSupplementAvailableDay();
+    // 检查当前日期是否符合门店高补品可点配置
+    const isSupplementDay = await this.isSupplementAvailableDay();
     if (!isSupplementDay) {
-      console.log('当前日期不是周二或周五，不显示高补餐');
+      console.log('当前日期不在门店高补品可点日期配置中，不显示高补餐');
       this.setData({ 
         showSupplementSection: false,
         userSupplementCount: 0,
@@ -806,7 +834,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'getUserSupplementCount',
         data: {
-          userId: userInfo._id
+          userId: userInfo._id,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
       
@@ -856,9 +885,12 @@ Page({
   // 加载高补餐数据
   loadSupplementData() {
     console.log('开始加载高补餐数据...');
+    const userInfo = wx.getStorageSync('userInfo');
+    const store = userInfo?.store || '';
+    const cacheKey = store ? `supplementDishes_${store}` : 'supplementDishes';
     
     // 先尝试从本地存储获取
-    const cachedData = wx.getStorageSync('supplementDishes');
+    const cachedData = wx.getStorageSync(cacheKey);
     
     if (cachedData && cachedData.data && Array.isArray(cachedData.data)) {
       // 检查数据是否过期
@@ -871,7 +903,7 @@ Page({
         return;
       } else {
         console.log('缓存的高补餐数据已过期，重新获取');
-        wx.removeStorageSync('supplementDishes');
+        wx.removeStorageSync(cacheKey);
       }
     }
     
@@ -879,13 +911,15 @@ Page({
     console.log('从云函数获取高补餐数据...');
     wx.cloud.callFunction({
       name: 'getSupplementDishes',
-      data: {},
+      data: {
+        store
+      },
       success: (res: any) => {
         if (res.result && res.result.success && res.result.dishes) {
           console.log('云函数获取高补餐数据成功:', res.result.dishes);
           
           // 缓存数据
-          wx.setStorageSync('supplementDishes', {
+          wx.setStorageSync(cacheKey, {
             data: res.result.dishes,
             timestamp: Date.now(),
             expiry: 24 * 60 * 60 * 1000 // 24小时过期
@@ -923,7 +957,7 @@ Page({
     }
     
     // 转换数据格式
-    const supplementMenu = dishes.map(dish => ({
+      const supplementMenu = dishes.map(dish => ({
       id: dish.id || dish._id,
       _id: dish._id,
       name: dish.name,
@@ -950,13 +984,39 @@ Page({
 
   // 图片加载失败
   onImageError(e: any) {
-    const { name, url } = e.currentTarget.dataset;
+    const { name, url, meal, index } = e.currentTarget.dataset;
     console.error(`❌ 图片加载失败: ${name}`, e.detail);
     console.error(`   失败的URL: ${url}`);
     console.error(`   错误详情:`, e.detail.errMsg || '未知错误');
-    
-    // 可以在这里设置默认图片或显示占位符
-    // 暂时先记录错误，后续可以添加重试逻辑
+
+    const menuKeyMap: Record<string, string> = {
+      breakfast: 'breakfastMenu',
+      lunchMain: 'lunchMainMenu',
+      lunchSoup: 'lunchSoupMenu',
+      dinnerMain: 'dinnerMainMenu',
+      dinnerSoup: 'dinnerSoupMenu',
+      supplement: 'supplementMenu'
+    };
+
+    const menuKey = meal ? menuKeyMap[meal] : '';
+    const itemIndex = typeof index === 'number' ? index : Number(index);
+    if (!menuKey || Number.isNaN(itemIndex)) {
+      return;
+    }
+
+    const menu = [...((this.data as any)[menuKey] || [])];
+    if (!menu[itemIndex] || menu[itemIndex].imageUrl === FOOD_PLACEHOLDER_IMAGE) {
+      return;
+    }
+
+    menu[itemIndex] = {
+      ...menu[itemIndex],
+      imageUrl: FOOD_PLACEHOLDER_IMAGE
+    };
+
+    this.setData({
+      [menuKey]: menu
+    });
   },
 
   // 刷新菜单数据
@@ -1004,8 +1064,45 @@ Page({
     });
   },
 
-  // 判断当前日期是否为高补餐可选日（周二或周五）
-  isSupplementAvailableDay(): boolean {
+  async fetchSupplementAvailableWeekdays(): Promise<number[]> {
+      try {
+        const userInfo = wx.getStorageSync('userInfo') || {};
+        const store = userInfo?.store || '';
+        if (!store) {
+          return [2, 5];
+        }
+
+        const result = await wx.cloud.callFunction({
+          name: 'getMenuRotationConfig',
+          data: {
+            store,
+            sessionToken: wx.getStorageSync('sessionToken')
+          }
+        });
+
+        const payload = result.result as any;
+        const weekdays = payload?.success && Array.isArray(payload?.config?.supplement_available_weekdays)
+          ? payload.config.supplement_available_weekdays
+              .map((day: number) => Number(day))
+              .filter((day: number) => Number.isInteger(day) && day >= 1 && day <= 7)
+          : [2, 5];
+
+        this.setData({
+          supplementAvailableWeekdays: weekdays
+        });
+
+        return weekdays;
+      } catch (error) {
+        console.error('获取高补品可点日期配置失败，回退周二周五:', error);
+        this.setData({
+          supplementAvailableWeekdays: [2, 5]
+        });
+        return [2, 5];
+      }
+  },
+
+  // 判断当前日期是否为高补餐可选日
+  async isSupplementAvailableDay(): Promise<boolean> {
       const selectedDate = this.data.selectedDate;
       if (!selectedDate) {
         console.log('未选择日期，高补餐不可用');
@@ -1015,11 +1112,11 @@ Page({
       // 将日期字符串转换为 Date 对象
       const date = new Date(selectedDate);
       
-      // 获取星期几 (0=周日, 1=周一, 2=周二, 3=周三, 4=周四, 5=周五, 6=周六)
       const dayOfWeek = date.getDay();
-      
-      // 判断是否为周二(2)或周五(5)
-      return dayOfWeek === 2 || dayOfWeek === 5;
+      const normalizedWeekday = dayOfWeek === 0 ? 7 : dayOfWeek;
+      const availableWeekdays = await this.fetchSupplementAvailableWeekdays();
+
+      return availableWeekdays.includes(normalizedWeekday);
       
   },
 

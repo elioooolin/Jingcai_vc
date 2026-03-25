@@ -8,9 +8,26 @@ cloud.init({
 const db = cloud.database();
 
 exports.main = async (event, context) => {
-  const { userId } = event;
+  const { userId, sessionToken } = event;
   
   try {
+    const currentUser = await getCurrentUser({ db, cloud, sessionToken });
+    if (!currentUser) {
+      return {
+        success: false,
+        message: '未登录或无权限'
+      };
+    }
+
+    const isAdminOrStaff = ['admin', 'staff'].includes(currentUser.role);
+    const isSelfCustomer = currentUser.role === 'customer' && currentUser._id === userId;
+    if (!isAdminOrStaff && !isSelfCustomer) {
+      return {
+        success: false,
+        message: '无权查看该用户的中医数据'
+      };
+    }
+
     // 获取用户的中医处方记录
     const rxResult = await db.collection('tcm_rx')
       .where({
@@ -90,3 +107,63 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+async function getCurrentUser({ db, cloud, sessionToken }) {
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  return {
+    ...userResult.data[0],
+    role: getUserRole(userResult.data[0]),
+    openid: wxContext.OPENID
+  };
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}

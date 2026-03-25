@@ -6,6 +6,8 @@ const ADMIN_PASSWORD = 'admin123';
 Page({
   data: {
     loginLoading: false,
+    pageReady: false,
+    phoneAuthLoginEnabled: false,
     userNotFoundVisible: false,
     userNotFoundContent: '',
     adminVerifyVisible: false,
@@ -57,12 +59,69 @@ Page({
   },
 
   onLoad() {
-    // 检查是否已登录
+    const manualLogout = wx.getStorageSync('manualLogout');
+    const sessionToken = wx.getStorageSync('sessionToken');
+
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo && userInfo._id) {
-      // 验证用户信息是否有效
-      this.validateUserInfo(userInfo);
+    if (!manualLogout && sessionToken) {
+      this.validateSession(sessionToken, userInfo);
+      return;
     }
+
+    if (!manualLogout && userInfo && (userInfo.role === 'visitor' || userInfo.userType === 'visitor')) {
+      this.redirectToHomePage(userInfo);
+      return;
+    }
+
+    if (!manualLogout && userInfo && userInfo._id) {
+      this.validateUserInfo(userInfo);
+      return;
+    }
+
+    this.bootstrapLoginState(!!manualLogout);
+  },
+
+  validateSession(sessionToken: string, fallbackUserInfo?: any) {
+    this.setData({
+      loginLoading: true,
+      pageReady: false
+    });
+
+    wx.cloud.callFunction({
+      name: 'validateSession',
+      data: {
+        sessionToken
+      },
+      success: (res: any) => {
+        if (res.result?.success) {
+          wx.setStorageSync('sessionToken', res.result.session.sessionToken);
+          wx.setStorageSync('userInfo', res.result.user);
+          wx.removeStorageSync('manualLogout');
+          this.redirectToHomePage(res.result.user);
+          return;
+        }
+
+        wx.removeStorageSync('sessionToken');
+
+        if (fallbackUserInfo && fallbackUserInfo._id) {
+          this.validateUserInfo(fallbackUserInfo);
+          return;
+        }
+
+        this.bootstrapLoginState();
+      },
+      fail: (err: any) => {
+        console.error('校验 session 失败:', err);
+        wx.removeStorageSync('sessionToken');
+
+        if (fallbackUserInfo && fallbackUserInfo._id) {
+          this.validateUserInfo(fallbackUserInfo);
+          return;
+        }
+
+        this.bootstrapLoginState();
+      }
+    });
   },
 
   // 验证用户信息有效性
@@ -84,7 +143,22 @@ Page({
       fail: (err: any) => {
         console.error('验证用户信息失败:', err);
         wx.removeStorageSync('userInfo');
+        this.bootstrapLoginState();
       }
+    });
+  },
+
+  bootstrapLoginState(suppressAutoLogin = false) {
+    this.setData({
+      loginLoading: true,
+      pageReady: false,
+      phoneAuthLoginEnabled: true
+    });
+
+    this.setData({
+      loginLoading: false,
+      pageReady: true,
+      phoneAuthLoginEnabled: true
     });
   },
 
@@ -99,9 +173,11 @@ Page({
         console.log('微信登录结果:', res.result);
         
         if (res.result.success) {
-          if (res.result.isRegistered) {
+          if (res.result.session?.role === 'visitor') {
+            this.handleLoginSuccess(res.result.user);
+          } else if (res.result.isRegistered) {
             // 用户已注册，检查是否需要管理员验证
-            if (res.result.user.isAdmin) {
+            if (res.result.user.role === 'admin') {
               this.setData({ 
                 currentUser: res.result.user,
                 loginLoading: false 
@@ -111,12 +187,6 @@ Page({
               // 普通用户直接登录
               this.handleLoginSuccess(res.result.user);
             }
-          } else {
-            // 用户未注册，跳转到手机号绑定页面
-            this.setData({ loginLoading: false });
-            wx.navigateTo({
-              url: '/pages/phone-binding/phone-binding'
-            });
           }
         } else {
           this.handleLoginError(res.result);
@@ -133,10 +203,84 @@ Page({
     });
   },
 
+  handleLoginWithPhoneAuth(e: any) {
+    const detail = e.detail || {};
+    const code = detail.code;
+
+    if (!code) {
+      if (detail.errMsg && detail.errMsg.includes('fail user deny')) {
+        wx.showToast({
+          title: '未授权手机号',
+          icon: 'none'
+        });
+        return;
+      }
+
+      wx.showToast({
+        title: '手机号授权失败',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({ loginLoading: true });
+
+    wx.cloud.callFunction({
+      name: 'loginWithPhoneAuth',
+      data: {
+        phoneCode: code
+      },
+      success: (res: any) => {
+        console.log('登录页手机号授权登录结果:', res.result);
+
+        if (res.result.success) {
+          if (res.result.user.role === 'admin') {
+            this.setData({
+              currentUser: res.result.user,
+              loginLoading: false
+            });
+            this.showAdminVerifyDialog();
+            return;
+          }
+
+          this.handleLoginSuccess(res.result.user, res.result.session);
+          return;
+        }
+
+        if (res.result.error === 'USER_NOT_FOUND') {
+          this.handleLoginSuccess(
+            {
+              name: '微信访客',
+              role: 'visitor',
+              userType: 'visitor'
+            },
+            res.result.session
+          );
+          return;
+        }
+
+        this.setData({ loginLoading: false });
+        this.handleLoginError(res.result);
+      },
+      fail: (err: any) => {
+        console.error('登录页手机号绑定失败:', err);
+        this.setData({ loginLoading: false });
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'error'
+        });
+      }
+    });
+  },
+
   // 处理登录成功
-  handleLoginSuccess(user: any) {
+  handleLoginSuccess(user: any, session?: any) {
     // 保存用户信息到本地存储
     wx.setStorageSync('userInfo', user);
+    if (session?.sessionToken) {
+      wx.setStorageSync('sessionToken', session.sessionToken);
+    }
+    wx.removeStorageSync('manualLogout');
     
     this.setData({ loginLoading: false });
     
@@ -216,9 +360,13 @@ Page({
 
   // 跳转到主页
   redirectToHomePage(userInfo: any) {
-    if (userInfo.userType === 'admin') {
+    if (userInfo.role === 'visitor' || userInfo.userType === 'visitor') {
       wx.reLaunch({
-        url: '/pages/admin/dashboard/dashboard'
+        url: '/pages/customer/dashboard/dashboard'
+      });
+    } else if (userInfo.role === 'admin' || userInfo.role === 'staff' || userInfo.userType === 'admin' || userInfo.userType === 'staff') {
+      wx.reLaunch({
+        url: `/pages/admin/dashboard/dashboard${userInfo.role === 'staff' || userInfo.userType === 'staff' ? '?mode=readonly' : ''}`
       });
     } else {
       wx.reLaunch({

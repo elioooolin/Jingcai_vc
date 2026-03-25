@@ -1,0 +1,264 @@
+.page-header {
+  margin-bottom: 32rpx;
+  padding: 40rpx 32rpx;
+  border-radius: 32rpx;
+  color: #fff;
+}
+
+.page-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 24rpx;
+  opacity: 0.92;
+  line-height: 1.6;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 20rpx -4rpx rgba(0, 0, 0, 0.12);
+  margin-bottom: 28rpx;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 28rpx 32rpx 0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+.card-body {
+  padding: 28rpx 32rpx 32rpx;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.summary-item {
+  background: #f8f6f2;
+  border-radius: 18rpx;
+  padding: 24rpx;
+}
+
+.summary-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  margin-bottom: 10rpx;
+}
+
+.summary-value {
+  display: block;
+  font-size: 28rpx;
+  color: var(--brand-text);
+  font-weight: 600;
+}
+
+.missing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.missing-row {
+  padding: 20rpx 24rpx;
+  border-radius: 18rpx;
+  background: #f8f6f2;
+}
+
+.missing-name {
+  display: block;
+  color: var(--brand-text);
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.empty-state {
+  padding: 24rpx 0 8rpx;
+}
+
+.empty-text {
+  display: block;
+  color: var(--brand-text-secondary);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.picker-card {
+  padding: 24rpx;
+  border-radius: 18rpx;
+  background: #f8f6f2;
+  margin-bottom: 20rpx;
+  position: relative;
+}
+
+.picker-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  margin-bottom: 10rpx;
+}
+
+.picker-value {
+  display: block;
+  color: var(--brand-text);
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.dish-search-input {
+  width: 100%;
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 16rpx;
+  background: #fff;
+  box-sizing: border-box;
+  color: var(--brand-text);
+  font-size: 28rpx;
+}
+
+.dish-dropdown {
+  margin-top: 16rpx;
+  max-height: 420rpx;
+  overflow-y: auto;
+  border-radius: 16rpx;
+  background: #fff;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.08);
+}
+
+.dish-dropdown-item {
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f0ebe4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.dish-dropdown-item:last-child {
+  border-bottom: 0;
+}
+
+.dish-dropdown-name {
+  flex: 1;
+  color: var(--brand-text);
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.dish-dropdown-state {
+  color: var(--brand-text-secondary);
+  font-size: 22rpx;
+  white-space: nowrap;
+}
+
+.dish-dropdown-empty {
+  padding: 24rpx;
+}
+
+.dish-dropdown-empty-text {
+  color: var(--brand-text-secondary);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.picker-meta {
+  padding: 12rpx 0 20rpx;
+}
+
+.picker-meta-text {
+  display: block;
+  color: var(--brand-text-secondary);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.preview-card {
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  border-radius: 18rpx;
+  background: #f8f6f2;
+}
+
+.image-preview-wrapper {
+  position: relative;
+  margin-top: 12rpx;
+  border-radius: 18rpx;
+  overflow: hidden;
+}
+
+.image-preview {
+  width: 100%;
+  height: 360rpx;
+  display: block;
+  background: #fff;
+}
+
+.image-preview-hint {
+  position: absolute;
+  right: 18rpx;
+  bottom: 18rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(0, 0, 0, 0.56);
+  color: #fff;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.image-preview-empty {
+  margin-top: 12rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.action-cta {
+  margin-top: 18rpx;
+  padding: 26rpx 28rpx;
+  border-radius: 20rpx;
+  color: #fff;
+}
+
+.choose-cta {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 10rpx 24rpx rgba(217, 119, 6, 0.22);
+}
+
+.upload-cta {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 10rpx 24rpx rgba(37, 99, 235, 0.22);
+}
+
+.action-cta-disabled {
+  opacity: 0.45;
+}
+
+.action-cta-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.action-cta-subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  opacity: 0.94;
+}

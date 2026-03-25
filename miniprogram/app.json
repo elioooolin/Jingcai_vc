@@ -1,12 +1,15 @@
 {
   "pages": [
     "pages/login/login",
+    "pages/visitor/landing/landing",
     "pages/phone-binding/phone-binding",
     "pages/customer/dashboard/dashboard",
     "pages/customer/menu/menu",
     "pages/customer/health/health",
     "pages/customer/profile/profile",
     "pages/admin/dashboard/dashboard",
+    "pages/admin/menu-manage/menu-manage",
+    "pages/admin/dish-image-manage/dish-image-manage",
     "pages/admin/customer-manage/customer-manage",
     "pages/admin/order-edit/order-edit",
     "pages/dish-detail/dish-detail",

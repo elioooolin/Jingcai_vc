@@ -1,0 +1,7 @@
+{
+  "action": "updateSysConfig",
+  "store": "爱睦轻予·德思勤店",
+  "data": {
+    "menu_start_date": "请填与梅溪湖一致的起始日期，例如 2026-03-24"
+  }
+}

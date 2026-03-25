@@ -39,6 +39,7 @@ exports.main = async (event, context) => {
       
       if (userQuery.data.length > 0) {
         const user = userQuery.data[0]
+        const role = getUserRole(user)
         
         // 检查用户状态
         if (user.status !== 'active') {
@@ -57,12 +58,20 @@ exports.main = async (event, context) => {
             openid: openid,
             phone: user.phone,
             name: user.name,
+            role,
             userType: user.userType,
             isMock: user.isMock,
             isAdmin: user.isAdmin,
             room: user.room,
+            store: user.store,
+            totalDays: user.totalDays,
             checkInDate: user.checkInDate,
             status: user.status
+          },
+          session: {
+            role,
+            isRegistered: true,
+            openid
           }
         }
       } else {
@@ -74,12 +83,23 @@ exports.main = async (event, context) => {
         }
       }
     } else {
-      // 用户不在auth表中，需要进行手机号绑定
+      // 未登记访客允许进入，只是不能访问客户业务
       return {
         success: true,
         isRegistered: false,
         openid: openid,
-        message: '请绑定手机号完成注册'
+        user: {
+          name: '微信访客',
+          role: 'visitor',
+          userType: 'visitor',
+          openid
+        },
+        session: {
+          role: 'visitor',
+          isRegistered: false,
+          openid
+        },
+        message: '访客登录成功'
       }
     }
     
@@ -91,4 +111,20 @@ exports.main = async (event, context) => {
       message: '服务器错误，请稍后重试'
     }
   }
+}
+
+function getUserRole(user) {
+  if (user.role) {
+    return user.role
+  }
+
+  if (user.isAdmin === true || user.userType === 'admin') {
+    return 'admin'
+  }
+
+  if (user.userType === 'staff') {
+    return 'staff'
+  }
+
+  return 'customer'
 }

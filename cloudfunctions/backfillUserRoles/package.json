@@ -1,0 +1,9 @@
+{
+  "name": "backfillUserRoles",
+  "version": "1.0.0",
+  "description": "回填 users.role 字段",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

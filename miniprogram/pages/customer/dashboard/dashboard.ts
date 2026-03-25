@@ -4,6 +4,7 @@ Page({
   data: {
     today: new Date(),
     userInfo: {},
+    isVisitor: false,
     checkInDays: 0,
     selectedDate: '',
     dateList: [] as any[],
@@ -25,8 +26,12 @@ Page({
 
     this.checkLoginStatus();
     // checkLoginStatus 中已经包含了用户信息初始化和日期列表初始化
-    this.loadSupplementData();
-    this.loadUserOrders();
+    const cachedUserInfo = wx.getStorageSync('userInfo');
+    const isVisitor = cachedUserInfo?.role === 'visitor' || cachedUserInfo?.userType === 'visitor';
+    if (!isVisitor) {
+      this.loadSupplementData();
+      this.loadUserOrders();
+    }
     
     // 检查是否是订单提交成功后的重新加载
     if (options && options.orderSubmitted === 'true') {
@@ -54,6 +59,12 @@ Page({
   },
 
   onShow() {
+    const cachedUserInfo = wx.getStorageSync('userInfo');
+    const isVisitor = cachedUserInfo?.role === 'visitor' || cachedUserInfo?.userType === 'visitor';
+    if (isVisitor) {
+      return;
+    }
+
     this.refreshOrderData();
     this.refreshUserInfo();
   },
@@ -65,7 +76,17 @@ Page({
   // 检查登录状态
   checkLoginStatus() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (!userInfo || userInfo.userType !== 'customer') {
+    if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
+      this.setData({
+        userInfo,
+        isVisitor: true,
+        checkInDays: 0
+      });
+      this.initDefaultDateList();
+      return;
+    }
+
+    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
       wx.reLaunch({
         url: '/pages/login/login'
       });
@@ -76,6 +97,7 @@ Page({
     const checkInDays = this.calculateCheckInDays(userInfo.checkInDate);
     this.setData({ 
       userInfo,
+      isVisitor: false,
       checkInDays 
     });
     
@@ -149,10 +171,12 @@ Page({
     checkOutDate.setDate(checkInDate.getDate() + userInfo.totalDays);
     checkOutDate.setHours(0, 0, 0, 0);
 
-    const nextWeekStart = this.getNextWeekStart(this.data.today);
+    const earliestOrderDate = this.getEarliestOrderDate(this.data.today, orderStartDate);
+    const windowStart = new Date(Math.max(orderStartDate.getTime(), earliestOrderDate.getTime()));
+    windowStart.setHours(0, 0, 0, 0);
 
-    if (nextWeekStart.getTime() > checkOutDate.getTime()) {
-      console.log('入住结束时间早于下周，暂无可用日期');
+    if (windowStart.getTime() > checkOutDate.getTime()) {
+      console.log('入住结束时间早于可预订窗口，暂无可用日期');
       this.setData({
         orderDateRange: '暂无可点餐日期',
         dateList: [],
@@ -161,31 +185,14 @@ Page({
       return;
     }
 
-    const effectiveStart = new Date(Math.max(nextWeekStart.getTime(), orderStartDate.getTime()));
-    effectiveStart.setHours(0, 0, 0, 0);
-
-    const earliestOrderDate = this.getEarliestOrderDate(this.data.today, orderStartDate);
-
-    // 检查当前是否为周末（周六或周日）
-    const todayDayOfWeek = this.data.today.getDay();
-    const isWeekend = todayDayOfWeek === 0 || todayDayOfWeek === 6;
-    const isMockUser = userInfo.isMock === true;
-    
-    // 非测试用户在周末不能点下周餐单
-    const weekendRestriction = isWeekend && !isMockUser;
-    
-    if (weekendRestriction) {
-      console.log('当前为周末，非测试用户不可点餐');
-    }
-
     const dateList: any[] = [];
     let firstSelectableDate = '';
     let firstSelectableIndex = -1;
     let lastDateInRange: Date | null = null;
 
     for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(nextWeekStart);
-      currentDate.setDate(nextWeekStart.getDate() + i);
+      const currentDate = new Date(windowStart);
+      currentDate.setDate(windowStart.getDate() + i);
       currentDate.setHours(0, 0, 0, 0);
 
       if (currentDate.getTime() > checkOutDate.getTime()) {
@@ -201,17 +208,11 @@ Page({
       let expired = false;
       let outOfStay = false;
       let hasOrder = false;
-      let weekendLocked = false;
       let isCheckoutDay = currentDate.getTime() === checkOutDate.getTime();
 
       if (this.data.orderedDates.includes(currentDateString)) {
         disabled = true;
         hasOrder = true;
-      }
-
-      if (currentDate.getTime() < effectiveStart.getTime()) {
-        disabled = true;
-        tooEarly = true;
       }
 
       if (currentDate.getTime() < earliestOrderDate.getTime()) {
@@ -222,12 +223,6 @@ Page({
       if (currentDate.getTime() > checkOutDate.getTime()) {
         disabled = true;
         outOfStay = true;
-      }
-
-      // 非测试用户在周末时，下周所有日期都不可点餐
-      if (weekendRestriction) {
-        disabled = true;
-        weekendLocked = true;
       }
 
       const dateObj = {
@@ -241,7 +236,6 @@ Page({
         expired,
         hasOrder,
         outOfStay,
-        weekendLocked,
         isCheckoutDay,
         selected: false,
         isToday: this.isSameDate(currentDate, this.data.today),
@@ -266,7 +260,7 @@ Page({
       return;
     }
 
-    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}`;
+    const orderDateRangeText = `${this.formatDateChinese(windowStart)}-${this.formatDateChinese(lastDateInRange)}`;
 
     this.setData({
       orderDateRange: orderDateRangeText,
@@ -278,23 +272,18 @@ Page({
   // 默认日期列表（当用户信息不完整时使用）
   initDefaultDateList() {
 
-    const nextWeekStart = this.getNextWeekStart(this.data.today);
-    const nextWeekEnd = this.getNextWeekEnd(nextWeekStart);
-
     const earliestOrderDate = this.getEarliestOrderDate(this.data.today, this.data.today);
+    const windowStart = new Date(earliestOrderDate);
+    windowStart.setHours(0, 0, 0, 0);
 
     const dateList: any[] = [];
     let firstSelectableDate = '';
     let lastDateInRange: Date | null = null;
 
     for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(nextWeekStart);
-      currentDate.setDate(nextWeekStart.getDate() + i);
+      const currentDate = new Date(windowStart);
+      currentDate.setDate(windowStart.getDate() + i);
       currentDate.setHours(0, 0, 0, 0);
-
-      if (currentDate.getTime() > nextWeekEnd.getTime()) {
-        break;
-      }
 
       lastDateInRange = new Date(currentDate);
 
@@ -305,11 +294,6 @@ Page({
       if (currentDate.getTime() < earliestOrderDate.getTime()) {
         disabled = true;
         expired = true;
-      }
-
-      if (currentDate.getTime() > nextWeekEnd.getTime()) {
-        disabled = true;
-        outOfStay = true;
       }
 
       const dateObj = {
@@ -345,7 +329,7 @@ Page({
       return;
     }
 
-    const orderDateRangeText = `${this.formatDateChinese(nextWeekStart)}-${this.formatDateChinese(lastDateInRange)}`;
+    const orderDateRangeText = `${this.formatDateChinese(windowStart)}-${this.formatDateChinese(lastDateInRange)}`;
 
     this.setData({
       orderDateRange: orderDateRangeText,
@@ -427,6 +411,15 @@ Page({
 
   // 选择日期
   selectDate(e: any) {
+    if (this.data.isVisitor) {
+      wx.showToast({
+        title: '当前账号尚未登记为客户，暂不可进入点餐系统',
+        icon: 'none',
+        duration: 2500
+      });
+      return;
+    }
+
     const { date, index } = e.currentTarget.dataset;
     const { dateList } = this.data;
     const item = dateList[index];
@@ -437,8 +430,6 @@ Page({
       
       if (item.hasOrder) {
         message = '该日期已有订单，不可重复点餐';
-      } else if (item.weekendLocked) {
-        message = '点餐时间已截止，下周餐单已锁定，无法点餐';
       } else if (item.tooEarly) {
         message = '还未到可点餐时间（入住第8天起）';
       } else if (item.expired) {
@@ -492,8 +483,16 @@ Page({
 
   // 刷新用户信息
   refreshUserInfo() {
+    if (this.data.isVisitor) {
+      return;
+    }
+
+    const sessionToken = wx.getStorageSync('sessionToken');
     wx.cloud.callFunction({
       name: 'getUserProfile',
+      data: {
+        sessionToken
+      },
       success: (res: any) => {
         if (res.result.success) {
           console.log('获取最新用户信息成功:', res.result.user);
@@ -521,17 +520,26 @@ Page({
 
   // 加载高补品数据
   loadSupplementData() {
+    if (this.data.isVisitor) {
+      return;
+    }
+
     console.log('开始加载高补品数据...');
+    const userInfo = wx.getStorageSync('userInfo');
+    const store = userInfo?.store || '';
+    const cacheKey = store ? `supplementDishes_${store}` : 'supplementDishes';
     
     wx.cloud.callFunction({
       name: 'getSupplementDishes',
-      data: {},
+      data: {
+        store
+      },
       success: (res: any) => {
         if (res.result && res.result.success) {
           console.log('高补品数据加载成功:', res.result.dishes);
           
           // 存储到本地，供点餐页面使用
-          wx.setStorageSync('supplementDishes', {
+          wx.setStorageSync(cacheKey, {
             data: res.result.dishes,
             timestamp: Date.now(),
             expiry: 24 * 60 * 60 * 1000 // 24小时过期
@@ -550,9 +558,20 @@ Page({
 
   // 加载用户订单数据
   loadUserOrders() {
+    if (this.data.isVisitor) {
+      this.setData({
+        userOrders: [],
+        orderedDates: [],
+        sortedOrders: [],
+        refreshingOrders: false
+      });
+      return;
+    }
+
     console.log('开始加载用户订单数据...');
     
     const userInfo = this.data.userInfo as any;
+    const sessionToken = wx.getStorageSync('sessionToken');
     if (!userInfo || !userInfo._id) {
       console.log('用户信息不存在，跳过订单加载');
       return;
@@ -561,7 +580,8 @@ Page({
     wx.cloud.callFunction({
       name: 'getUserOrders',
       data: {
-        userId: userInfo._id
+        userId: userInfo._id,
+        sessionToken
       },
       success: (res: any) => {
         if (res.result && res.result.success) {
@@ -671,50 +691,14 @@ Page({
       
       // 设置时间为0点，只比较日期
       orderDate.setHours(0, 0, 0, 0);
-      
-      // 获取今天是星期几 (0=周日, 1=周一, 2=周二, ..., 6=周六)
-      const todayDayOfWeek = this.data.today.getDay();
-      
-      // 检查用户是否为测试用户
-      const userInfo = this.data.userInfo as any;
-      const isMockUser = userInfo && userInfo.isMock === true;
-      
-      // 规则：每周五过后（周六、周日），下周的订单全部不能取消
-      // 但测试用户不受此限制
-      if ((todayDayOfWeek === 6 || todayDayOfWeek === 0) && !isMockUser) {
-        // 计算下周一的日期
-        let nextMonday: Date;
-        if (todayDayOfWeek === 6) {
-          // 今天是周六，下周一是+2天
-          nextMonday = new Date(this.data.today);
-          nextMonday.setDate(this.data.today.getDate() + 2);
-        } else {
-          // 今天是周日，下周一是+1天
-          nextMonday = new Date(this.data.today);
-          nextMonday.setDate(this.data.today.getDate() + 1);
-        }
-        nextMonday.setHours(0, 0, 0, 0);
-        
-        // 计算下周日的日期（下周一+6天）
-        const nextSunday = new Date(nextMonday);
-        nextSunday.setDate(nextMonday.getDate() + 6);
-        nextSunday.setHours(0, 0, 0, 0);
-        
-        // 如果订单日期在下周范围内（周一到周日），不可取消
-        if (orderDate.getTime() >= nextMonday.getTime() && orderDate.getTime() <= nextSunday.getTime()) {
-          const dayName = todayDayOfWeek === 0 ? '日' : '六';
-          console.log(`今天是周${dayName}，订单日期(${orderDateString})在下周范围内，已锁定，不可取消`);
-          return false;
-        }
-      }
-      
+
       // 计算日期差（毫秒）
       const timeDiff = orderDate.getTime() - this.data.today.getTime();
       
       // 转换为天数
       const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-      
-      console.log(`订单日期: ${orderDateString}, 今天: ${this.data.today.toISOString().split('T')[0]}, 星期${todayDayOfWeek}, 相差天数: ${daysDiff}`);
+
+      console.log(`订单日期: ${orderDateString}, 今天: ${this.data.today.toISOString().split('T')[0]}, 相差天数: ${daysDiff}`);
       
       // 如果订单日期与当日日期间隔小于3天，则不可取消
       // 例如：10月7日订单，今天是9月30日，相差7天，可以取消
@@ -857,7 +841,8 @@ Page({
         name: 'cancelOrder',
         data: {
           orderId: orderId,
-          userId: userInfo._id
+          userId: userInfo._id,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -925,8 +910,24 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
+          const userInfo = wx.getStorageSync('userInfo') || {};
+          const sessionToken = wx.getStorageSync('sessionToken');
+          if (sessionToken) {
+            wx.cloud.callFunction({
+              name: 'logoutSession',
+              data: { sessionToken },
+              fail: (err) => {
+                console.error('退出 session 失败:', err);
+              }
+            });
+          }
           wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('sessionToken');
           wx.removeStorageSync('supplementDishes'); // 清理高补品数据
+          if (userInfo.store) {
+            wx.removeStorageSync(`supplementDishes_${userInfo.store}`);
+          }
+          wx.setStorageSync('manualLogout', true);
           wx.reLaunch({
             url: '/pages/login/login'
           });

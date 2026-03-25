@@ -1,0 +1,33 @@
+.page-container {
+  min-height: 100vh;
+  padding: 32rpx;
+  background: #faf8f5;
+  box-sizing: border-box;
+}
+
+.hero-card,
+.empty-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  box-shadow: 0 12rpx 40rpx rgba(130, 95, 52, 0.08);
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #d4a574 0%, #e6bc94 100%);
+  color: #ffffff;
+  margin-bottom: 24rpx;
+}
+
+.title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.subtitle {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.92;
+}

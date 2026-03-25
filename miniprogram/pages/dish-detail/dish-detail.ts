@@ -18,6 +18,8 @@ interface DishInfo {
   imageUrl: string;
 }
 
+const FOOD_PLACEHOLDER_IMAGE = '/assets/icons/food.png';
+
 Page({
   data: {
     dishId: '',
@@ -50,7 +52,8 @@ Page({
           
           // 转换为详情页需要的格式
           const dishInfo = {
-            ...localDishData
+            ...localDishData,
+            imageUrl: localDishData.imageUrl || FOOD_PLACEHOLDER_IMAGE
           };
           
           this.setData({ dishInfo });
@@ -76,7 +79,10 @@ Page({
       wx.hideLoading();
 
       if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
-        const dishInfo = result.result.data as DishInfo;
+        const dishInfo = {
+          ...(result.result.data as DishInfo),
+          imageUrl: ((result.result.data as DishInfo).imageUrl) || FOOD_PLACEHOLDER_IMAGE
+        };
         this.setData({ dishInfo });
 
         // 设置导航栏标题
@@ -113,7 +119,7 @@ Page({
         carbohydrates: '--'
       },
       chefRecommend: false,
-      imageUrl: '', // 空图片URL，将显示占位符
+      imageUrl: FOOD_PLACEHOLDER_IMAGE,
       keywords: [],
       ingredients: '信息暂时缺失',
       category: '未知',
@@ -193,5 +199,15 @@ Page({
       path: `/pages/dish-detail/dish-detail?id=${dishInfo.id}`,
       imageUrl: '' // 可以设置分享图片
     };
+  },
+
+  onImageError() {
+    if (this.data.dishInfo?.imageUrl === FOOD_PLACEHOLDER_IMAGE) {
+      return;
+    }
+
+    this.setData({
+      'dishInfo.imageUrl': FOOD_PLACEHOLDER_IMAGE
+    });
   }
 });

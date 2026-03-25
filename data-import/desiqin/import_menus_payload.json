@@ -1,0 +1,790 @@
+{
+  "action": "importMenus",
+  "store": "爱睦轻予·德思勤店",
+  "data": [
+    {
+      "day": 1,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "八宝粥",
+              "三鲜面"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "鹌鹑蛋烧猪蹄",
+              "清炖狮子头",
+              "麻油菠菜猪肝",
+              "肉沫烧茄子"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "豆腐鲫鱼汤",
+              "五指毛桃薏米龙骨汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "芋头蒸排骨",
+              "清蒸鲈鱼",
+              "盐焗三黄鸡",
+              "口味小土豆"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "海底椰百合瘦肉汤",
+              "党参山药养生汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 2,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "咖喱鸡肉拉面",
+              "干炒河粉"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "鲍汁金汤娃娃菜卷肉",
+              "酱烧鸭脯肉",
+              "大红彩椒炒卤牛肉",
+              "黑芝麻莴笋丝"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "木瓜猪蹄汤",
+              "陈皮赤小豆腱子肉汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "卤味拼盘",
+              "小银鱼煎蛋",
+              "金汤虾丸",
+              "橄榄菜肉沫四季豆"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "猴头菇排骨汤",
+              "天麻红枣土鸡汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 3,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "南瓜枸杞小米粥",
+              "鲜肉馄饨"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "鹌鹑蛋烧牛腩",
+              "小青柠香煎去骨鸡腿肉",
+              "爆炒猪腰",
+              "芹菜沙茶炒肉饼"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "通草黄花菜瘦肉汤",
+              "养气血乌鸡汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "红烧黄骨鱼",
+              "鱼香茄子",
+              "粉丝蒸扇贝",
+              "鹿茸菌烧五花肉"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "白菜枸杞肉片汤",
+              "太子参龙眼乳鸽汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 4,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "排骨胡萝卜粒砂锅粥",
+              "三丝炒米线"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "红烧大明虾",
+              "xo酱芹菜炒鱿鱼须",
+              "鲍汁土豆海带节小肉",
+              "鸡蛋蒸肉饼"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "木瓜公鸡汤",
+              "莲子红枣猪肚汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "糯米蒸鸡中翅",
+              "素炒三丝",
+              "潮州卤水鹅",
+              "花生碎烩南瓜"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "一品菌皇汤",
+              "红菇药膳龙骨汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 5,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "肉酱拌扁粉",
+              "黑椒意大利面"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "黑椒菠萝牛肉粒",
+              "黄焖鳝鱼",
+              "腰果西芹炒爽肉",
+              "芦笋木耳炒虾仁"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "黄豆猪蹄汤",
+              "鱼丸菠菜粉丝汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "炭烧猪颈肉",
+              "蒜香柠檬烤鸡腿",
+              "小葱肉沫拌豆腐",
+              "番茄炒蛋"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "莲藕花生煲瘦肉汤",
+              "沙参玉竹老鸭汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 6,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "三丝炒面",
+              "海鲜粥"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "风范汁罗氏虾",
+              "肉丝酱四季豆",
+              "黄豆焖猪蹄",
+              "鸡汁荷包蛋煮豆笋"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "通草鲫鱼汤",
+              "无花果雪耳瘦肉汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "香煎巴沙鱼",
+              "羊肚菌酿虾滑炒百合",
+              "油豆腐酿肉",
+              "湘式麻油鸡"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "松茸肉汁汤",
+              "巴戟肉苁蓉牛骨汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 7,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "黑米紫薯粥",
+              "培根彩椒黑椒乌冬面"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "虫草花香菇蒸鸡腿",
+              "米粉蒸肉",
+              "醴陵小炒肉",
+              "西芹炒牛肚"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "黄花菜通草炖龙骨汤",
+              "海带筒子骨汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "意大利黑醋麻薯配肋排",
+              "酿藕夹",
+              "彩椒土豆丝炒肉",
+              "xo酱虾仁烩蛋白"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "水果三宝汤",
+              "石斛麦冬炖鸡汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 8,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "牛肉拉面",
+              "紫菜水饺"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "上海熏鱼",
+              "鹿茸菌焖鸭",
+              "烧汁茄夹",
+              "花生芽炒鸡柳"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "花生猪蹄汤",
+              "干贝时蔬奶白汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "彩椒酱爆牛蛙丁",
+              "客家酿豆腐",
+              "菠萝咕咾肉",
+              "酱爆杏鲍菇片"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "核桃山药瘦肉汤",
+              "黄芪乌骨鸡汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 9,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "排骨生菜面",
+              "生滚鱼片粥"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "红烧筒骨",
+              "西葫芦炒牛肉片",
+              "丝瓜烧蛤蜊",
+              "芹菜炒肉丝"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "葛根鲫鱼汤",
+              "鸡枞菌瘦肉汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "蛋黄焗大明虾",
+              "贝贝瓜煨鸡",
+              "小青瓜炒爽肉",
+              "松仁玉米粒"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "冬瓜薏仁龙骨汤",
+              "墨鱼猪肚汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 10,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "干炒河粉",
+              "牛肉丸汤圆粉"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "荷兰豆炒鱿鱼",
+              "一品红烧肉",
+              "红烧小鸡腿",
+              "百合蒸南瓜"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "云耳黄花菜肉片汤",
+              "灵芝石斛排骨汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "紫苏焖鸡爪",
+              "蛋黄排骨",
+              "清蒸桂鱼仔",
+              "山药炒肉"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "什锦蔬菜汤",
+              "天麻黄精鸽子汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 11,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "三丝炒东莞米线",
+              "番茄肥牛拉面"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "白灼大明虾",
+              "红烧苏格兰蛋",
+              "豆豉彩椒炒鸡腿肉",
+              "肉沫毛豆仁"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "肉苁蓉猪蹄汤",
+              "奶白财鱼汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "红烧鲈鱼",
+              "粉丝蒸蟹柳",
+              "彩椒茶树菇炒猪柳",
+              "肉片冬瓜"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "竹荪虫草花扇骨汤",
+              "熟地扇骨汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 12,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "桂圆莲子粥",
+              "火腿肠炒面"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "黑椒牛仔骨",
+              "荷叶香菇虾米蒸排骨",
+              "莴笋木耳炒肉",
+              "西蓝花烧墨鱼"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "药膳公鸡汤",
+              "陈皮莲子筒子骨汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "红烧开背罗氏虾",
+              "豉油鸭",
+              "西葫芦虫草花炒蛋",
+              "肉沫秋葵"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "红菇莲藕瘦肉汤",
+              "杜仲巴戟天炖龙骨汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 13,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "香菇肉饼炒饭",
+              "木耳肉丝汤粉"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "广式白切鸡",
+              "海鲜菇炒猪柳",
+              "黄瓜炒鱼片",
+              "白萝卜酿肉"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "丝瓜肉片汤",
+              "霸王花玉竹扇骨汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "黄豆酱焖多宝鱼",
+              "萝卜烧牛腩",
+              "鲍汁香菇扣鹅掌",
+              "芹菜香干炒肉"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "无花果玉米炖龙骨汤",
+              "四神乳鸽汤"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "day": 14,
+      "store": "爱睦轻予·德思勤店",
+      "meals": {
+        "breakfast": {
+          "菜品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "肉酱拌面",
+              "墨鱼排骨粥"
+            ]
+          }
+        },
+        "lunch": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "板栗烧鸡中翅",
+              "沙姜马蹄煨猪肚",
+              "红烧藕丸",
+              "花菜炒肉"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "木瓜猪蹄汤",
+              "三鲜汤"
+            ]
+          }
+        },
+        "dinner": {
+          "菜品": {
+            "selection_rule": "任选2项",
+            "required_count": 2,
+            "dish_names": [
+              "蒜香柠檬烤巴沙鱼",
+              "沙茶肉丝芥兰苗",
+              "海皇豆腐",
+              "焦香手抓竹扇骨"
+            ]
+          },
+          "汤品": {
+            "selection_rule": "任选1项",
+            "required_count": 1,
+            "dish_names": [
+              "竹荪干贝腱子肉汤",
+              "牛肝菌老鸭汤"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

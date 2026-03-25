@@ -17,6 +17,16 @@ exports.main = async (event, context) => {
   console.log('📋 获取管理员客户列表，参数:', event);
   
   try {
+    const currentUser = await getCurrentUser(event);
+    if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) {
+      return {
+        success: false,
+        message: '需要管理员或员工权限',
+        customers: [],
+        total: 0
+      };
+    }
+
     const { store } = event;
     
     // 构建查询条件
@@ -119,6 +129,68 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+async function getCurrentUser(event = {}) {
+  const { sessionToken } = event;
+
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  const user = userResult.data[0];
+  return {
+    ...user,
+    role: getUserRole(user)
+  };
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}
 
 /**
  * 格式化手机号码

@@ -84,7 +84,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'getUserInfo',
         data: {
-          userId: customerId
+          userId: customerId,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -103,7 +104,8 @@ Page({
             dietPreference: userData.dietPreference || '',
             supplementCount: userData.supplementCount ? userData.supplementCount.toString() : '0',
             freeFamilyMealCount: userData.freeFamilyMealCount ? userData.freeFamilyMealCount.toString() : '0'
-          }
+          },
+          storeText: this.getStoreText(userData.store || '')
         });
 
         console.log('客户数据加载成功:', userData);
@@ -360,7 +362,8 @@ Page({
       data: {
         customerData: this.data.formData,
         isEdit: this.data.isEdit,
-        customerId: this.data.customerId
+        customerId: this.data.customerId,
+        sessionToken: wx.getStorageSync('sessionToken')
       },
       success: (res: any) => {
         console.log('保存客户信息结果:', res.result);

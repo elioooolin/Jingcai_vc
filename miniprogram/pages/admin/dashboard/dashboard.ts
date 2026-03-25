@@ -28,10 +28,15 @@ interface CustomerItem {
 
 Page({
   data: {
+    isReadOnly: false,
+    operatingInitRotation: false,
+    operatingBackfillRoles: false,
     activeTab: 'orders',
     selectedDate: '', // 将在onLoad中设置为今天
     calendarValue: '', // calendar组件的选中值
     calendarVisible: false, // 控制calendar显示/隐藏
+    calendarMinDate: 0, // 后台订单查询允许查看历史订单
+    calendarMaxDate: 0,
     selectedOrderStore: 'all', // 订单管理页面选中的门店
     selectedCustomerStore: 'all', // 客户管理页面选中的门店
     
@@ -83,13 +88,17 @@ Page({
     }
   },
 
-  onLoad() {
+  onLoad(options?: any) {
     this.checkAdminAuth();
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const isReadOnly = options?.mode === 'readonly' || userInfo.role === 'staff' || userInfo.userType === 'staff';
+    this.setData({ isReadOnly });
     this.restorePageState(); // 恢复页面状态
     this.initTodayDate(); // 设置默认日期为今天（如果没有保存的状态）
     this.initAdminInfo(); // 初始化管理员信息
     this.initCalendar(); // 初始化日历
     this.refreshStats(); // 加载时获取真实统计数据
+    this.startStatsPolling();
     this.loadOrderList();
     this.loadCustomerList();
     this.updateExportPreview();
@@ -111,6 +120,14 @@ Page({
     this.refreshStats();
   },
 
+  onHide() {
+    this.stopStatsPolling();
+  },
+
+  onUnload() {
+    this.stopStatsPolling();
+  },
+
   onPullDownRefresh() {
     this.refreshAllData();
   },
@@ -118,7 +135,8 @@ Page({
   // 检查管理员权限
   checkAdminAuth() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (!userInfo || userInfo.userType !== 'admin') {
+    const role = userInfo?.role || userInfo?.userType;
+    if (!userInfo || (role !== 'admin' && role !== 'staff')) {
       wx.reLaunch({
         url: '/pages/login/login'
       });
@@ -135,15 +153,31 @@ Page({
     wx.stopPullDownRefresh();
   },
 
+  startStatsPolling() {
+    this.stopStatsPolling();
+    (this as any)._statsTimer = setInterval(() => {
+      this.refreshStats();
+    }, 15000);
+  },
+
+  stopStatsPolling() {
+    const timer = (this as any)._statsTimer;
+    if (timer) {
+      clearInterval(timer);
+      (this as any)._statsTimer = null;
+    }
+  },
+
   // 刷新统计数据
   async refreshStats() {
     console.log('🔄 开始刷新管理员统计数据...');
+    const sessionToken = wx.getStorageSync('sessionToken');
     
     try {
       // 调用云函数获取真实统计数据
       const result = await wx.cloud.callFunction({
         name: 'getAdminStats',
-        data: {}
+        data: { sessionToken }
       });
       
       console.log('📊 管理员统计数据云函数调用结果:', result.result);
@@ -338,10 +372,17 @@ Page({
 
   // 初始化日历
   initCalendar() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const calendarMinDate = new Date(Math.max(2024, currentYear - 2), 0, 1).getTime();
+    const calendarMaxDate = new Date(currentYear + 1, 11, 31).getTime();
+
     // 设置默认选中日期为当前selectedDate
     const defaultDate = this.data.selectedDate;
     this.setData({
-      calendarValue: defaultDate
+      calendarValue: defaultDate,
+      calendarMinDate,
+      calendarMaxDate
     });
   },
 
@@ -548,7 +589,8 @@ Page({
         name: 'getAdminOrders',
         data: {
           store: this.data.selectedOrderStore,
-          date: this.data.selectedDate
+          date: this.data.selectedDate,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
       
@@ -628,7 +670,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'getAdminCustomers',
         data: {
-          store: selectedOrderStore
+          store: selectedOrderStore,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -705,7 +748,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'getAdminCustomers',
         data: {
-          store: this.data.selectedCustomerStore
+          store: this.data.selectedCustomerStore,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
       
@@ -795,7 +839,8 @@ Page({
         name: 'updateOrderStatus',
         data: {
           orderId: orderId,
-          newStatus: 'confirmed'
+          newStatus: 'confirmed',
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
       
@@ -814,7 +859,10 @@ Page({
           return order;
         });
         
-        this.setData({ orderList });
+        this.setData({
+          orderList,
+          'stats.pendingOrders': Math.max(0, (this.data.stats?.pendingOrders || 0) - 1)
+        });
         
         wx.hideLoading();
         wx.showToast({
@@ -876,6 +924,15 @@ Page({
   addCustomer() {
     wx.navigateTo({
       url: '/pages/admin/customer-manage/customer-manage?action=add'
+    });
+  },
+
+  openMenuManage() {
+    const store = this.data.selectedOrderStore !== 'all'
+      ? this.data.selectedOrderStore
+      : '爱睦·梅溪湖店';
+    wx.navigateTo({
+      url: `/pages/admin/menu-manage/menu-manage?store=${encodeURIComponent(store)}`
     });
   },
 
@@ -959,7 +1016,8 @@ Page({
         name: 'createTestCustomer',
         data: {
           name: testCustomerName.trim(),
-          phone: testCustomerPhone.trim()
+          phone: testCustomerPhone.trim(),
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -1045,7 +1103,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'deleteCustomer',
         data: {
-          customerId: customerId
+          customerId: customerId,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 
@@ -1197,7 +1256,8 @@ Page({
         name: 'exportDailyMenu',
         data: {
           store: selectedOrderStore,
-          date: selectedDate
+          date: selectedDate,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
       
@@ -1252,13 +1312,15 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
     const now = new Date();
     const loginTime = `${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const role = userInfo?.role || userInfo?.userType || 'admin'
+    const isReadOnly = role === 'staff'
     
     this.setData({
       adminInfo: {
         name: userInfo?.name || '管理员',
         loginTime: loginTime,
-        role: '系统管理员',
-        permissions: '超级管理员'
+        role: isReadOnly ? '运营只读' : '系统管理员',
+        permissions: isReadOnly ? '只读权限' : '超级管理员'
       }
     });
 
@@ -1272,7 +1334,9 @@ Page({
       // 调用统计数据云函数
       const result = await wx.cloud.callFunction({
         name: 'getAdminStats',
-        data: {}
+        data: {
+          sessionToken: wx.getStorageSync('sessionToken')
+        }
       });
 
       if (result.result && typeof result.result === 'object' && 'success' in result.result && result.result.success) {
@@ -1300,13 +1364,201 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
+          const sessionToken = wx.getStorageSync('sessionToken');
+          if (sessionToken) {
+            wx.cloud.callFunction({
+              name: 'logoutSession',
+              data: { sessionToken },
+              fail: (err) => {
+                console.error('退出 session 失败:', err);
+              }
+            });
+          }
           wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('sessionToken');
+          wx.setStorageSync('manualLogout', true);
           wx.reLaunch({
             url: '/pages/login/login'
           });
         }
       }
     });
+  },
+
+  async previewInitializeMenuRotationConfigs() {
+    await this.runAdminToolPreview(
+      'initializeMenuRotationConfigs',
+      {},
+      '门店轮换配置预览',
+      (result: any) => {
+        const plan = result?.plan || {};
+        return [
+          `检测门店数：${plan.totalStores || 0}`,
+          `可新建：${plan.creatableCount || 0}`,
+          `可更新：${plan.updatableCount || 0}`,
+          `跳过已有：${plan.skippedCount || 0}`
+        ].join('\n');
+      }
+    );
+  },
+
+  initializeMenuRotationConfigs() {
+    wx.showModal({
+      title: '初始化门店轮换配置',
+      content: '将按当前门店菜单范围和旧 sysinfo 起始日期，为尚未配置的门店生成默认轮换配置。是否继续？',
+      success: async (res) => {
+        if (!res.confirm) return;
+
+        await this.runAdminToolApply(
+          'initializeMenuRotationConfigs',
+          { action: 'initialize' },
+          'operatingInitRotation',
+          '门店轮换配置初始化成功',
+          (result: any) => {
+            const data = result?.result || {};
+            return [
+              `新建：${data.createdCount || 0}`,
+              `更新：${data.updatedCount || 0}`,
+              `跳过：${data.skippedCount || 0}`
+            ].join('\n');
+          }
+        );
+      }
+    });
+  },
+
+  async previewBackfillUserRoles() {
+    await this.runAdminToolPreview(
+      'backfillUserRoles',
+      {},
+      '用户角色回填预览',
+      (result: any) => {
+        const plan = result?.plan || {};
+        return [
+          `用户总数：${plan.totalUsers || 0}`,
+          `待补写：${plan.setCount || 0}`,
+          `待覆盖：${plan.updateCount || 0}`,
+          `跳过已有：${plan.skipExistingCount || 0}`,
+          `无法推断：${plan.skipUnknownCount || 0}`
+        ].join('\n');
+      }
+    );
+  },
+
+  backfillUserRoles() {
+    wx.showModal({
+      title: '执行用户角色回填',
+      content: '将为 users 中缺少 role 的历史记录自动补写 role。不会删除用户，只会更新 role 和 updatedAt。是否继续？',
+      success: async (res) => {
+        if (!res.confirm) return;
+
+        await this.runAdminToolApply(
+          'backfillUserRoles',
+          { action: 'apply' },
+          'operatingBackfillRoles',
+          '用户角色回填成功',
+          (result: any) => {
+            const data = result?.result || {};
+            return [
+              `补写：${data.setCount || 0}`,
+              `覆盖：${data.updateCount || 0}`,
+              `跳过：${data.skippedCount || 0}`
+            ].join('\n');
+          }
+        );
+      }
+    });
+  },
+
+  async runAdminToolPreview(functionName: string, data: Record<string, any>, title: string, formatter: (result: any) => string) {
+    try {
+      wx.showLoading({
+        title: '预览中...',
+        mask: true
+      });
+
+      const result = await wx.cloud.callFunction({
+        name: functionName,
+        data: {
+          action: 'preview',
+          sessionToken: wx.getStorageSync('sessionToken'),
+          ...data
+        }
+      });
+
+      const resp = result.result as any;
+      if (resp?.success) {
+        wx.showModal({
+          title,
+          content: formatter(resp),
+          showCancel: false
+        });
+      } else {
+        wx.showToast({
+          title: resp?.message || '预览失败',
+          icon: 'none',
+          duration: 2500
+        });
+      }
+    } catch (error) {
+      console.error(`${functionName} preview 失败:`, error);
+      wx.showToast({
+        title: '网络错误，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  async runAdminToolApply(
+    functionName: string,
+    data: Record<string, any>,
+    loadingKey: 'operatingInitRotation' | 'operatingBackfillRoles',
+    successTitle: string,
+    formatter: (result: any) => string
+  ) {
+    try {
+      this.setData({ [loadingKey]: true } as any);
+      wx.showLoading({
+        title: '执行中...',
+        mask: true
+      });
+
+      const result = await wx.cloud.callFunction({
+        name: functionName,
+        data: {
+          sessionToken: wx.getStorageSync('sessionToken'),
+          ...data
+        }
+      });
+
+      const resp = result.result as any;
+      if (resp?.success) {
+        wx.showModal({
+          title: successTitle,
+          content: formatter(resp),
+          showCancel: false
+        });
+      } else {
+        wx.showToast({
+          title: resp?.message || '执行失败',
+          icon: 'none',
+          duration: 2500
+        });
+      }
+    } catch (error) {
+      console.error(`${functionName} apply 失败:`, error);
+      wx.showToast({
+        title: '网络错误，请重试',
+        icon: 'error',
+        duration: 2000
+      });
+    } finally {
+      wx.hideLoading();
+      this.setData({ [loadingKey]: false } as any);
+    }
   },
 
   // 页面分享

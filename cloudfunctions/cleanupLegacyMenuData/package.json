@@ -1,0 +1,9 @@
+{
+  "name": "cleanupLegacyMenuData",
+  "version": "1.0.0",
+  "description": "预览并清理历史无 store 字段的菜单数据",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

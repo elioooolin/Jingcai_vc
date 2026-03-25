@@ -31,6 +31,7 @@ interface HerbalCategory {
 Page({
   data: {
     userInfo: {} as any,
+    isVisitor: false,
     loading: false,
     activeTab: 0,
     currentSlideIndex: 0,
@@ -45,10 +46,17 @@ Page({
   },
 
   onShow() {
+    if (this.data.isVisitor) {
+      return;
+    }
     this.loadTcmData();
   },
 
   onPullDownRefresh() {
+    if (this.data.isVisitor) {
+      wx.stopPullDownRefresh();
+      return;
+    }
     this.loadTcmData().finally(() => {
       wx.stopPullDownRefresh();
     });
@@ -57,17 +65,32 @@ Page({
   // 检查登录状态
   checkLoginStatus() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (!userInfo || userInfo.userType !== 'customer') {
+    if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
+      this.setData({
+        userInfo,
+        isVisitor: true
+      });
+      return;
+    }
+
+    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
       wx.reLaunch({
         url: '/pages/login/login'
       });
       return;
     }
-    this.setData({ userInfo });
+    this.setData({
+      userInfo,
+      isVisitor: false
+    });
   },
 
   // 加载中医数据
   async loadTcmData() {
+    if (this.data.isVisitor) {
+      return;
+    }
+
     const { userInfo } = this.data;
     if (!userInfo._id) return;
 
@@ -77,7 +100,8 @@ Page({
       const result = await wx.cloud.callFunction({
         name: 'getTcmData',
         data: {
-          userId: userInfo._id
+          userId: userInfo._id,
+          sessionToken: wx.getStorageSync('sessionToken')
         }
       });
 

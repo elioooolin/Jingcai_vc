@@ -46,6 +46,14 @@ exports.main = async (event, context) => {
   }
   
   try {
+    const currentUser = await getCurrentUser(event);
+    if (!currentUser || currentUser.role !== 'admin') {
+      return {
+        success: false,
+        message: '需要管理员权限'
+      };
+    }
+
     // 检查手机号是否已存在
     console.log('检查手机号是否已存在:', phone);
     const existingUser = await db.collection('users')
@@ -63,30 +71,14 @@ exports.main = async (event, context) => {
     }
     
     // 获取管理员信息（用于设置createdBy）
-    const wxContext = cloud.getWXContext();
-    let adminName = '管理员'; // 默认值
-    
-    try {
-      // 尝试获取当前用户信息
-      const adminResult = await db.collection('users')
-        .where({
-          openid: wxContext.OPENID,
-          userType: 'admin'
-        })
-        .get();
-      
-      if (adminResult.data.length > 0) {
-        adminName = adminResult.data[0].name || '管理员';
-      }
-    } catch (adminError) {
-      console.log('获取管理员信息失败，使用默认值:', adminError);
-    }
+    const adminName = currentUser.name || '管理员';
     
     // 构建测试客户数据（使用固定的默认值）
     const testCustomerData = {
       name: name.trim(),
       phone: phone.trim(),
       birthday: '1992-09-23',
+      role: 'customer',
       userType: 'customer',
       isAdmin: false,
       status: 'active',
@@ -133,3 +125,65 @@ exports.main = async (event, context) => {
     };
   }
 };
+
+async function getCurrentUser(event = {}) {
+  const { sessionToken } = event;
+
+  if (sessionToken) {
+    const sessionResult = await db.collection('user_sessions').where({
+      sessionToken,
+      isActive: true
+    }).get();
+
+    if (sessionResult.data.length > 0) {
+      const session = sessionResult.data[0];
+      const isExpired = !session.expiresAt || new Date(session.expiresAt).getTime() <= Date.now();
+
+      if (!isExpired && session.isRegistered && session.userId) {
+        const userDoc = await db.collection('users').doc(session.userId).get();
+        if (userDoc.data && userDoc.data.status === 'active') {
+          return {
+            ...userDoc.data,
+            role: getUserRole(userDoc.data),
+            openid: session.openid
+          };
+        }
+      }
+    }
+  }
+
+  const wxContext = cloud.getWXContext();
+  if (!wxContext.OPENID) {
+    return null;
+  }
+
+  const authResult = await db.collection('auth').where({
+    _openid: wxContext.OPENID
+  }).get();
+
+  if (authResult.data.length === 0 || !authResult.data[0].phone) {
+    return null;
+  }
+
+  const userResult = await db.collection('users').where({
+    phone: authResult.data[0].phone,
+    status: 'active'
+  }).get();
+
+  if (userResult.data.length === 0) {
+    return null;
+  }
+
+  const user = userResult.data[0];
+  return {
+    ...user,
+    role: getUserRole(user)
+  };
+}
+
+function getUserRole(user) {
+  if (user.role) return user.role;
+  if (user.isAdmin === true || user.userType === 'admin') return 'admin';
+  if (user.userType === 'staff') return 'staff';
+  return 'customer';
+}
