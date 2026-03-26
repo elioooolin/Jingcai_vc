@@ -19,6 +19,7 @@ Page({
 
   // 检查登录状态
   checkLoginStatus() {
+    const manualLogout = wx.getStorageSync('manualLogout');
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
       this.setData({
@@ -28,9 +29,17 @@ Page({
       return;
     }
 
-    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
+    if (!userInfo || manualLogout) {
+      this.setData({
+        userInfo: {},
+        isVisitor: true
+      });
+      return;
+    }
+
+    if (userInfo.role === 'admin' || userInfo.role === 'staff' || userInfo.userType === 'admin' || userInfo.userType === 'staff') {
       wx.reLaunch({
-        url: '/pages/login/login'
+        url: `/pages/admin/dashboard/dashboard${userInfo.role === 'staff' || userInfo.userType === 'staff' ? '?mode=readonly' : ''}`
       });
       return;
     }
@@ -132,6 +141,12 @@ Page({
     }
   },
 
+  goToLogin() {
+    wx.navigateTo({
+      url: '/pages/login/login?forceAuth=1'
+    });
+  },
+
   // 计算入住天数
   calculateCheckInDays(checkInDate: string): number {
     if (!checkInDate) return 0;
@@ -172,7 +187,7 @@ Page({
           wx.removeStorageSync('profileData');
           wx.setStorageSync('manualLogout', true);
           wx.reLaunch({
-            url: '/pages/login/login'
+            url: '/pages/customer/dashboard/dashboard'
           });
         }
       }
@@ -183,7 +198,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '爱睦 Love Moon',
-      path: '/pages/login/login'
+      path: '/pages/customer/dashboard/dashboard'
     };
   }
 });

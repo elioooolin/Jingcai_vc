@@ -81,8 +81,40 @@
 
 /* 登录区域 */
 .login-section {
-  margin-bottom: 32rpx;
+  margin-bottom: 24rpx;
   flex-shrink: 0;
+}
+
+.agreement-section {
+  margin-bottom: 24rpx;
+  padding: 0 8rpx;
+}
+
+.agreement-label {
+  display: flex;
+  align-items: flex-start;
+}
+
+.agreement-checkbox {
+  transform: scale(0.85);
+  transform-origin: left top;
+  margin-right: 8rpx;
+  margin-top: 2rpx;
+}
+
+.agreement-text-wrapper {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 4rpx;
+  row-gap: 4rpx;
+}
+
+.agreement-text {
+  font-size: 24rpx;
+  color: var(--brand-text-secondary);
+  line-height: 1.6;
 }
 
 .login-button {

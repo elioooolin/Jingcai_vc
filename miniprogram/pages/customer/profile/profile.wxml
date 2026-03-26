@@ -62,6 +62,17 @@
   <!-- 操作按钮 -->
   <view class="action-buttons">
     <t-button
+      wx:if="{{isVisitor}}"
+      theme="primary"
+      size="large"
+      block
+      bind:tap="goToLogin"
+      class="member-login-btn"
+    >
+      会员登录
+    </t-button>
+    <t-button
+      wx:if="{{!isVisitor}}"
       theme="light"
       size="large"
       block

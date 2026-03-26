@@ -8,6 +8,9 @@ Page({
     loginLoading: false,
     pageReady: false,
     phoneAuthLoginEnabled: false,
+    agreementChecked: false,
+    redirectTarget: '',
+    redirectDate: '',
     userNotFoundVisible: false,
     userNotFoundContent: '',
     adminVerifyVisible: false,
@@ -59,6 +62,21 @@ Page({
   },
 
   onLoad() {
+    const { redirect = '', date = '', forceAuth = '' } = this.options || {};
+    const shouldForceAuth = forceAuth === '1';
+
+    if (redirect || date) {
+      this.setData({
+        redirectTarget: redirect,
+        redirectDate: date
+      } as any);
+    }
+
+    if (shouldForceAuth) {
+      this.bootstrapLoginState(true);
+      return;
+    }
+
     const manualLogout = wx.getStorageSync('manualLogout');
     const sessionToken = wx.getStorageSync('sessionToken');
 
@@ -162,6 +180,13 @@ Page({
     });
   },
 
+  onAgreementChange(e: any) {
+    const values = e.detail?.value || [];
+    this.setData({
+      agreementChecked: values.includes('agreed')
+    });
+  },
+
   // 处理微信登录
   handleWechatLogin() {
     this.setData({ loginLoading: true });
@@ -204,6 +229,14 @@ Page({
   },
 
   handleLoginWithPhoneAuth(e: any) {
+    if (!this.data.agreementChecked) {
+      wx.showToast({
+        title: '请先阅读并同意相关协议',
+        icon: 'none'
+      });
+      return;
+    }
+
     const detail = e.detail || {};
     const code = detail.code;
 
@@ -360,6 +393,16 @@ Page({
 
   // 跳转到主页
   redirectToHomePage(userInfo: any) {
+    const redirectTarget = (this.data as any).redirectTarget;
+    const redirectDate = (this.data as any).redirectDate;
+
+    if ((userInfo.role === 'customer' || userInfo.userType === 'customer') && redirectTarget === 'menu' && redirectDate) {
+      wx.reLaunch({
+        url: `/pages/customer/menu/menu?date=${redirectDate}`
+      });
+      return;
+    }
+
     if (userInfo.role === 'visitor' || userInfo.userType === 'visitor') {
       wx.reLaunch({
         url: '/pages/customer/dashboard/dashboard'
@@ -399,7 +442,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '爱睦 Love Moon',
-      path: '/pages/login/login'
+      path: '/pages/customer/dashboard/dashboard'
     };
   }
 });

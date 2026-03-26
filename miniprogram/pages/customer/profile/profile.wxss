@@ -67,6 +67,10 @@
   margin-bottom: 24rpx;
 }
 
+.member-login-btn {
+  margin-bottom: 24rpx;
+}
+
 .logout-btn {
   /* 默认样式 */
 }
@@ -167,4 +171,3 @@
     font-size: 40rpx;
   }
 }
-

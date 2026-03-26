@@ -75,7 +75,15 @@ Page({
 
   // 检查登录状态
   checkLoginStatus() {
+    const manualLogout = wx.getStorageSync('manualLogout');
     const userInfo = wx.getStorageSync('userInfo');
+    const sessionToken = wx.getStorageSync('sessionToken');
+
+    if (!manualLogout && !userInfo && sessionToken) {
+      this.validateSessionOnEntry(sessionToken);
+      return;
+    }
+
     if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
       this.setData({
         userInfo,
@@ -86,9 +94,19 @@ Page({
       return;
     }
 
-    if (!userInfo || (userInfo.role !== 'customer' && userInfo.userType !== 'customer')) {
+    if (!userInfo || manualLogout) {
+      this.setData({
+        userInfo: {},
+        isVisitor: true,
+        checkInDays: 0
+      });
+      this.initDefaultDateList();
+      return;
+    }
+
+    if (userInfo.role === 'admin' || userInfo.role === 'staff' || userInfo.userType === 'admin' || userInfo.userType === 'staff') {
       wx.reLaunch({
-        url: '/pages/login/login'
+        url: `/pages/admin/dashboard/dashboard${userInfo.role === 'staff' || userInfo.userType === 'staff' ? '?mode=readonly' : ''}`
       });
       return;
     }
@@ -103,6 +121,42 @@ Page({
     
     // 用户信息验证通过后立即初始化日期列表
     this.initDateList();
+  },
+
+  validateSessionOnEntry(sessionToken: string) {
+    wx.cloud.callFunction({
+      name: 'validateSession',
+      data: { sessionToken },
+      success: (res: any) => {
+        if (res.result?.success) {
+          wx.setStorageSync('sessionToken', res.result.session.sessionToken);
+          wx.setStorageSync('userInfo', res.result.user);
+          wx.removeStorageSync('manualLogout');
+          this.checkLoginStatus();
+          return;
+        }
+
+        wx.removeStorageSync('sessionToken');
+        wx.removeStorageSync('userInfo');
+        this.setData({
+          userInfo: {},
+          isVisitor: true,
+          checkInDays: 0
+        });
+        this.initDefaultDateList();
+      },
+      fail: (err: any) => {
+        console.error('Dashboard 校验 session 失败:', err);
+        wx.removeStorageSync('sessionToken');
+        wx.removeStorageSync('userInfo');
+        this.setData({
+          userInfo: {},
+          isVisitor: true,
+          checkInDays: 0
+        });
+        this.initDefaultDateList();
+      }
+    });
   },
 
   // 初始化用户信息（仅用于设置数据，不初始化日期列表）
@@ -411,16 +465,14 @@ Page({
 
   // 选择日期
   selectDate(e: any) {
+    const { date, index } = e.currentTarget.dataset;
+
     if (this.data.isVisitor) {
-      wx.showToast({
-        title: '当前账号尚未登记为客户，暂不可进入点餐系统',
-        icon: 'none',
-        duration: 2500
+      wx.navigateTo({
+        url: `/pages/login/login?redirect=menu&date=${date}&forceAuth=1`
       });
       return;
     }
-
-    const { date, index } = e.currentTarget.dataset;
     const { dateList } = this.data;
     const item = dateList[index];
     
@@ -929,7 +981,7 @@ Page({
           }
           wx.setStorageSync('manualLogout', true);
           wx.reLaunch({
-            url: '/pages/login/login'
+            url: '/pages/customer/dashboard/dashboard'
           });
         }
       }
@@ -940,7 +992,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '爱睦 Love Moon',
-      path: '/pages/login/login'
+      path: '/pages/customer/dashboard/dashboard'
     };
   }
 });
