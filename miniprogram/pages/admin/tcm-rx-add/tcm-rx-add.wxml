@@ -1,8 +1,8 @@
 <view class="page-container">
   <!-- 页面标题 -->
   <view class="page-header admin-gradient">
-    <text class="page-title">添加处方</text>
-    <text class="page-subtitle">为 {{customerName}} 添加中医处方记录</text>
+    <text class="page-title">{{pageTitle}}</text>
+    <text class="page-subtitle">{{pageSubtitle}}</text>
   </view>
 
   <!-- 表单内容 -->

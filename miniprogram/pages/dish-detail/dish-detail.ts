@@ -1,5 +1,7 @@
 // pages/dish-detail/dish-detail.ts
 
+import { getShareTitle } from '../../config/brand'
+
 interface DishInfo {
   id: string;
   name: string;
@@ -195,7 +197,7 @@ Page({
   onShareAppMessage() {
     const { dishInfo } = this.data;
     return {
-      title: `${dishInfo.name} - 爱睦 Love Moon`,
+      title: getShareTitle(dishInfo.name),
       path: `/pages/dish-detail/dish-detail?id=${dishInfo.id}`,
       imageUrl: '' // 可以设置分享图片
     };

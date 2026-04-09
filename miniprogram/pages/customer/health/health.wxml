@@ -1,8 +1,8 @@
 <view class="page-container">
   <!-- 页面头部 -->
   <view class="page-header">
-    <view class="header-title">健康档案</view>
-    <view class="header-subtitle">专属中医调理方案</view>
+    <view class="header-title">{{healthHeaderTitle}}</view>
+    <view class="header-subtitle">{{healthHeaderSubtitle}}</view>
   </view>
 
   <!-- Tabs区域 -->
@@ -14,14 +14,14 @@
         bind:tap="switchTab" 
         data-index="0"
       >
-        爱睦药食文化
+        {{herbalCultureTitle}}
       </view>
       <view 
         class="tab-button {{activeTab === 1 ? 'active' : ''}}" 
         bind:tap="switchTab" 
         data-index="1"
       >
-        中医问诊档案
+        {{consultationArchiveTitle}}
       </view>
     </view>
 
@@ -114,7 +114,7 @@
       </view>
     </view>
 
-    <!-- Tab内容1: 爱睦药食文化 -->
+    <!-- Tab内容1: 药食文化 -->
     <view class="tab-content {{activeTab === 0 ? 'active' : ''}}">
       <view class="herbal-section">
         <view class="section-title">药膳养生系列</view>

@@ -1,6 +1,6 @@
 <view class="page-container">
   <view class="hero-card">
-    <text class="title">欢迎来到爱睦 Love Moon</text>
-    <text class="subtitle">当前账号尚未登记为客户</text>
+    <text class="title">{{visitorWelcomeTitle}}</text>
+    <text class="subtitle">{{visitorUnregisteredTitle}}</text>
   </view>
 </view>

@@ -5,13 +5,13 @@
     <view class="logo-wrapper">
       <image 
         class="logo-image" 
-        src="/assets/icons/logo_reverse_lm.svg" 
+        src="{{brandLogoPath}}" 
         mode="aspectFit"
       />
     </view>
     
     <view class="brand-info">
-      <text class="brand-title">爱睦 Love Moon</text>
+      <text class="brand-title">{{brandDisplayName}}</text>
     </view>
     
   <view class="binding-info">

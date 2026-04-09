@@ -1,3 +1,6 @@
+import { brandConfig } from '../../../config/brand'
+import { defaultStoreName, storeOptions } from '../../../config/stores'
+
 interface MenuSummary {
   store: string;
   menuCount: number;
@@ -81,13 +84,10 @@ Page({
     imageStatusLoading: false,
     storeVisible: false,
     dateVisible: false,
-    selectedStore: '爱睦·梅溪湖店',
+    selectedStore: defaultStoreName,
     uploadedFileID: '',
     uploadedFileName: '',
-    storeOptions: [
-      { label: '爱睦·梅溪湖店', value: '爱睦·梅溪湖店' },
-      { label: '爱睦轻予·德思勤店', value: '爱睦轻予·德思勤店' }
-    ],
+    storeOptions,
     summary: {
       store: '',
       menuCount: 0,
@@ -115,7 +115,8 @@ Page({
       { label: '菜品', count: null, description: '查看缺图菜品并上传或更新图片' },
       { label: '汤品', count: null, description: '查看缺图汤品并上传或更新图片' },
       { label: '高补品', count: null, description: '查看缺图高补品并上传或更新图片' }
-    ] as DishImageCategoryStat[]
+    ] as DishImageCategoryStat[],
+    pageSubtitle: brandConfig.menuManageSubtitle
   },
 
   onLoad(options?: Record<string, string>) {

@@ -4,20 +4,20 @@
     <view class="logo-wrapper">
       <image 
         class="logo-image" 
-        src="/assets/icons/logo_reverse_lm.svg" 
+        src="{{brandLogoPath}}" 
         mode="aspectFit"
       />
     </view>
     
     <view class="brand-info">
-      <text class="brand-title">爱睦 Love Moon</text>
-      <text class="brand-slogan">轻松呵护 · 用心滋养</text>
+      <text class="brand-title">{{brandDisplayName}}</text>
+      <text class="brand-slogan">{{brandSlogan}}</text>
     </view>
   </view>
 
   <!-- 提示信息 -->
   <view class="notice-section">
-    <text class="notice-text">未登记用户可访客浏览，已登记客户可使用完整服务</text>
+    <text class="notice-text">{{loginNoticeText}}</text>
   </view>
 
   <!-- 登录按钮 -->
@@ -52,7 +52,7 @@
   <view class="agreement-section">
     <checkbox-group bindchange="onAgreementChange">
       <label class="agreement-label">
-        <checkbox value="agreed" checked="{{agreementChecked}}" color="#d4a574" class="agreement-checkbox" />
+        <checkbox value="agreed" checked="{{agreementChecked}}" color="#a56d58" class="agreement-checkbox" />
         <view class="agreement-text-wrapper">
           <text class="agreement-text">我已阅读并同意</text>
           <text class="link-text" bind:tap="showUserAgreement">《用户协议》</text>
@@ -66,7 +66,7 @@
   <!-- 底部信息 -->
   <view class="footer-section">
     <text class="footer-text">
-      未登录用户可先浏览基础界面，需要完整会员功能时再登录
+      {{loginFooterText}}
     </text>
   </view>
 </view>

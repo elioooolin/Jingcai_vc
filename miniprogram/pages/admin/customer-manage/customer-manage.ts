@@ -1,5 +1,8 @@
 // pages/admin/customer-manage/customer-manage.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+import { storeOptions } from '../../../config/stores'
+
 interface FormData {
   name: string;
   phone: string;
@@ -41,10 +44,8 @@ Page({
     } as FormData,
     
     
-    storeOptions: [
-      { label: '爱睦·梅溪湖店', value: '爱睦·梅溪湖店' },
-      { label: '爱睦轻予·德思勤店', value: '爱睦轻予·德思勤店' }
-    ]
+    storeOptions,
+    customerManageSubtitle: brandConfig.customerManageSubtitle
   },
 
   onLoad(options: any) {
@@ -451,7 +452,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

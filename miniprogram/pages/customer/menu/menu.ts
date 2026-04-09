@@ -1,5 +1,7 @@
 // pages/customer/menu/menu.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+
 interface MenuItem {
   id: string;
   name: string;
@@ -94,7 +96,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo?.role === 'visitor' || userInfo?.userType === 'visitor') {
       wx.showToast({
-        title: '当前账号尚未登记为客户，暂不可进入点餐系统',
+        title: brandConfig.visitorOrderBlockedText,
         icon: 'none',
         duration: 2500
       });
@@ -344,7 +346,7 @@ Page({
   contactService() {
     wx.showModal({
       title: '联系客服',
-      content: '如需帮助，请联系客服人员：\n\n电话：400-123-4567\n微信：lovemoon_service\n\n或者您可以稍后重试加载菜单。',
+      content: `如需帮助，请联系${brandConfig.legalEntityName}：\n\n电话：${brandConfig.contactPhone}\n\n或者您可以稍后再试加载菜单。`,
       confirmText: '我知道了',
       showCancel: false
     });
@@ -1123,7 +1125,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

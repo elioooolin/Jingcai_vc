@@ -1,13 +1,19 @@
 // pages/customer/profile/profile.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+
 Page({
   data: {
     userInfo: {} as any,
     loading: false,
     isVisitor: false,
+    profileWelcomeText: brandConfig.profileWelcomeText
   },
 
   onLoad() {
+    wx.setNavigationBarTitle({
+      title: brandConfig.customerProfileNavigationTitle
+    });
     this.checkLoginStatus();
     this.loadUserProfile();
   },
@@ -197,7 +203,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/customer/dashboard/dashboard'
     };
   }

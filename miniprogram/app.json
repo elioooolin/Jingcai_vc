@@ -18,13 +18,13 @@
   ],
   "window": {
     "navigationBarTextStyle": "white",
-    "navigationBarTitleText": "爱睦 Love Moon",
-    "navigationBarBackgroundColor": "#d4a574",
-    "backgroundColor": "#faf8f5"
+    "navigationBarTitleText": "服务平台",
+    "navigationBarBackgroundColor": "#a56d58",
+    "backgroundColor": "#fbf6f3"
   },
   "tabBar": {
     "color": "#8a8a8a",
-    "selectedColor": "#d4a574",
+    "selectedColor": "#a56d58",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
@@ -33,12 +33,6 @@
         "text": "点餐记录",
         "iconPath": "assets/icons/veggie_basket_lm.png",
         "selectedIconPath": "assets/icons/veggie_basket_lm.png"
-      },
-      {
-        "pagePath": "pages/customer/health/health",
-        "text": "健康档案",
-        "iconPath": "assets/icons/heart_lm.png",
-        "selectedIconPath": "assets/icons/heart_lm.png"
       },
       {
         "pagePath": "pages/customer/profile/profile",

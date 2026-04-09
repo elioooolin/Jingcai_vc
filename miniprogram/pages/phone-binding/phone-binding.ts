@@ -1,5 +1,7 @@
 // pages/phone-binding/phone-binding.ts
 
+import { brandConfig, getShareTitle } from '../../config/brand'
+
 Page({
   data: {
     phone: '',
@@ -8,11 +10,17 @@ Page({
     errorDialogVisible: false,
     errorDialogTitle: '',
     errorDialogContent: '',
-    contactDialogVisible: false
+    contactDialogVisible: false,
+    brandDisplayName: brandConfig.displayName,
+    brandLogoPath: brandConfig.logoPath
   },
 
   onLoad(options: any) {
     console.log('手机号绑定页面加载', options)
+
+    wx.setNavigationBarTitle({
+      title: brandConfig.phoneBindingNavigationTitle
+    })
     
     // 检查用户是否已经登录过微信
     const userInfo = wx.getStorageSync('userInfo')
@@ -204,7 +212,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

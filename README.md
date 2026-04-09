@@ -1,10 +1,10 @@
-# 爱睦 Love Moon - 微信小程序
+# 月子中心点餐与管理微信小程序
 
-专业月子服务管理系统，为产妇提供营养均衡、口感美味的月子餐服务及健康档案管理。
+一个可迁移到不同月子中心品牌的小程序项目模板，当前默认品牌为“舌尖上的晶采”。
 
 ## 项目概述
 
-这是一个基于微信小程序开发的月子服务管理系统，包含客户端和管理员端功能。
+这是一个基于微信小程序开发的月子服务管理系统，包含客户端和管理员端功能。项目当前仍以“单品牌 + 多门店”方式运行，但已经加入轻量配置层，后续迁移到其他品牌时，不需要再全项目手工搜索替换品牌名与门店名。
 
 ### 主要功能
 
@@ -34,30 +34,42 @@
 ## 项目结构
 
 ```
-lovemoon_vc/
-├── docs/                          # 文档目录
-│   ├── prd.md                    # 产品需求文档
-│   └── prompts.txt               # 开发提示
-├── miniprogram/                   # 小程序源码
-│   ├── app.json                  # 全局配置
-│   ├── app.ts                    # 全局逻辑
-│   ├── app.wxss                  # 全局样式
-│   ├── pages/                    # 页面目录
-│   │   ├── login/                # 登录页面
-│   │   ├── customer/             # 客户相关页面
-│   │   │   ├── dashboard/        # 客户主页
-│   │   │   ├── menu/             # 点餐页面
-│   │   │   ├── history/          # 订单历史
-│   │   │   └── profile/          # 个人中心
-│   │   ├── admin/                # 管理员相关页面
-│   │   │   ├── dashboard/        # 管理员主页
-│   │   │   └── customer-manage/  # 客户管理
-│   │   └── dish-detail/          # 菜品详情
-│   └── utils/                    # 工具函数
-├── prototypes/                    # 原型文件
-├── typings/                      # TypeScript 类型定义
-└── package.json                  # 依赖配置
+Jingcai_vc/
+├── docs/                         # 项目文档
+│   └── brand-migration-checklist.md
+├── miniprogram/                  # 小程序源码
+│   ├── app.json
+│   ├── app.ts
+│   ├── app.wxss
+│   ├── config/                   # 轻量配置层
+│   │   ├── brand.ts
+│   │   ├── stores.ts
+│   │   └── business.ts
+│   ├── pages/
+│   └── utils/
+├── cloudfunctions/               # 云函数
+├── cloudbase/                    # 云开发数据库结构说明
+├── data-import/                  # 导入数据与生成产物
+└── package.json
 ```
+
+## 品牌迁移入口
+
+如需迁移到新品牌，请优先查看：
+
+- `docs/brand-migration-checklist.md`
+- `miniprogram/config/brand.ts`
+- `miniprogram/config/stores.ts`
+- `miniprogram/config/business.ts`
+
+当前已经配置化的重点内容包括：
+
+- 品牌名称与页面展示文案
+- visitor 文案
+- 登录页品牌标题与协议文本
+- 后台首页标题与副标题
+- 门店下拉与默认门店
+- 导出 Excel 的门店简称映射
 
 ## 开发指南
 
@@ -82,7 +94,7 @@ npm install
 
 ### 品牌设计
 
-项目采用"爱睦"品牌设计规范：
+当前默认品牌为“舌尖上的晶采”。后续如迁移到新品牌，请优先改配置文件而不是手工替换代码字符串。
 
 #### 色彩方案
 - **主色调**: `#d4a574` (温暖金色)
@@ -138,4 +150,4 @@ npm install
 
 ---
 
-**爱睦 Love Moon** - 轻松呵护 · 用心滋养
+当前品牌：**舌尖上的晶采**

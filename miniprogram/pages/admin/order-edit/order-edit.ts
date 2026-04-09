@@ -1,5 +1,8 @@
 // pages/admin/order-edit/order-edit.ts
 
+import { getShareTitle } from '../../../config/brand'
+import { allStoreOption } from '../../../config/stores'
+
 interface OrderInfo {
   id: string;
   customerName: string;
@@ -39,9 +42,7 @@ Page({
       special_requirements: ''
     } as EditOrderDetails,
     
-    storeOptions: [
-      { label: '全部门店', value: 'all' },
-    ],
+    storeOptions: [allStoreOption],
     
     // 用于textarea的样式
     style: ''
@@ -455,7 +456,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

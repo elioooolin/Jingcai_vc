@@ -13,6 +13,9 @@ interface TcmItem {
   [key: string]: any;
 }
 
+import { buildTcmRxAddSubtitle, brandConfig, getShareTitle } from '../../../config/brand'
+import { businessConfig } from '../../../config/business'
+
 Page({
   data: {
     userId: '',
@@ -28,10 +31,19 @@ Page({
     } as TcmRxFormData,
     
     tcmList: [] as TcmItem[],
-    canSubmit: false
+    canSubmit: false,
+    pageTitle: brandConfig.tcmRxAddTitle,
+    pageSubtitle: ''
   },
 
   onLoad(options: any) {
+    if (!businessConfig.healthArchiveEnabled) {
+      wx.reLaunch({
+        url: '/pages/admin/dashboard/dashboard'
+      });
+      return;
+    }
+
     const { userId, name } = options || {};
     if (!userId) {
       wx.showToast({ title: '缺少用户ID', icon: 'error' });
@@ -42,6 +54,9 @@ Page({
     this.setData({ 
       userId, 
       customerName: decodeURIComponent(name || '') 
+    });
+    this.setData({
+      pageSubtitle: buildTcmRxAddSubtitle(decodeURIComponent(name || '该客户'))
     });
     this.loadTcmData();
     this.validateForm();
@@ -401,7 +416,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

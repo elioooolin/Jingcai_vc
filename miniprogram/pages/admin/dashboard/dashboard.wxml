@@ -11,8 +11,8 @@
   <!-- 管理员欢迎区域 -->
   <view class="admin-header">
     <view class="admin-welcome admin-gradient">
-      <text class="welcome-title">爱睦 · 管理后台</text>
-      <text class="welcome-subtitle">专业月子服务管理系统</text>
+      <text class="welcome-title">{{adminHeaderTitle}}</text>
+      <text class="welcome-subtitle">{{adminHeaderSubtitle}}</text>
     </view>
   </view>
 
@@ -243,16 +243,6 @@
                   class="delete-customer-btn"
                 >
                   删除
-                </t-button>
-                <t-button
-                  wx:if="{{!isReadOnly}}"
-                  theme="primary"
-                  size="small"
-                  bind:tap="openRx"
-                  data-id="{{item.id}}"
-                  data-name="{{item.name}}"
-                >
-                  处方
                 </t-button>
               </view>
             </view>

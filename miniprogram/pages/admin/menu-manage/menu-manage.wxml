@@ -1,7 +1,7 @@
 <view class="page-container">
   <view class="page-header admin-gradient">
     <text class="page-title">门店餐单管理</text>
-    <text class="page-subtitle">统一维护轮换起始日期与餐单轮换区间</text>
+    <text class="page-subtitle">{{pageSubtitle}}</text>
   </view>
 
   <view class="card">

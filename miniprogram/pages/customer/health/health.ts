@@ -1,5 +1,8 @@
 // pages/customer/health/health.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+import { businessConfig } from '../../../config/business'
+
 interface TcmPrescription {
   _id: string;
   name: string;
@@ -38,10 +41,24 @@ Page({
     currentWeek: 1,
     rxData: [] as TcmRxRecord[],
     herbalCategories: [] as HerbalCategory[],
-    swiperHeight: 800
+    swiperHeight: 800,
+    herbalCultureTitle: brandConfig.herbalCultureTitle,
+    healthHeaderTitle: brandConfig.healthHeaderTitle,
+    healthHeaderSubtitle: brandConfig.healthHeaderSubtitle,
+    consultationArchiveTitle: brandConfig.consultationArchiveTitle
   },
 
   onLoad() {
+    if (!businessConfig.healthArchiveEnabled) {
+      wx.switchTab({
+        url: '/pages/customer/dashboard/dashboard'
+      });
+      return;
+    }
+
+    wx.setNavigationBarTitle({
+      title: brandConfig.healthNavigationTitle
+    });
     this.checkLoginStatus();
   },
 
@@ -262,7 +279,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/customer/dashboard/dashboard'
     };
   }

@@ -15,46 +15,27 @@
 
 .logo-wrapper {
   margin-bottom: 32rpx;
-}
-
-.logo {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 40rpx;
-  background: linear-gradient(135deg, var(--brand-primary-light, #e6c49a) 0%, var(--brand-primary-dark, #b8934f) 100%);
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  box-shadow: 0 8rpx 24rpx rgba(212, 165, 116, 0.3);
 }
 
-.logo-text {
-  color: #ffffff;
-  font-size: 48rpx;
-  font-weight: 300;
-  letter-spacing: 4rpx;
+.logo-image {
+  width: 220rpx;
+  height: 220rpx;
+  filter: drop-shadow(0 12rpx 24rpx rgba(143, 51, 40, 0.12));
 }
 
 .brand-info {
   text-align: center;
-  margin-bottom: 60rpx;
+  margin-bottom: 40rpx;
 }
 
 .brand-title {
   display: block;
-  color: #8b6914;
-  font-size: 48rpx;
+  color: var(--brand-text);
+  font-size: 42rpx;
   font-weight: 600;
-  margin-bottom: 16rpx;
-  letter-spacing: 2rpx;
-}
-
-.brand-slogan {
-  display: block;
-  color: #a67c00;
-  font-size: 28rpx;
-  font-weight: 300;
+  margin-bottom: 8rpx;
   letter-spacing: 1rpx;
 }
 
@@ -168,13 +149,9 @@
     margin-bottom: 60rpx;
   }
   
-  .logo {
-    width: 140rpx;
-    height: 140rpx;
-  }
-  
-  .logo-text {
-    font-size: 42rpx;
+  .logo-image {
+    width: 180rpx;
+    height: 180rpx;
   }
   
   .brand-title {

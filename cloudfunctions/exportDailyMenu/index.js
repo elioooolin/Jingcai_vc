@@ -5,6 +5,7 @@
 
 const cloud = require('wx-server-sdk');
 const ExcelJS = require('exceljs');
+const { getStoreShortName } = require('./store-config');
 
 // 初始化云开发
 cloud.init({
@@ -383,18 +384,6 @@ async function createWorkbook(excelData, orderCount) {
   });
 
   return workbook;
-}
-
-/**
- * 获取门店简称
- */
-function getStoreShortName(store) {
-  const storeMap = {
-    '爱睦·梅溪湖店': '梅溪湖店',
-    '爱睦轻予·德思勤店': '德思勤店',
-  };
-  
-  return storeMap[store] || store;
 }
 
 /**

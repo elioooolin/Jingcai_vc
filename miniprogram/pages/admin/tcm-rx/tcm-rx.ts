@@ -1,5 +1,8 @@
 // pages/admin/tcm-rx/tcm-rx.ts
 
+import { getShareTitle } from '../../../config/brand'
+import { businessConfig } from '../../../config/business'
+
 Page({
   data: {
     userId: '',
@@ -9,6 +12,13 @@ Page({
   },
 
   onLoad(options: any) {
+    if (!businessConfig.healthArchiveEnabled) {
+      wx.reLaunch({
+        url: '/pages/admin/dashboard/dashboard'
+      });
+      return;
+    }
+
     const { userId, name } = options || {};
     if (!userId) {
       wx.showToast({ title: '缺少用户ID', icon: 'error' });
@@ -120,10 +130,8 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }
 });
-
-

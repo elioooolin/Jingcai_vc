@@ -1,5 +1,8 @@
 // pages/customer/dashboard/dashboard.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+import { businessConfig } from '../../../config/business'
+
 Page({
   data: {
     today: new Date(),
@@ -15,11 +18,20 @@ Page({
     sortedOrders: [] as any[],  // 所有订单
     refreshingOrders: false,  // 是否正在刷新订单数据
     showOrderSubmitSuccess: false,  // 是否显示订单提交成功提示
-    cancellingOrderId: ''  // 正在取消的订单ID
+    cancellingOrderId: '',  // 正在取消的订单ID
+    visitorWelcomeTitle: brandConfig.visitorWelcomeTitle,
+    visitorOrderBlockedText: brandConfig.visitorOrderBlockedText,
+    visitorBrowseOnlyText: brandConfig.visitorBrowseOnlyText,
+    customerStayGreeting: brandConfig.customerStayGreeting,
+    customerCompanionText: brandConfig.customerCompanionText,
+    minimumAdvanceOrderDays: businessConfig.minimumAdvanceOrderDays
   },
 
   onLoad(options: any) {
     console.log('Dashboard页面加载，参数:', options);
+    wx.setNavigationBarTitle({
+      title: brandConfig.customerDashboardNavigationTitle
+    });
     let today = new Date();
     today.setHours(0, 0, 0, 0);
     this.setData({today});
@@ -991,7 +1003,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/customer/dashboard/dashboard'
     };
   }

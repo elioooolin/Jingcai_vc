@@ -1,5 +1,8 @@
 // pages/admin/dashboard/dashboard.ts
 
+import { brandConfig, getShareTitle } from '../../../config/brand'
+import { allStoreOption, defaultStoreName, storeOptions } from '../../../config/stores'
+
 interface AdminOrderItem {
   id: string;
   customerId?: string;
@@ -60,11 +63,7 @@ Page({
     orderList: [] as AdminOrderItem[],
     customerList: [] as CustomerItem[],
     
-    storeOptions: [
-      { label: '全部门店', value: 'all' },
-      { label: '梅溪湖店', value: '爱睦·梅溪湖店' },
-      { label: '德思勤店', value: '爱睦轻予·德思勤店' }
-    ],
+    storeOptions: [allStoreOption, ...storeOptions],
     
     exportPreview: {
       orderCount: 28,
@@ -85,10 +84,15 @@ Page({
       inhouseCount: 0,
       submittedCount: 0,
       unsubmittedCustomers: [] as any[]
-    }
+    },
+    adminHeaderTitle: brandConfig.adminTitle,
+    adminHeaderSubtitle: brandConfig.adminSubtitle
   },
 
   onLoad(options?: any) {
+    wx.setNavigationBarTitle({
+      title: brandConfig.adminDashboardNavigationTitle
+    });
     this.checkAdminAuth();
     const userInfo = wx.getStorageSync('userInfo') || {};
     const isReadOnly = options?.mode === 'readonly' || userInfo.role === 'staff' || userInfo.userType === 'staff';
@@ -930,7 +934,7 @@ Page({
   openMenuManage() {
     const store = this.data.selectedOrderStore !== 'all'
       ? this.data.selectedOrderStore
-      : '爱睦·梅溪湖店';
+      : defaultStoreName;
     wx.navigateTo({
       url: `/pages/admin/menu-manage/menu-manage?store=${encodeURIComponent(store)}`
     });
@@ -1564,7 +1568,7 @@ Page({
   // 页面分享
   onShareAppMessage() {
     return {
-      title: '爱睦 Love Moon',
+      title: getShareTitle(),
       path: '/pages/login/login'
     };
   }

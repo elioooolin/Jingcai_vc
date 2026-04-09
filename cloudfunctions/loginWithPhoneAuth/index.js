@@ -2,7 +2,7 @@ const cloud = require('wx-server-sdk')
 const crypto = require('crypto')
 
 cloud.init({
-  env: 'cloud1-1gbzoqv6ad653efc'
+  env: cloud.DYNAMIC_CURRENT_ENV
 })
 
 const db = cloud.database()

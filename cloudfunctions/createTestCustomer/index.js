@@ -4,6 +4,7 @@
  */
 
 const cloud = require('wx-server-sdk');
+const { defaultStoreName } = require('./store-config');
 
 // 初始化云开发
 cloud.init({
@@ -85,7 +86,7 @@ exports.main = async (event, context) => {
       room: '301',
       checkInDate: '2025-09-30',
       totalDays: 365,
-      store: '爱睦·梅溪湖店',
+      store: defaultStoreName,
       dietPreference: '要退奶',
       supplementCount: 4,
       isMock: true,
