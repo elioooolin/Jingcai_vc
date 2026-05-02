@@ -587,16 +587,28 @@ Page({
 
     for (let index = 0; index < items.length; index += chunkSize) {
       const chunk = items.slice(index, index + chunkSize)
+      const fileItems = chunk.filter(item => Boolean(item.fileID))
+
+      chunk
+        .filter(item => !item.fileID)
+        .forEach((item) => {
+          fileStatusMap.set(item.fileID, false)
+        })
+
+      if (!fileItems.length) {
+        continue
+      }
+
       try {
         const result = await wx.cloud.getTempFileURL({
-          fileList: chunk.map(item => item.fileID)
+          fileList: fileItems.map(item => item.fileID)
         })
 
         ;(result.fileList || []).forEach((file: any) => {
           fileStatusMap.set(file.fileID, file.status === 0 && Boolean(file.tempFileURL))
         })
       } catch (error) {
-        chunk.forEach((item) => {
+        fileItems.forEach((item) => {
           fileStatusMap.set(item.fileID, false)
         })
       }

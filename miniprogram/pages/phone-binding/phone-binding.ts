@@ -22,7 +22,7 @@ Page({
       title: brandConfig.phoneBindingNavigationTitle
     })
     
-    // 检查用户是否已经登录过微信
+    // 检查用户是否已经完成账号登录
     const userInfo = wx.getStorageSync('userInfo')
     if (userInfo && userInfo._id) {
       // 用户已经完成绑定，跳转到主页
@@ -83,18 +83,18 @@ Page({
     })
   },
 
-  // 处理微信手机号授权绑定
+  // 处理手机号快捷授权绑定
   handleGetPhoneNumber(e: any) {
     const detail = e.detail || {}
     const code = detail.code
 
     if (!code) {
       if (detail.errMsg && detail.errMsg.includes('fail user deny')) {
-        this.showErrorDialog('未授权手机号', '您取消了微信手机号授权，可改用下方手动输入手机号绑定')
+        this.showErrorDialog('未授权手机号', '您取消了手机号快捷授权，可改用下方手动输入手机号绑定')
         return
       }
 
-      this.showErrorDialog('授权失败', '未能获取微信手机号授权，请稍后重试')
+      this.showErrorDialog('授权失败', '未能获取手机号快捷授权，请稍后重试')
       return
     }
 
@@ -106,7 +106,7 @@ Page({
         phoneCode: code
       },
       success: (res: any) => {
-        console.log('微信手机号绑定结果:', res.result)
+        console.log('手机号快捷绑定结果:', res.result)
 
         if (res.result.success) {
           this.handleBindingSuccess(res.result.user, res.result.session)
@@ -115,7 +115,7 @@ Page({
         }
       },
       fail: (err: any) => {
-        console.error('调用微信手机号绑定云函数失败:', err)
+        console.error('调用手机号绑定云函数失败:', err)
         this.setData({ bindingLoading: false })
         this.showErrorDialog('网络错误', '网络连接失败，请检查网络后重试')
       }
@@ -150,7 +150,7 @@ Page({
     
     switch (result.error) {
       case 'PHONE_ALREADY_BOUND':
-        this.showErrorDialog('手机号已被使用', '该手机号已被其他微信账号绑定，请联系客服处理')
+        this.showErrorDialog('手机号已被使用', '该手机号已被其他账号绑定，请联系客服处理')
         break
       case 'USER_NOT_FOUND':
         this.setData({ contactDialogVisible: true })
@@ -159,13 +159,13 @@ Page({
         this.showErrorDialog('账号状态异常', '您的账号状态异常，请联系管理员处理')
         break
       case 'OPENID_ALREADY_BOUND':
-        this.showErrorDialog('微信账号已绑定', '您的微信账号已绑定其他账号，无法重复绑定')
+        this.showErrorDialog('账号已绑定', '当前账号已绑定其他客户信息，无法重复绑定')
         break
       case 'INVALID_PHONE':
         this.showErrorDialog('手机号格式错误', '请输入正确的手机号')
         break
       case 'PHONE_AUTH_FAILED':
-        this.showErrorDialog('授权失败', result.message || '微信手机号授权失败，请稍后重试')
+        this.showErrorDialog('授权失败', result.message || '手机号快捷授权失败，请稍后重试')
         break
       default:
         this.showErrorDialog('绑定失败', result.message || '绑定失败，请稍后重试')

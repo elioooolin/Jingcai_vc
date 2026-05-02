@@ -8,7 +8,7 @@ import {
 } from '../../config/brand'
 
 // 管理员密码（实际项目中应该从云端验证）
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'jingcai999999';
 
 Page({
   data: {

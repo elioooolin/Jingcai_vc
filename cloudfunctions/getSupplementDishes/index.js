@@ -59,8 +59,7 @@ exports.main = async (event, context) => {
 
     // 处理高补品数据，添加图片URL
     const supplementDishes = dedupedDishes.map(dish => {
-      // 构建图片URL
-      const imageFileId = `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/dish_pics/${dish.name}.JPG`;
+      const imageFileId = dish.imageFileId || '';
       
       return {
         id: dish._id,

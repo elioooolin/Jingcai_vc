@@ -205,7 +205,7 @@
           <text class="tip-item">• 手机号将作为客户登录的唯一标识</text>
           <text class="tip-item">• 请确保手机号填写正确，客户将通过此号码登录</text>
           <text class="tip-item">• 标有必填的字段必须填写</text>
-          <text class="tip-item">• 添加成功后，客户即可使用微信登录系统</text>
+          <text class="tip-item">• 添加成功后，客户即可使用手机号快捷登录系统</text>
         </view>
       </view>
     </view>

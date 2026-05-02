@@ -6,7 +6,6 @@ cloud.init({
 
 const db = cloud.database()
 const _ = db.command
-const CLOUD_FILE_PREFIX = 'cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/dish_pics/'
 
 exports.main = async (event) => {
   const { store } = event
@@ -68,7 +67,7 @@ exports.main = async (event) => {
         id: dish._id,
         name,
         categoryLabel: menuDishMap.get(dish._id) || mapCategoryLabel(dish.category),
-        fileID: buildImageFileId(name)
+        fileID: buildImageFileId(dish)
       })
     })
 
@@ -82,7 +81,7 @@ exports.main = async (event) => {
         id: dish._id,
         name,
         categoryLabel: '高补品',
-        fileID: buildImageFileId(name)
+        fileID: buildImageFileId(dish)
       })
     })
 
@@ -208,8 +207,8 @@ async function getDishesByIds(dishIds) {
   return results
 }
 
-function buildImageFileId(dishName) {
-  return `${CLOUD_FILE_PREFIX}${dishName}.JPG`
+function buildImageFileId(dish) {
+  return dish.imageFileId || ''
 }
 
 function mapCategoryLabel(category) {

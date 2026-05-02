@@ -392,7 +392,7 @@ Page({
     this.setData({ submitting: false });
     
     const { isEdit } = this.data;
-    const successMessage = isEdit ? '客户信息修改成功！' : '客户添加成功！客户现在可以使用微信登录系统。';
+    const successMessage = isEdit ? '客户信息修改成功！' : '客户添加成功！客户现在可以使用手机号快捷登录系统。';
     
     wx.showToast({
       title: successMessage,

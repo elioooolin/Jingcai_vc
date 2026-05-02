@@ -7,10 +7,13 @@ interface DishImageItem {
 }
 
 function appendCacheBust(url: string) {
-  if (!url) return ''
-  const separator = url.includes('?') ? '&' : '?'
-  return `${url}${separator}t=${Date.now()}`
+  return url || ''
 }
+
+const MENU_IMAGE_STATUS_CACHE_KEY = 'menu_manage_image_status_cache_v1'
+const MAX_IMAGE_EDGE = 1024
+const TARGET_LOCAL_UPLOAD_SIZE = 150 * 1024
+const COMPRESS_QUALITY_STEPS = [40, 30, 25, 20, 15]
 
 Page({
   data: {
@@ -131,16 +134,28 @@ Page({
 
     for (let index = 0; index < items.length; index += chunkSize) {
       const chunk = items.slice(index, index + chunkSize)
+      const fileItems = chunk.filter(item => Boolean(item.fileID))
+
+      chunk
+        .filter(item => !item.fileID)
+        .forEach((item) => {
+          fileStatusMap.set(item.fileID, false)
+        })
+
+      if (!fileItems.length) {
+        continue
+      }
+
       try {
         const result = await wx.cloud.getTempFileURL({
-          fileList: chunk.map(item => item.fileID)
+          fileList: fileItems.map(item => item.fileID)
         })
 
         ;(result.fileList || []).forEach((file: any) => {
           fileStatusMap.set(file.fileID, file.status === 0 && Boolean(file.tempFileURL))
         })
       } catch (error) {
-        chunk.forEach((item) => {
+        fileItems.forEach((item) => {
           fileStatusMap.set(item.fileID, false)
         })
       }
@@ -160,10 +175,24 @@ Page({
         fileList: [fileID]
       })
       const file = result.fileList?.[0]
+      console.log('菜品图片临时链接结果:', {
+        fileID,
+        status: file?.status,
+        errMsg: file?.errMsg,
+        hasTempFileURL: Boolean(file?.tempFileURL)
+      })
       return file?.status === 0 && file?.tempFileURL ? appendCacheBust(file.tempFileURL) : ''
     } catch (error) {
+      console.error('获取菜品图片临时链接失败:', error)
       return ''
     }
+  },
+
+  onPreviewImageError(e: any) {
+    console.error('菜品图片渲染失败:', {
+      url: this.data.selectedDishPreviewURL,
+      detail: e.detail
+    })
   },
 
   previewSelectedDishImage() {
@@ -240,7 +269,8 @@ Page({
       const result = await wx.chooseMedia({
         count: 1,
         mediaType: ['image'],
-        sourceType: ['album']
+        sourceType: ['album'],
+        sizeType: ['compressed']
       })
 
       const file = result.tempFiles?.[0]
@@ -248,14 +278,116 @@ Page({
         return
       }
 
-      const imageName = file.size ? `已选择图片（${Math.round(file.size / 1024)}KB）` : '已选择图片'
+      const optimizedImage = await this.prepareImageForUpload(file.tempFilePath, file.size || 0)
+      if (!optimizedImage) {
+        return
+      }
+
+      const imageName = optimizedImage.size
+        ? `已选择图片（${Math.round(optimizedImage.size / 1024)}KB）`
+        : '已选择图片'
       this.setData({
-        selectedImagePath: file.tempFilePath,
+        selectedImagePath: optimizedImage.path,
         selectedImageName: imageName
       })
     } catch (error) {
       console.error('选择图片失败:', error)
     }
+  },
+
+  async prepareImageForUpload(filePath: string, originalSize: number) {
+    let workingPath = filePath
+    let workingSize = originalSize || await this.getLocalFileSize(filePath)
+    let workingInfo = await this.getImageInfo(filePath)
+
+    for (const quality of COMPRESS_QUALITY_STEPS) {
+      try {
+        const compressed = await this.compressImage(
+          workingPath,
+          quality,
+          workingInfo?.width,
+          workingInfo?.height
+        )
+        const compressedSize = await this.getLocalFileSize(compressed.tempFilePath)
+        const compressedInfo = await this.getImageInfo(compressed.tempFilePath)
+
+        if (compressedSize > 0) {
+          workingPath = compressed.tempFilePath
+          workingSize = compressedSize
+          workingInfo = compressedInfo
+        }
+
+        if (workingSize <= TARGET_LOCAL_UPLOAD_SIZE) {
+          return {
+            path: workingPath,
+            size: workingSize
+          }
+        }
+      } catch (error) {
+        console.error(`压缩图片失败，quality=${quality}:`, error)
+      }
+    }
+
+    wx.showToast({
+      title: '图片较大，将尝试继续上传',
+      icon: 'none',
+      duration: 2000
+    })
+
+    return {
+      path: workingPath,
+      size: workingSize
+    }
+  },
+
+  async getImageInfo(src: string): Promise<WechatMiniprogram.GetImageInfoSuccessCallbackResult | null> {
+    try {
+      return await wx.getImageInfo({ src })
+    } catch (error) {
+      console.error('读取图片信息失败:', error)
+      return null
+    }
+  },
+
+  compressImage(
+    src: string,
+    quality: number,
+    width?: number,
+    height?: number
+  ): Promise<WechatMiniprogram.CompressImageSuccessCallbackResult> {
+    let compressedWidth = width
+    let compressedHeight = height
+
+    if (width && height && (width > MAX_IMAGE_EDGE || height > MAX_IMAGE_EDGE)) {
+      if (width >= height) {
+        compressedWidth = MAX_IMAGE_EDGE
+        compressedHeight = Math.round((MAX_IMAGE_EDGE / width) * height)
+      } else {
+        compressedHeight = MAX_IMAGE_EDGE
+        compressedWidth = Math.round((MAX_IMAGE_EDGE / height) * width)
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      wx.compressImage({
+        src,
+        quality,
+        compressedWidth,
+        compressedHeight,
+        success: resolve,
+        fail: reject
+      })
+    })
+  },
+
+  getLocalFileSize(filePath: string): Promise<number> {
+    return new Promise((resolve) => {
+      wx.getFileSystemManager().getFileInfo({
+        filePath,
+        success: (res) => resolve(res.size || 0),
+        fail: () => resolve(0)
+      })
+    })
   },
 
   async uploadSelectedImage() {
@@ -279,23 +411,28 @@ Page({
       return
     }
 
-    const cloudPath = `dish_pics/${this.data.selectedDishName}.JPG`
-
     this.setData({ uploading: true })
 
     try {
-      try {
-        await wx.cloud.deleteFile({
-          fileList: [cloudPath]
-        })
-      } catch (error) {
-        // Ignore delete failures so first-time upload still works.
-      }
+      const imageBase64 = wx.getFileSystemManager().readFileSync(
+        this.data.selectedImagePath,
+        'base64'
+      ) as string
 
-      await wx.cloud.uploadFile({
-        cloudPath,
-        filePath: this.data.selectedImagePath
+      const uploadResult = await wx.cloud.callFunction({
+        name: 'uploadDishImage',
+        data: {
+          sessionToken: wx.getStorageSync('sessionToken'),
+          dishName: this.data.selectedDishName,
+          store: this.data.store,
+          imageBase64
+        }
       })
+
+      const payload = uploadResult.result as any
+      if (!payload?.success) {
+        throw new Error(payload?.message || '上传失败')
+      }
 
       const localPreviewURL = this.data.selectedImagePath
 
@@ -303,6 +440,8 @@ Page({
         title: this.data.selectedDishHasImage ? '图片已更新' : '图片上传成功',
         icon: 'success'
       })
+
+      wx.removeStorageSync(MENU_IMAGE_STATUS_CACHE_KEY)
 
       this.setData({
         selectedDishHasImage: true,
@@ -317,8 +456,13 @@ Page({
         this.loadImageStatus(this.data.store, this.data.category, this.data.selectedDishName)
       }, 1200)
     } catch (error: any) {
+      const errorMessage = String(error?.message || error?.errMsg || '')
+      const friendlyMessage = /data exceed max size|parameter error/i.test(errorMessage)
+        ? '图片过大，请重新选择更小的图片'
+        : (error?.message || '上传失败')
+
       wx.showToast({
-        title: error?.message || '上传失败',
+        title: friendlyMessage,
         icon: 'none',
         duration: 2500
       })

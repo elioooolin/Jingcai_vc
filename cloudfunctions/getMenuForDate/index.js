@@ -298,12 +298,11 @@ async function populateMenuDetails(dailyMenu) {
             if (dishResult.data) {
               const dish = dishResult.data
               
-              // 生成图片的云存储路径 - 小程序中直接使用 fileID
-              const imageFileId = `cloud://cloud1-1gbzoqv6ad653efc.636c-cloud1-1gbzoqv6ad653efc-1356702265/dish_pics/${dish.name}.JPG`
+              const imageFileId = dish.imageFileId || ''
               
               // 小程序中的 image 组件可以直接使用云存储的 fileID
               // 不需要获取临时URL，直接使用 fileID 即可
-              console.log(`菜品图片路径: ${dish.name} -> ${imageFileId}`)
+              console.log(`菜品图片路径: ${dish.name} -> ${imageFileId || '未上传'}`)
               
               // 为前端添加必要的显示属性
               dishDetails.push({

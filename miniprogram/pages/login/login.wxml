@@ -44,7 +44,7 @@
       bind:getphonenumber="handleLoginWithPhoneAuth"
       class="login-button"
     >
-      <text wx:if="{{!loginLoading}}">微信手机号一键登录</text>
+      <text wx:if="{{!loginLoading}}">手机号快捷登录</text>
       <text wx:else>登录中...</text>
     </t-button>
   </view>

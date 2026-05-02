@@ -79,7 +79,7 @@
       <view wx:if="{{selectedDishName}}" class="preview-card">
         <text class="picker-label">当前图片预览</text>
         <view wx:if="{{selectedDishPreviewURL}}" class="image-preview-wrapper" bind:tap="previewSelectedDishImage">
-          <image class="image-preview" src="{{selectedDishPreviewURL}}" mode="aspectFill" />
+          <image class="image-preview" src="{{selectedDishPreviewURL}}" mode="aspectFill" binderror="onPreviewImageError" />
           <text class="image-preview-hint">点击查看大图</text>
         </view>
         <view wx:else class="image-preview-empty">

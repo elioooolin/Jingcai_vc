@@ -15,11 +15,11 @@
     </view>
     
   <view class="binding-info">
-      <text class="binding-desc">首次登录，请优先使用微信手机号一键绑定已登记客户账号</text>
+      <text class="binding-desc">首次登录，请优先使用手机号快捷绑定已登记客户账号</text>
   </view>
   </view>
 
-  <!-- 微信手机号一键绑定 -->
+  <!-- 手机号快捷绑定 -->
   <view class="input-section">
     <t-button
       theme="primary"
@@ -30,7 +30,7 @@
       bind:getphonenumber="handleGetPhoneNumber"
       class="bind-button"
     >
-      <text wx:if="{{!bindingLoading}}">微信手机号一键绑定</text>
+      <text wx:if="{{!bindingLoading}}">手机号快捷绑定</text>
       <text wx:else>绑定中...</text>
     </t-button>
   </view>
@@ -40,8 +40,8 @@
     <view class="tip-card secondary-tip-card">
       <text class="tip-title">备用绑定方式</text>
       <text class="tip-content">
-        • 如微信手机号授权失败，可手动输入已登记手机号绑定
-        • 每个手机号只能绑定一个微信账号
+        • 如快捷绑定失败，可手动输入已登记手机号绑定
+        • 每个手机号只能绑定一个账号
       </text>
     </view>
   </view>
