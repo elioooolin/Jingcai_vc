@@ -414,10 +414,22 @@ Page({
     this.setData({ uploading: true })
 
     try {
-      const imageBase64 = wx.getFileSystemManager().readFileSync(
-        this.data.selectedImagePath,
-        'base64'
-      ) as string
+      const cloudPath = `dish_pics/${this.data.selectedDishName}.JPG`
+
+      if (this.data.selectedDishFileID) {
+        try {
+          await wx.cloud.deleteFile({
+            fileList: [this.data.selectedDishFileID]
+          })
+        } catch (error) {
+          console.warn('删除旧菜品图片失败，继续上传新图:', error)
+        }
+      }
+
+      const storageResult = await wx.cloud.uploadFile({
+        cloudPath,
+        filePath: this.data.selectedImagePath
+      })
 
       const uploadResult = await wx.cloud.callFunction({
         name: 'uploadDishImage',
@@ -425,7 +437,7 @@ Page({
           sessionToken: wx.getStorageSync('sessionToken'),
           dishName: this.data.selectedDishName,
           store: this.data.store,
-          imageBase64
+          fileID: storageResult.fileID
         }
       })
 
@@ -457,7 +469,9 @@ Page({
       }, 1200)
     } catch (error: any) {
       const errorMessage = String(error?.message || error?.errMsg || '')
-      const friendlyMessage = /data exceed max size|parameter error/i.test(errorMessage)
+      const friendlyMessage = /storage permission denied/i.test(errorMessage)
+        ? '云存储无上传权限，请检查当前环境的 Storage 权限'
+        : /data exceed max size|parameter error/i.test(errorMessage)
         ? '图片过大，请重新选择更小的图片'
         : (error?.message || '上传失败')
 

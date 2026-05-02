@@ -7,7 +7,7 @@ cloud.init({
 const db = cloud.database()
 
 exports.main = async (event = {}) => {
-  const { sessionToken, dishName, store, imageBase64 } = event
+  const { sessionToken, dishName, store, imageBase64, fileID } = event
 
   try {
     const currentUser = await getCurrentUser({ sessionToken })
@@ -20,7 +20,7 @@ exports.main = async (event = {}) => {
     }
 
     const normalizedDishName = String(dishName || '').trim()
-    if (!normalizedDishName || !imageBase64) {
+    if (!normalizedDishName || (!imageBase64 && !fileID)) {
       return {
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
@@ -28,29 +28,35 @@ exports.main = async (event = {}) => {
       }
     }
 
-    const base64Data = String(imageBase64).replace(/^data:image\/\w+;base64,/, '')
-    const buffer = Buffer.from(base64Data, 'base64')
+    let resolvedFileID = String(fileID || '').trim()
+    let cloudPath = ''
 
-    if (!buffer.length) {
-      return {
-        success: false,
-        error: 'INVALID_IMAGE',
-        message: '图片数据无效'
+    if (!resolvedFileID) {
+      const base64Data = String(imageBase64).replace(/^data:image\/\w+;base64,/, '')
+      const buffer = Buffer.from(base64Data, 'base64')
+
+      if (!buffer.length) {
+        return {
+          success: false,
+          error: 'INVALID_IMAGE',
+          message: '图片数据无效'
+        }
       }
+
+      cloudPath = `dish_pics/${normalizedDishName}.JPG`
+      const uploadResult = await cloud.uploadFile({
+        cloudPath,
+        fileContent: buffer
+      })
+      resolvedFileID = uploadResult.fileID
     }
 
-    const cloudPath = `dish_pics/${normalizedDishName}.JPG`
-    const uploadResult = await cloud.uploadFile({
-      cloudPath,
-      fileContent: buffer
-    })
-
-    await updateDishImageFileId(normalizedDishName, store, uploadResult.fileID)
+    await updateDishImageFileId(normalizedDishName, store, resolvedFileID)
 
     return {
       success: true,
       message: '图片上传成功',
-      fileID: uploadResult.fileID,
+      fileID: resolvedFileID,
       cloudPath
     }
   } catch (error) {
