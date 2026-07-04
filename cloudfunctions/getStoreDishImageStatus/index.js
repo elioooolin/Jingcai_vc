@@ -54,34 +54,40 @@ exports.main = async (event) => {
     })
 
     const menuDishes = await getDishesByIds(Array.from(menuDishIds))
+    const storeDishes = await getAllByWhere('dishes', { store })
+    const imageByName = buildImageByName(storeDishes)
     const allItems = []
-    const seenDishNames = new Set()
+    const seenDishKeys = new Set()
 
     menuDishes.forEach((dish) => {
       const name = String(dish.name || '').trim()
-      if (!name || seenDishNames.has(name)) {
+      const categoryLabel = menuDishMap.get(dish._id) || mapCategoryLabel(dish.category)
+      const dishKey = `${categoryLabel}:${name}`
+      if (!name || seenDishKeys.has(dishKey)) {
         return
       }
-      seenDishNames.add(name)
+      seenDishKeys.add(dishKey)
       allItems.push({
         id: dish._id,
         name,
-        categoryLabel: menuDishMap.get(dish._id) || mapCategoryLabel(dish.category),
-        fileID: buildImageFileId(dish)
+        categoryLabel,
+        fileID: buildImageFileId(dish, imageByName)
       })
     })
 
     supplementRecords.forEach((dish) => {
       const name = String(dish.name || '').trim()
-      if (!name || seenDishNames.has(name)) {
+      const categoryLabel = '高补品'
+      const dishKey = `${categoryLabel}:${name}`
+      if (!name || seenDishKeys.has(dishKey)) {
         return
       }
-      seenDishNames.add(name)
+      seenDishKeys.add(dishKey)
       allItems.push({
         id: dish._id,
         name,
-        categoryLabel: '高补品',
-        fileID: buildImageFileId(dish)
+        categoryLabel,
+        fileID: buildImageFileId(dish, imageByName)
       })
     })
 
@@ -207,8 +213,29 @@ async function getDishesByIds(dishIds) {
   return results
 }
 
-function buildImageFileId(dish) {
-  return dish.imageFileId || ''
+function buildImageFileId(dish, imageByName) {
+  const imageFileId = String(dish.imageFileId || '').trim()
+  if (imageFileId) {
+    return imageFileId
+  }
+
+  return imageByName.get(String(dish.name || '').trim()) || ''
+}
+
+function buildImageByName(dishes) {
+  const imageByName = new Map()
+
+  dishes.forEach((dish) => {
+    const name = String(dish.name || '').trim()
+    const imageFileId = String(dish.imageFileId || '').trim()
+    if (!name || !imageFileId || imageByName.has(name)) {
+      return
+    }
+
+    imageByName.set(name, imageFileId)
+  })
+
+  return imageByName
 }
 
 function mapCategoryLabel(category) {

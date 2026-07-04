@@ -61,7 +61,9 @@ exports.main = async (event, context) => {
     }
     
     const user = userResult.data;
-    const supplementCount = user.supplementCount || 0;
+    const supplementCount = user.isMock === true
+      ? Math.max(user.supplementCount || 0, 4)
+      : user.supplementCount || 0;
     
     console.log(`用户 ${userId} 的高补餐次数: ${supplementCount}`);
     

@@ -71,11 +71,13 @@ exports.main = async (event, context) => {
     }));
     
     // 创建已订餐日期的集合，用于快速查找
-    const orderedDates = new Set(
-      orders
-        .filter(order => order.status !== 'cancelled')
-        .map(order => order.orderDateString)
-    );
+    const orderedDates = currentUser.isMock === true
+      ? new Set()
+      : new Set(
+          orders
+            .filter(order => order.status !== 'cancelled')
+            .map(order => order.orderDateString)
+        );
     
     console.log('已订餐的日期:', Array.from(orderedDates));
     

@@ -62,7 +62,9 @@ interface DishImageCategoryStat {
 }
 
 const IMAGE_GROUP_PREVIEW_LIMIT = 6
-const IMAGE_STATUS_CACHE_KEY = 'menu_manage_image_status_cache_v1'
+const IMAGE_STATUS_CACHE_KEY = 'menu_manage_image_status_cache_v2'
+const IMAGE_RENDER_CACHE_KEY = 'dish_image_render_cache_v1'
+const IMAGE_RENDER_CACHE_TTL = 30 * 60 * 1000
 const SUPPLEMENT_WEEKDAY_OPTIONS = [
   { label: '周一', value: 1 },
   { label: '周二', value: 2 },
@@ -139,6 +141,17 @@ Page({
     this.loadStoreData(selectedStore)
   },
 
+  onShow() {
+    if (!this.data.selectedStore || this.data.loading) {
+      return
+    }
+
+    if ((this as any)._shouldRefreshImageStatusOnShow) {
+      ;(this as any)._shouldRefreshImageStatusOnShow = false
+      this.loadDishImageStatus(this.data.selectedStore, { skipCache: true })
+    }
+  },
+
   async loadStoreData(store: string) {
     this.setData({ loading: true })
 
@@ -193,14 +206,15 @@ Page({
     }
   },
 
-  async loadDishImageStatus(store: string) {
+  async loadDishImageStatus(store: string, options: { skipCache?: boolean } = {}) {
     const requestId = ++(this as any)._imageStatusRequestId
     this.resetDishImageStatusState(store, true)
 
-    const cachedStatus = this.getCachedDishImageStatus(store)
+    const cachedStatus = options.skipCache ? null : this.getCachedDishImageStatus(store)
     if (cachedStatus) {
       this.setData({
         dishImageSummary: cachedStatus.summary,
+        missingImageGroups: cachedStatus.groups || [],
         imageCategoryStats: cachedStatus.categoryStats
       })
     }
@@ -219,24 +233,23 @@ Page({
         throw new Error(imageStatusResult?.message || '加载菜品图片状态失败')
       }
 
-      const resolvedImageStatus = await this.resolveDishImageStatus(imageStatusResult.items || [], store)
+      const rawItems = imageStatusResult.items || []
+      const quickImageStatus = this.buildQuickDishImageStatus(rawItems, store)
+      if (requestId === (this as any)._imageStatusRequestId && store === this.data.selectedStore) {
+        this.applyResolvedImageStatus(store, quickImageStatus)
+      }
+
+      const resolvedImageStatus = await this.resolveDishImageStatus(rawItems, store)
       if (requestId !== (this as any)._imageStatusRequestId || store !== this.data.selectedStore) {
         return
       }
 
-      const nextCategoryStats = this.buildImageCategoryStats(resolvedImageStatus.groupedMissingItems)
-      const nextGroups = this.decorateImageGroups(resolvedImageStatus.groupedMissingItems)
-
-      this.setData({
-        dishImageSummary: resolvedImageStatus.summary,
-        missingImageGroups: nextGroups,
-        imageCategoryStats: nextCategoryStats,
-        imageStatusLoading: false
-      })
+      const renderedStatus = this.applyResolvedImageStatus(store, resolvedImageStatus)
 
       this.setCachedDishImageStatus(store, {
-        summary: resolvedImageStatus.summary,
-        categoryStats: nextCategoryStats
+        summary: renderedStatus.summary,
+        groups: renderedStatus.groups,
+        categoryStats: renderedStatus.categoryStats
       })
     } catch (error: any) {
       if (requestId !== (this as any)._imageStatusRequestId || store !== this.data.selectedStore) {
@@ -253,6 +266,24 @@ Page({
       if (requestId === (this as any)._imageStatusRequestId && store === this.data.selectedStore) {
         this.setData({ imageStatusLoading: false })
       }
+    }
+  },
+
+  applyResolvedImageStatus(store: string, resolvedImageStatus: { summary: DishImageSummary; groupedMissingItems: DishImageGroup[] }) {
+    const categoryStats = this.buildImageCategoryStats(resolvedImageStatus.groupedMissingItems)
+    const groups = this.decorateImageGroups(resolvedImageStatus.groupedMissingItems)
+
+    this.setData({
+      dishImageSummary: resolvedImageStatus.summary,
+      missingImageGroups: groups,
+      imageCategoryStats: categoryStats,
+      imageStatusLoading: false
+    })
+
+    return {
+      summary: resolvedImageStatus.summary,
+      groups,
+      categoryStats
     }
   },
 
@@ -583,35 +614,36 @@ Page({
     }
 
     const fileStatusMap = new Map<string, boolean>()
-    const chunkSize = 20
+    const chunkSize = 8
 
     for (let index = 0; index < items.length; index += chunkSize) {
       const chunk = items.slice(index, index + chunkSize)
-      const fileItems = chunk.filter(item => Boolean(item.fileID))
+      const fileItems: DishImageItem[] = []
 
-      chunk
-        .filter(item => !item.fileID)
-        .forEach((item) => {
+      chunk.forEach((item) => {
+        if (!item.fileID) {
           fileStatusMap.set(item.fileID, false)
-        })
+          return
+        }
+
+        const cachedStatus = this.getCachedRenderStatus(item.fileID)
+        if (cachedStatus !== null) {
+          fileStatusMap.set(item.fileID, cachedStatus)
+          return
+        }
+
+        fileItems.push(item)
+      })
 
       if (!fileItems.length) {
         continue
       }
 
-      try {
-        const result = await wx.cloud.getTempFileURL({
-          fileList: fileItems.map(item => item.fileID)
-        })
-
-        ;(result.fileList || []).forEach((file: any) => {
-          fileStatusMap.set(file.fileID, file.status === 0 && Boolean(file.tempFileURL))
-        })
-      } catch (error) {
-        fileItems.forEach((item) => {
-          fileStatusMap.set(item.fileID, false)
-        })
-      }
+      await Promise.all(fileItems.map(async (item) => {
+        const isRenderable = await this.canRenderCloudImage(item.fileID)
+        fileStatusMap.set(item.fileID, isRenderable)
+        this.setCachedRenderStatus(item.fileID, isRenderable)
+      }))
     }
 
     const resolvedItems = items.map((item) => ({
@@ -630,6 +662,89 @@ Page({
       } as DishImageSummary,
       groupedMissingItems: this.groupDishItems(missingItems)
     }
+  },
+
+  buildQuickDishImageStatus(items: DishImageItem[], store: string) {
+    const resolvedItems = items.map((item) => {
+      const cachedStatus = item.fileID ? this.getCachedRenderStatus(item.fileID) : null
+      return {
+        ...item,
+        hasImage: cachedStatus !== null ? cachedStatus : Boolean(item.fileID)
+      }
+    })
+
+    const missingItems = resolvedItems.filter(item => !item.hasImage)
+
+    return {
+      summary: {
+        store,
+        totalDishCount: resolvedItems.length,
+        matchedImageCount: resolvedItems.length - missingItems.length,
+        placeholderDishCount: missingItems.length
+      } as DishImageSummary,
+      groupedMissingItems: this.groupDishItems(missingItems)
+    }
+  },
+
+  getCachedRenderStatus(fileID: string): boolean | null {
+    try {
+      const cache = wx.getStorageSync(IMAGE_RENDER_CACHE_KEY) || {}
+      const cached = cache[fileID]
+      if (!cached || typeof cached.ok !== 'boolean' || !cached.timestamp) {
+        return null
+      }
+
+      if (Date.now() - cached.timestamp > IMAGE_RENDER_CACHE_TTL) {
+        return null
+      }
+
+      return cached.ok
+    } catch (error) {
+      console.warn('读取图片渲染缓存失败:', error)
+      return null
+    }
+  },
+
+  setCachedRenderStatus(fileID: string, ok: boolean) {
+    if (!fileID) return
+
+    try {
+      const cache = wx.getStorageSync(IMAGE_RENDER_CACHE_KEY) || {}
+      cache[fileID] = {
+        ok,
+        timestamp: Date.now()
+      }
+      wx.setStorageSync(IMAGE_RENDER_CACHE_KEY, cache)
+    } catch (error) {
+      console.warn('写入图片渲染缓存失败:', error)
+    }
+  },
+
+  async canRenderCloudImage(fileID: string): Promise<boolean> {
+    if (!fileID) {
+      return false
+    }
+
+    try {
+      const downloadResult = await wx.cloud.downloadFile({ fileID })
+      return await this.canRenderImage(downloadResult.tempFilePath)
+    } catch (error) {
+      console.warn('云图片下载或渲染失败:', { fileID, error })
+      return false
+    }
+  },
+
+  canRenderImage(src: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      wx.getImageInfo({
+        src,
+        success: () => resolve(true),
+        fail: (error) => {
+          console.warn('图片临时链接无法渲染:', { src, error })
+          resolve(false)
+        }
+      })
+    })
   },
 
   groupDishItems(items: DishImageItem[]) {
@@ -691,6 +806,8 @@ Page({
   openImageCategoryPage(e: any) {
     const category = e.currentTarget.dataset.category
     if (!category) return
+
+    ;(this as any)._shouldRefreshImageStatusOnShow = true
 
     wx.navigateTo({
       url: `/pages/admin/dish-image-manage/dish-image-manage?store=${encodeURIComponent(this.data.selectedStore)}&category=${encodeURIComponent(category)}`
@@ -755,6 +872,7 @@ Page({
 
       return {
         summary: cached.summary as DishImageSummary,
+        groups: (cached.groups || []) as DishImageGroupView[],
         categoryStats: cached.categoryStats as DishImageCategoryStat[]
       }
     } catch (error) {
@@ -763,7 +881,7 @@ Page({
     }
   },
 
-  setCachedDishImageStatus(store: string, data: { summary: DishImageSummary; categoryStats: DishImageCategoryStat[] }) {
+  setCachedDishImageStatus(store: string, data: { summary: DishImageSummary; groups: DishImageGroupView[]; categoryStats: DishImageCategoryStat[] }) {
     try {
       const cache = wx.getStorageSync(IMAGE_STATUS_CACHE_KEY) || {}
       cache[store] = {

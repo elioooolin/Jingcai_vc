@@ -10,7 +10,9 @@ function appendCacheBust(url: string) {
   return url || ''
 }
 
-const MENU_IMAGE_STATUS_CACHE_KEY = 'menu_manage_image_status_cache_v1'
+const MENU_IMAGE_STATUS_CACHE_KEY = 'menu_manage_image_status_cache_v2'
+const IMAGE_RENDER_CACHE_KEY = 'dish_image_render_cache_v1'
+const IMAGE_RENDER_CACHE_TTL = 30 * 60 * 1000
 const MAX_IMAGE_EDGE = 1024
 const TARGET_LOCAL_UPLOAD_SIZE = 150 * 1024
 const COMPRESS_QUALITY_STEPS = [40, 30, 25, 20, 15]
@@ -30,6 +32,8 @@ Page({
     dishSearchKeyword: '',
     dishDropdownVisible: false,
     selectedDishName: '',
+    selectedDishId: '',
+    selectedDishCategoryLabel: '',
     selectedDishHasImage: false,
     selectedDishFileID: '',
     selectedDishPreviewURL: '',
@@ -79,40 +83,13 @@ Page({
         throw new Error(payload?.message || '加载图片状态失败')
       }
 
-      const resolvedItems = await this.resolveDishImageStatus(payload.items || [])
-      const categoryItems = resolvedItems.filter((item) => item.categoryLabel === category)
-      const missingItems = categoryItems.filter(item => !item.hasImage)
-      const targetDishName = preferredDishName || this.data.selectedDishName
-      const selectedDish = categoryItems.find((item) => item.name === targetDishName) || categoryItems[0] || null
+      const rawItems = payload.items || []
+      const quickItems = this.buildQuickDishImageStatus(rawItems)
+      await this.applyResolvedItems(quickItems, category, preferredDishName)
+      this.setData({ loading: false })
 
-      let selectedDishPreviewURL = selectedDish?.hasImage
-        ? await this.resolveSingleDishPreview(selectedDish.fileID)
-        : ''
-
-      if (
-        selectedDish &&
-        this.data.optimisticPreviewDishName &&
-        selectedDish.name === this.data.optimisticPreviewDishName &&
-        this.data.optimisticPreviewURL
-      ) {
-        selectedDishPreviewURL = this.data.optimisticPreviewURL
-      }
-
-      this.setData({
-        totalDishCount: categoryItems.length,
-        placeholderDishCount: missingItems.length,
-        missingItems,
-        categoryItems,
-        filteredDishOptions: categoryItems,
-        dishSearchKeyword: selectedDish?.name || '',
-        dishDropdownVisible: false,
-        selectedDishName: selectedDish?.name || '',
-        selectedDishHasImage: Boolean(selectedDish?.hasImage),
-        selectedDishFileID: selectedDish?.fileID || '',
-        selectedDishPreviewURL,
-        selectedImagePath: '',
-        selectedImageName: ''
-      })
+      const resolvedItems = await this.resolveDishImageStatus(rawItems)
+      await this.applyResolvedItems(resolvedItems, category, preferredDishName)
     } catch (error: any) {
       wx.showToast({
         title: error?.message || '加载失败',
@@ -124,47 +101,163 @@ Page({
     }
   },
 
+  async applyResolvedItems(resolvedItems: DishImageItem[], category: string, preferredDishName?: string) {
+    const categoryItems = resolvedItems.filter((item) => item.categoryLabel === category)
+    const missingItems = categoryItems.filter(item => !item.hasImage)
+    const targetDishName = preferredDishName || this.data.selectedDishName
+    const selectedDish = categoryItems.find((item) => item.name === targetDishName) || categoryItems[0] || null
+
+    let selectedDishPreviewURL = selectedDish?.hasImage
+      ? await this.resolveSingleDishPreview(selectedDish.fileID)
+      : ''
+
+    const shouldUseOptimisticPreview = Boolean(
+      selectedDish &&
+      this.data.optimisticPreviewDishName &&
+      selectedDish.name === this.data.optimisticPreviewDishName &&
+      this.data.optimisticPreviewURL &&
+      this.data.selectedDishFileID &&
+      selectedDish?.fileID !== this.data.selectedDishFileID
+    )
+
+    if (shouldUseOptimisticPreview) {
+      selectedDishPreviewURL = this.data.optimisticPreviewURL
+    }
+
+    this.setData({
+      totalDishCount: categoryItems.length,
+      placeholderDishCount: missingItems.length,
+      missingItems,
+      categoryItems,
+      filteredDishOptions: categoryItems,
+      dishSearchKeyword: selectedDish?.name || '',
+      dishDropdownVisible: false,
+      selectedDishName: selectedDish?.name || '',
+      selectedDishId: selectedDish?.id || '',
+      selectedDishCategoryLabel: selectedDish?.categoryLabel || category,
+      selectedDishHasImage: Boolean(selectedDish?.hasImage),
+      selectedDishFileID: selectedDish?.fileID || '',
+      selectedDishPreviewURL,
+      optimisticPreviewDishName: shouldUseOptimisticPreview ? this.data.optimisticPreviewDishName : '',
+      optimisticPreviewURL: shouldUseOptimisticPreview ? this.data.optimisticPreviewURL : '',
+      selectedImagePath: '',
+      selectedImageName: ''
+    })
+  },
+
+  buildQuickDishImageStatus(items: DishImageItem[]) {
+    return items.map((item) => {
+      const cachedStatus = item.fileID ? this.getCachedRenderStatus(item.fileID) : null
+      return {
+        ...item,
+        hasImage: cachedStatus !== null ? cachedStatus : Boolean(item.fileID)
+      }
+    })
+  },
+
   async resolveDishImageStatus(items: DishImageItem[]) {
     if (!items.length) {
       return []
     }
 
     const fileStatusMap = new Map<string, boolean>()
-    const chunkSize = 20
+    const chunkSize = 8
 
     for (let index = 0; index < items.length; index += chunkSize) {
       const chunk = items.slice(index, index + chunkSize)
-      const fileItems = chunk.filter(item => Boolean(item.fileID))
+      const fileItems: DishImageItem[] = []
 
-      chunk
-        .filter(item => !item.fileID)
-        .forEach((item) => {
+      chunk.forEach((item) => {
+        if (!item.fileID) {
           fileStatusMap.set(item.fileID, false)
-        })
+          return
+        }
+
+        const cachedStatus = this.getCachedRenderStatus(item.fileID)
+        if (cachedStatus !== null) {
+          fileStatusMap.set(item.fileID, cachedStatus)
+          return
+        }
+
+        fileItems.push(item)
+      })
 
       if (!fileItems.length) {
         continue
       }
 
-      try {
-        const result = await wx.cloud.getTempFileURL({
-          fileList: fileItems.map(item => item.fileID)
-        })
-
-        ;(result.fileList || []).forEach((file: any) => {
-          fileStatusMap.set(file.fileID, file.status === 0 && Boolean(file.tempFileURL))
-        })
-      } catch (error) {
-        fileItems.forEach((item) => {
-          fileStatusMap.set(item.fileID, false)
-        })
-      }
+      await Promise.all(fileItems.map(async (item) => {
+        const isRenderable = await this.canRenderCloudImage(item.fileID)
+        fileStatusMap.set(item.fileID, isRenderable)
+        this.setCachedRenderStatus(item.fileID, isRenderable)
+      }))
     }
 
     return items.map((item) => ({
       ...item,
       hasImage: Boolean(fileStatusMap.get(item.fileID))
     }))
+  },
+
+  async canRenderCloudImage(fileID: string): Promise<boolean> {
+    if (!fileID) {
+      return false
+    }
+
+    try {
+      const downloadResult = await wx.cloud.downloadFile({ fileID })
+      return await this.canRenderImage(downloadResult.tempFilePath)
+    } catch (error) {
+      console.warn('云图片下载或渲染失败:', { fileID, error })
+      return false
+    }
+  },
+
+  canRenderImage(src: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      wx.getImageInfo({
+        src,
+        success: () => resolve(true),
+        fail: (error) => {
+          console.warn('图片临时链接无法渲染:', { src, error })
+          resolve(false)
+        }
+      })
+    })
+  },
+
+  getCachedRenderStatus(fileID: string): boolean | null {
+    try {
+      const cache = wx.getStorageSync(IMAGE_RENDER_CACHE_KEY) || {}
+      const cached = cache[fileID]
+      if (!cached || typeof cached.ok !== 'boolean' || !cached.timestamp) {
+        return null
+      }
+
+      if (Date.now() - cached.timestamp > IMAGE_RENDER_CACHE_TTL) {
+        return null
+      }
+
+      return cached.ok
+    } catch (error) {
+      console.warn('读取图片渲染缓存失败:', error)
+      return null
+    }
+  },
+
+  setCachedRenderStatus(fileID: string, ok: boolean) {
+    if (!fileID) return
+
+    try {
+      const cache = wx.getStorageSync(IMAGE_RENDER_CACHE_KEY) || {}
+      cache[fileID] = {
+        ok,
+        timestamp: Date.now()
+      }
+      wx.setStorageSync(IMAGE_RENDER_CACHE_KEY, cache)
+    } catch (error) {
+      console.warn('写入图片渲染缓存失败:', error)
+    }
   },
 
   async resolveSingleDishPreview(fileID: string) {
@@ -181,10 +274,10 @@ Page({
         errMsg: file?.errMsg,
         hasTempFileURL: Boolean(file?.tempFileURL)
       })
-      return file?.status === 0 && file?.tempFileURL ? appendCacheBust(file.tempFileURL) : ''
+      return file?.status === 0 ? fileID : ''
     } catch (error) {
       console.error('获取菜品图片临时链接失败:', error)
-      return ''
+      return fileID
     }
   },
 
@@ -193,6 +286,32 @@ Page({
       url: this.data.selectedDishPreviewURL,
       detail: e.detail
     })
+
+    const selectedDishId = this.data.selectedDishId
+    const selectedDishName = this.data.selectedDishName
+    const markAsMissing = (items: DishImageItem[]) => items.map((item) => {
+      if (selectedDishId ? item.id === selectedDishId : item.name === selectedDishName) {
+        return {
+          ...item,
+          hasImage: false
+        }
+      }
+
+      return item
+    })
+
+    const categoryItems = markAsMissing(this.data.categoryItems)
+    const filteredDishOptions = markAsMissing(this.data.filteredDishOptions)
+    const missingItems = categoryItems.filter(item => !item.hasImage)
+
+    this.setData({
+      categoryItems,
+      filteredDishOptions,
+      missingItems,
+      placeholderDishCount: missingItems.length,
+      selectedDishPreviewURL: '',
+      selectedDishHasImage: false
+    })
   },
 
   previewSelectedDishImage() {
@@ -200,9 +319,28 @@ Page({
       return
     }
 
-    wx.previewImage({
-      current: this.data.selectedDishPreviewURL,
-      urls: [this.data.selectedDishPreviewURL]
+    const previewURL = this.data.selectedDishPreviewURL
+    if (!previewURL.startsWith('cloud://')) {
+      wx.previewImage({
+        current: previewURL,
+        urls: [previewURL]
+      })
+      return
+    }
+
+    wx.cloud.getTempFileURL({
+      fileList: [previewURL]
+    }).then((result) => {
+      const tempURL = result.fileList?.[0]?.tempFileURL
+      wx.previewImage({
+        current: tempURL || previewURL,
+        urls: [tempURL || previewURL]
+      })
+    }).catch(() => {
+      wx.previewImage({
+        current: previewURL,
+        urls: [previewURL]
+      })
     })
   },
 
@@ -244,6 +382,8 @@ Page({
 
     this.setData({
       selectedDishName: selectedDish?.name || '',
+      selectedDishId: selectedDish?.id || '',
+      selectedDishCategoryLabel: selectedDish?.categoryLabel || this.data.category,
       dishSearchKeyword: selectedDish?.name || '',
       selectedDishHasImage: Boolean(selectedDish?.hasImage),
       selectedDishFileID: selectedDish?.fileID || '',
@@ -414,7 +554,7 @@ Page({
     this.setData({ uploading: true })
 
     try {
-      const cloudPath = `dish_pics/${this.data.selectedDishName}.JPG`
+      const cloudPath = this.buildDishImageCloudPath(this.data.selectedDishName)
 
       if (this.data.selectedDishFileID) {
         try {
@@ -435,7 +575,9 @@ Page({
         name: 'uploadDishImage',
         data: {
           sessionToken: wx.getStorageSync('sessionToken'),
+          dishId: this.data.selectedDishId,
           dishName: this.data.selectedDishName,
+          categoryLabel: this.data.selectedDishCategoryLabel || this.data.category,
           store: this.data.store,
           fileID: storageResult.fileID
         }
@@ -454,9 +596,11 @@ Page({
       })
 
       wx.removeStorageSync(MENU_IMAGE_STATUS_CACHE_KEY)
+      this.setCachedRenderStatus(payload.fileID || storageResult.fileID || '', true)
 
       this.setData({
         selectedDishHasImage: true,
+        selectedDishFileID: payload.fileID || storageResult.fileID || '',
         selectedDishPreviewURL: localPreviewURL,
         optimisticPreviewDishName: this.data.selectedDishName,
         optimisticPreviewURL: localPreviewURL,
@@ -483,5 +627,16 @@ Page({
     } finally {
       this.setData({ uploading: false })
     }
+  },
+
+  buildDishImageCloudPath(dishName: string) {
+    return `dish_pics/${this.sanitizeDishImageFileName(dishName)}.JPG`
+  },
+
+  sanitizeDishImageFileName(dishName: string) {
+    return String(dishName || '')
+      .trim()
+      .replace(/[+]/g, '＋')
+      .replace(/[\\/:*?"<>|#%&=]/g, '_')
   }
 })

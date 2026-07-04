@@ -1,0 +1,9 @@
+{
+  "name": "recoverDishImageBindings",
+  "version": "1.0.0",
+  "description": "Recover dish image bindings from cloud storage paths",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

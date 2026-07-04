@@ -7,7 +7,7 @@ cloud.init({
 const db = cloud.database()
 
 exports.main = async (event = {}) => {
-  const { sessionToken, dishName, store, imageBase64, fileID } = event
+  const { sessionToken, dishId, dishName, categoryLabel, store, imageBase64, fileID } = event
 
   try {
     const currentUser = await getCurrentUser({ sessionToken })
@@ -43,7 +43,7 @@ exports.main = async (event = {}) => {
         }
       }
 
-      cloudPath = `dish_pics/${normalizedDishName}.JPG`
+      cloudPath = buildDishImageCloudPath(normalizedDishName)
       const uploadResult = await cloud.uploadFile({
         cloudPath,
         fileContent: buffer
@@ -51,7 +51,13 @@ exports.main = async (event = {}) => {
       resolvedFileID = uploadResult.fileID
     }
 
-    await updateDishImageFileId(normalizedDishName, store, resolvedFileID)
+    await updateDishImageFileId({
+      dishId: String(dishId || '').trim(),
+      dishName: normalizedDishName,
+      categoryLabel: String(categoryLabel || '').trim(),
+      store,
+      fileID: resolvedFileID
+    })
 
     return {
       success: true,
@@ -69,7 +75,30 @@ exports.main = async (event = {}) => {
   }
 }
 
-async function updateDishImageFileId(dishName, store, fileID) {
+async function updateDishImageFileId({ dishId, dishName, categoryLabel, store, fileID }) {
+  if (dishId) {
+    const targetResult = await db.collection('dishes').doc(dishId).get()
+    const targetDish = targetResult.data
+
+    if (targetDish) {
+      if (store && targetDish.store && targetDish.store !== store) {
+        throw new Error('选中的菜品不属于当前门店')
+      }
+
+      if (dishName && String(targetDish.name || '').trim() !== dishName) {
+        throw new Error('选中的菜品与上传菜名不一致')
+      }
+
+      await db.collection('dishes').doc(dishId).update({
+        data: {
+          imageFileId: fileID,
+          imageUpdatedAt: new Date()
+        }
+      })
+      return
+    }
+  }
+
   const where = store
     ? { name: dishName, store }
     : { name: dishName }
@@ -84,7 +113,13 @@ async function updateDishImageFileId(dishName, store, fileID) {
     dishes.push(...(fallbackResult.data || []))
   }
 
-  await Promise.all(dishes.map((dish) =>
+  const normalizedCategory = normalizeCategoryLabel(categoryLabel)
+  const matchedDishes = normalizedCategory
+    ? dishes.filter((dish) => normalizeCategoryLabel(dish.category) === normalizedCategory)
+    : dishes
+  const targetDishes = matchedDishes.length ? matchedDishes : dishes
+
+  await Promise.all(targetDishes.map((dish) =>
     db.collection('dishes').doc(dish._id).update({
       data: {
         imageFileId: fileID,
@@ -92,6 +127,14 @@ async function updateDishImageFileId(dishName, store, fileID) {
       }
     })
   ))
+}
+
+function normalizeCategoryLabel(category) {
+  const value = String(category || '').trim()
+  if (!value) return ''
+  if (value === '汤品') return '汤品'
+  if (value === '高补品') return '高补品'
+  return '菜品'
 }
 
 async function getCurrentUser({ sessionToken } = {}) {
@@ -152,4 +195,15 @@ function getUserRole(user) {
   if (user.isAdmin === true || user.userType === 'admin') return 'admin'
   if (user.userType === 'staff') return 'staff'
   return 'customer'
+}
+
+function buildDishImageCloudPath(dishName) {
+  return `dish_pics/${sanitizeDishImageFileName(dishName)}.JPG`
+}
+
+function sanitizeDishImageFileName(dishName) {
+  return String(dishName || '')
+    .trim()
+    .replace(/[+]/g, '＋')
+    .replace(/[\\/:*?"<>|#%&=]/g, '_')
 }

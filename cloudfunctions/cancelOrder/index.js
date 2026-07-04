@@ -115,11 +115,13 @@ exports.main = async (event, context) => {
           let newSupplementCount = userResult.data.supplementCount || 0;
           
           // 恢复高补餐次数
-          if (hasSupplementMeal) {
+          if (hasSupplementMeal && userResult.data.isMock !== true) {
             newSupplementCount = newSupplementCount + 1;
             updateData.supplementCount = newSupplementCount;
             supplementCountRestored = true;
             console.log(`✅ 准备恢复高补餐次数: ${userResult.data.supplementCount || 0} -> ${newSupplementCount}`);
+          } else if (hasSupplementMeal) {
+            console.log('虚拟用户订单取消不回补高补餐次数');
           }
           
           // 更新用户次数

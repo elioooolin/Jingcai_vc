@@ -102,11 +102,16 @@ exports.main = async (event, context) => {
     
     // 检查是否需要更新高补餐次数
     if (orderData.supplement && Array.isArray(orderData.supplement) && orderData.supplement.length > 0 && orderData.supplement[0].name.trim() !== '') {
-      supplementCountUpdated = true;
       const currentSupplementCount = user.supplementCount || 0;
-      newSupplementCount = currentSupplementCount - 1;
-      needsUserUpdate = true;
-      console.log(`✅ 需要更新高补餐次数: ${currentSupplementCount} -> ${newSupplementCount}`);
+      if (user.isMock === true) {
+        newSupplementCount = currentSupplementCount;
+        console.log(`虚拟用户订单不扣减高补餐次数，保持: ${currentSupplementCount}`);
+      } else {
+        supplementCountUpdated = true;
+        newSupplementCount = currentSupplementCount - 1;
+        needsUserUpdate = true;
+        console.log(`✅ 需要更新高补餐次数: ${currentSupplementCount} -> ${newSupplementCount}`);
+      }
     }
     
     

@@ -53,7 +53,7 @@ exports.main = async (event, context) => {
         totalDays: user.totalDays,
         birthday: user.birthday,
         dietPreference: user.dietPreference,
-        supplementCount: user.supplementCount,
+        supplementCount: user.isMock === true ? Math.max(user.supplementCount || 0, 4) : user.supplementCount,
         status: user.status
       },
       session: {

@@ -56,8 +56,10 @@ exports.main = async (event) => {
       }
     }
 
-    await clearStoreMenuData(store)
-    const importResult = await importParsedData(parsed, store)
+    const existingDishImageMap = await getExistingDishImageMap(store)
+    const importBatchId = `menu-import-${Date.now()}`
+    const importResult = await importParsedData(parsed, store, existingDishImageMap, importBatchId)
+    await clearPreviousStoreMenuData(store, importBatchId)
 
     return {
       success: true,
@@ -150,7 +152,10 @@ async function parseExcelFile(fileID, store) {
   const workbook = XLSX.read(downloadResult.fileContent, { type: 'buffer' })
   const sheetName = workbook.SheetNames[0]
   const worksheet = workbook.Sheets[sheetName]
-  const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' })
+  const rows = XLSX.utils.sheet_to_json(worksheet, {
+    defval: '',
+    range: getEffectiveSheetRange(worksheet)
+  })
 
   const requiredHeaders = ['天数', '餐次', '菜品', '类别', '食材', '文字介绍', '关键词', '热量', '蛋白质', '脂肪', '碳水化合物', '主厨推荐']
   const actualHeaders = rows.length > 0 ? Object.keys(rows[0]) : []
@@ -258,12 +263,7 @@ async function parseExcelFile(fileID, store) {
   }
 }
 
-async function clearStoreMenuData(store) {
-  await removeAllByStore('dishes', store)
-  await removeAllByStore('daily_menus', store)
-}
-
-async function importParsedData(parsed, store) {
+async function importParsedData(parsed, store, existingDishImageMap = new Map(), importBatchId) {
   const dishIdMap = new Map()
   const createdAt = new Date()
 
@@ -272,7 +272,9 @@ async function importParsedData(parsed, store) {
       db.collection('dishes').add({
         data: {
           ...dish,
+          ...pickExistingImageFields(existingDishImageMap.get(dish.name)),
           store,
+          importBatchId,
           created_at: createdAt,
           status: 'active'
         }
@@ -293,6 +295,7 @@ async function importParsedData(parsed, store) {
         data: {
           ...menu,
           store,
+          importBatchId,
           created_at: createdAt
         }
       })
@@ -303,6 +306,17 @@ async function importParsedData(parsed, store) {
     dishCount: parsed.dishes.length,
     menuDayCount: parsed.dailyMenus.length
   }
+}
+
+async function clearPreviousStoreMenuData(store, importBatchId) {
+  await removeAllByStore('daily_menus', {
+    store,
+    importBatchId: db.command.neq(importBatchId)
+  })
+  await removeAllByStore('dishes', {
+    store,
+    importBatchId: db.command.neq(importBatchId)
+  })
 }
 
 function processMenuWithDishIds(menu, dishIdMap) {
@@ -337,10 +351,10 @@ function chunkArray(items, size) {
   return chunks
 }
 
-async function removeAllByStore(collectionName, store) {
+async function removeAllByStore(collectionName, where) {
   while (true) {
     const result = await db.collection(collectionName)
-      .where({ store })
+      .where(where)
       .limit(PAGE_SIZE)
       .get()
 
@@ -354,6 +368,60 @@ async function removeAllByStore(collectionName, store) {
   }
 }
 
+async function getExistingDishImageMap(store) {
+  const dishes = await getAllByWhere('dishes', { store })
+  const imageMap = new Map()
+
+  dishes.forEach((dish) => {
+    const name = String(dish.name || '').trim()
+    if (!name || imageMap.has(name)) {
+      return
+    }
+
+    imageMap.set(name, {
+      imageFileId: dish.imageFileId || '',
+      imageUpdatedAt: dish.imageUpdatedAt || null
+    })
+  })
+
+  return imageMap
+}
+
+async function getAllByWhere(collectionName, where) {
+  const results = []
+  let skip = 0
+
+  while (true) {
+    const result = await db.collection(collectionName)
+      .where(where)
+      .skip(skip)
+      .limit(PAGE_SIZE)
+      .get()
+
+    const currentBatch = result.data || []
+    results.push(...currentBatch)
+
+    if (currentBatch.length < PAGE_SIZE) {
+      break
+    }
+
+    skip += PAGE_SIZE
+  }
+
+  return results
+}
+
+function pickExistingImageFields(existingImage) {
+  if (!existingImage?.imageFileId) {
+    return {}
+  }
+
+  return {
+    imageFileId: existingImage.imageFileId,
+    imageUpdatedAt: existingImage.imageUpdatedAt || new Date()
+  }
+}
+
 function normalizeKeywords(value) {
   if (!value) return []
   const raw = String(value)
@@ -363,4 +431,42 @@ function normalizeKeywords(value) {
     .split(',')
     .map(part => part.trim())
     .filter(Boolean)
+}
+
+function getEffectiveSheetRange(worksheet) {
+  const ref = worksheet['!ref']
+  if (!ref) {
+    return undefined
+  }
+
+  const baseRange = XLSX.utils.decode_range(ref)
+  let maxRow = baseRange.s.r
+  let maxCol = baseRange.e.c
+
+  Object.keys(worksheet).forEach((key) => {
+    if (key.startsWith('!')) {
+      return
+    }
+
+    const cell = worksheet[key]
+    if (!cell || cell.v === undefined || cell.v === null || String(cell.v).trim() === '') {
+      return
+    }
+
+    const position = XLSX.utils.decode_cell(key)
+    if (position.r > maxRow) {
+      maxRow = position.r
+    }
+    if (position.c > maxCol) {
+      maxCol = position.c
+    }
+  })
+
+  return XLSX.utils.encode_range({
+    s: baseRange.s,
+    e: {
+      r: maxRow,
+      c: maxCol
+    }
+  })
 }

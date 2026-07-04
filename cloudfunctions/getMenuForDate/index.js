@@ -270,6 +270,7 @@ async function populateMenuDetails(dailyMenu) {
   
   try {
     console.log('开始填充菜品详情，daily_menu结构:', JSON.stringify(dailyMenu, null, 2))
+    const imageByName = await buildImageByName(dailyMenu.store)
     
     for (const [mealType, mealData] of Object.entries(dailyMenu.meals)) {
       console.log(`处理餐次: ${mealType}，数据:`, JSON.stringify(mealData, null, 2))
@@ -298,7 +299,7 @@ async function populateMenuDetails(dailyMenu) {
             if (dishResult.data) {
               const dish = dishResult.data
               
-              const imageFileId = dish.imageFileId || ''
+              const imageFileId = dish.imageFileId || imageByName.get(String(dish.name || '').trim()) || ''
               
               // 小程序中的 image 组件可以直接使用云存储的 fileID
               // 不需要获取临时URL，直接使用 fileID 即可
@@ -337,6 +338,51 @@ async function populateMenuDetails(dailyMenu) {
     console.error('填充菜品详情失败:', error)
     throw error
   }
+}
+
+async function buildImageByName(store) {
+  if (!store) {
+    return new Map()
+  }
+
+  const imageByName = new Map()
+  const dishes = await getAllByWhere('dishes', { store })
+
+  dishes.forEach((dish) => {
+    const name = String(dish.name || '').trim()
+    const imageFileId = String(dish.imageFileId || '').trim()
+    if (!name || !imageFileId || imageByName.has(name)) {
+      return
+    }
+
+    imageByName.set(name, imageFileId)
+  })
+
+  return imageByName
+}
+
+async function getAllByWhere(collectionName, where, pageSize = 100) {
+  const results = []
+  let skip = 0
+
+  while (true) {
+    const result = await db.collection(collectionName)
+      .where(where)
+      .skip(skip)
+      .limit(pageSize)
+      .get()
+
+    const currentBatch = result.data || []
+    results.push(...currentBatch)
+
+    if (currentBatch.length < pageSize) {
+      break
+    }
+
+    skip += pageSize
+  }
+
+  return results
 }
 
 // 根据菜品类别获取图标
